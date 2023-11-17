@@ -1,12 +1,17 @@
 import Image from "next/image"
 
-export default function Icon({ src, width=48, height, alt }) {
+export default function Icon({ src, width="48px", height, alt }) {
+  height = height || width
+
   return (
-    <div className="icon">
+    <div 
+    className="icon relative overflow-hidden"
+    style={{ width, height }}
+    >
       <Image
+      fill
       src={src}
-      width={width}
-      height={height || width}
+      sizes="(max-width: 640px) 48px, 100px"
       alt={alt || "icon alongside text"}
       />
     </div>
