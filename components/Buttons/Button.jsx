@@ -1,5 +1,8 @@
 "use client";
 
+import Icon from "../Graphics/Icon";
+import Link from "next/link";
+
 import { 
   useEffect, 
   useState 
@@ -9,14 +12,23 @@ const Button = ({
   children,
   onClick=() => {},
   activateOnRender,
+  leftIcon=false,
+  rightIcon=false,
+  href=false
 }) => {
+
+  if (typeof leftIcon === "string") leftIcon = { src: leftIcon };
+  if (typeof rightIcon === "string") rightIcon = { src: rightIcon };
 
   /*  
     Create an object of mutable component props. This will group the props together
     so we can change them later.
+
+    bg-[#3f3f3f] 
   */ 
   const [_mutableProps, _setMutableProps] = useState({
-    selected: false
+    self_className: "relative flex items-center px-2 text-white transition-all bg-[#3f3f3f] rounded custom-button min-w-fit w-fit text-sm",
+    selected: false,
   })
 
   /*
@@ -32,10 +44,8 @@ const Button = ({
     variable will be overwritten by the 'update()' setter function inside the 'buttonState' field.
   */
   const clickReport = {
-    buttonState: {
-      ..._mutableProps,
-      update: query => _setMutableProps(prev => ({...prev, ...query}))
-    },
+    updateState: query => _setMutableProps(prev => ({...prev, ...query})),
+    getState: () => ({ ..._mutableProps })
   }
 
   /*
@@ -43,7 +53,6 @@ const Button = ({
     don't need to manually pass the 'clickReport' object to 'onClick' on every event activation.
   */
   const processClick = () => {
-    console.log("system click")
     onClick(clickReport)
   }
 
@@ -52,26 +61,43 @@ const Button = ({
     render, if that option is being used.
   */ 
   useEffect(() => {
-    if (activateOnRender) processClick()
+    if (activateOnRender) processClick(clickReport)
   }, [])
 
+
+  const renderIcon = icon => {
+    if (icon) {
+      return (
+        <Icon 
+        utility 
+        src={icon.src} 
+        self_className={icon.self_className || "w-5 h-5 invert"}
+        />
+      );
+    }
+  }
 
   /* 
     Render the content inside the <button> element
   */
   const renderButtonContent = () => <>
+    {renderIcon(leftIcon)}
+
     <span className="flex-auto p-2 text-left rounded text-md">
       {children}
     </span>
+
+    {renderIcon(rightIcon)}
   </>
 
   return (
-    <button 
-    className="relative flex items-center px-2 m-2 text-white transition-all bg-black rounded custom-button min-w-fit"
-    onClick={processClick}
-    >
-      {renderButtonContent()}
-    </button>
+    href
+      ? <Link className={_mutableProps.self_className} href={href}>
+          {renderButtonContent()}
+        </Link>
+      : <button className={_mutableProps.self_className} onClick={processClick}>
+          {renderButtonContent()}
+        </button>
   );
 };
 

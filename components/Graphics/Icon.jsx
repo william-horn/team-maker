@@ -13,7 +13,7 @@ const Icon = ({
   /* 
   TODO: 
   
-  Increase utility icon resolution at different breakpoints. In the meantime just use 48px
+  Increase utility icon sizes at different breakpoints. In the meantime just use 48px
   as a constant. Ideally, new utility icon downloads should come in at the same time as the 
   rendered icon breakpoint.
 
@@ -37,15 +37,15 @@ const Icon = ({
 
   return (
     <div 
-    className={"relative overflow-hidden icon w-[48px] h-[48px] " + self_className}
+    className={"relative overflow-hidden icon " + self_className}
     style={{ width, height }}
     >
       <Image
       fill
       src={src}
       sizes={
-        utility ? 
-          "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
+        utility
+          ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
           : "(min-width: 1024px) 512px, (min-width: 640px) 256px, 128px"
       }
       alt={alt || "icon alongside text"}
