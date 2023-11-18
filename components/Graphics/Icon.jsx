@@ -1,13 +1,13 @@
 import Image from "next/image"
 
-export default function Icon({ 
+const Icon = ({
   src, 
   width, 
   height, 
   alt, 
   utility=false,
   self_className=""
-}) {
+}) => {
   height = height || width
 
   /* 
@@ -37,7 +37,7 @@ export default function Icon({
 
   return (
     <div 
-    className={"relative overflow-hidden icon " + self_className}
+    className={"relative overflow-hidden icon w-[48px] h-[48px] " + self_className}
     style={{ width, height }}
     >
       <Image
@@ -53,3 +53,5 @@ export default function Icon({
     </div>
   )
 }
+
+export default Icon
