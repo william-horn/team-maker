@@ -13,6 +13,8 @@ const Button = ({
   children,
   className='',
   onClick=() => {},
+  onMouseEnter=() => {},
+  onMouseLeave=() => {},
   activateOnRender,
   leftIcon=false,
   rightIcon=false,
@@ -22,6 +24,7 @@ const Button = ({
   italic='',
   inline='',
   size='',
+  xsmall='',
   small='',
   medium='',
   large='',
@@ -30,8 +33,9 @@ const Button = ({
     [size, size],
     [large, 'text-lg'],
     [medium, 'text-md'],
-    [small, 'text-sm']
-  ], 'text-sm');
+    [small, 'text-sm'],
+    [xsmall, 'text-xs'],
+  ], 'text-xs');
 
   const textFont = chooseOptionFrom([[bold, 'font-bold']], 'font-normal');
   const textDisplay = chooseOptionFrom([[inline, 'inline-flex']], 'flex');
@@ -47,14 +51,14 @@ const Button = ({
     bg-[#3f3f3f] 
   */ 
   const [_mutableProps, _setMutableProps] = useState({
-    self_className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textFont}`,
+    className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textFont}`,
     selected: false,
   })
 
-  const finalClassName = `${_mutableProps.self_className} ${className}`;
+  const finalClassName = `${_mutableProps.className} ${className}`;
 
   /*
-    The 'clickReport' object holds methods and metadata that we can pass through the
+    The 'buttonData' object holds methods and metadata that we can pass through the
     'onClick' callback function. 
     
     This object also holds the current state of the button component, along with 
@@ -65,17 +69,9 @@ const Button = ({
     We should not have any state inside our button component named 'update', since that
     variable will be overwritten by the 'update()' setter function inside the 'buttonState' field.
   */
-  const clickReport = {
+  const buttonData = {
     updateState: query => _setMutableProps(prev => ({...prev, ...query})),
     getState: () => ({ ..._mutableProps })
-  }
-
-  /*
-    The 'processClick' function is a proxy for calling the 'onClick' function, so we
-    don't need to manually pass the 'clickReport' object to 'onClick' on every event activation.
-  */
-  const processClick = () => {
-    onClick(clickReport)
   }
 
   /*
@@ -83,7 +79,7 @@ const Button = ({
     render, if that option is being used.
   */ 
   useEffect(() => {
-    if (activateOnRender) processClick(clickReport)
+    if (activateOnRender) onClick(buttonData)
   }, [])
 
 
@@ -105,7 +101,13 @@ const Button = ({
   const renderButtonContent = () => <>
     {renderIcon(leftIcon)}
 
-    <span className="flex-auto p-2 text-left rounded">
+    {/* 
+      previously had:  
+        *text-left
+        *rounded
+        *flex-auto
+    */}
+    <span className="p-2">
       {children}
     </span>
 
@@ -117,7 +119,12 @@ const Button = ({
       ? <Link className={finalClassName} href={href}>
           {renderButtonContent()}
         </Link>
-      : <button className={finalClassName} onClick={processClick}>
+      : <button 
+        onMouseEnter={() => onMouseEnter(buttonData)} 
+        onMouseLeave={() => onMouseLeave(buttonData)}
+        className={finalClassName} 
+        onClick={() => onClick(buttonData)}
+        >
           {renderButtonContent()}
         </button>
   )

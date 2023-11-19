@@ -1,16 +1,15 @@
-
 import chooseOptionFrom from "@/util/chooseOptionFrom";
 
-const Text = ({ 
+const Heading = ({ 
   children, 
   className='',
   size='',
   small='',
   medium='',
-  large='',
+  large=true,
   italic='',
   inline='',
-  bold='',
+  bold=true,
 }) => {
   const textSize = chooseOptionFrom([
     [size, size],
@@ -26,12 +25,12 @@ const Text = ({
   // todo: adapt line height to text size
 
   return (
-    <p 
-    className={`custom-text leading-6 ${textSize} text-white ${textDisplay} ${textFont} ${textStyle} ${className}`}>
+    <h2 
+    className={`custom-text leading-6 py-3 ${textSize} text-white ${textDisplay} ${textFont} ${textStyle} ${className}`}>
       {children}
-    </p>
+    </h2>
   );
 };
 
-export default Text;
+export default Heading;
 

@@ -3,6 +3,7 @@
 import Button from "./Buttons/Button";
 import Text from "./Typography/Text";
 import Icon from "./Graphics/Icon";
+import Heading from "./Typography/Heading";
 import removeClass from "@/util/removeClass";
 import addClass from "@/util/addClass";
 
@@ -43,6 +44,7 @@ const ClientComponent = ({ children }) => {
     console.log("after: ", buttonState.selected);
   }
 
+
   return <div className="p-5">
 
     
@@ -56,13 +58,19 @@ const ClientComponent = ({ children }) => {
 
     <div className="w-full h-10"></div>
 
+    <Text large bold>Welcome!</Text>
     <Text>
       Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore natus id earum ipsum repellat et provident corporis ducimus rerum facilis.
       <Button inline leftIcon="/icons/profile_icon.svg">Demo</Button>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus enim soluta facere, eum quidem pariatur error impedit molestiae commodi.
-      <Button>Demo</Button>
+      <Button inline>Demo <span>something</span></Button>
       Lorem ipsum dolor sit amet.
+      If you need some assistance, please click <Button leftIcon="/icons/plus_icon.svg" inline xsmall>Here.</Button>
     </Text>
+    
+    <Heading>Welcome! <Button inline>Test</Button></Heading>
+
+    <Text>Body text Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, placeat.</Text>
   </div>
 };
 
