@@ -2,6 +2,7 @@
 
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
+import chooseOptionFrom from "@/util/chooseOptionFrom";
 
 import { 
   useEffect, 
@@ -10,12 +11,31 @@ import {
 
 const Button = ({
   children,
+  className='',
   onClick=() => {},
   activateOnRender,
   leftIcon=false,
   rightIcon=false,
-  href=false
+  href=false,
+  
+  bold='',
+  italic='',
+  inline='',
+  size='',
+  small='',
+  medium='',
+  large='',
 }) => {
+  const textSize = chooseOptionFrom([
+    [size, size],
+    [large, 'text-lg'],
+    [medium, 'text-md'],
+    [small, 'text-sm']
+  ], 'text-sm');
+
+  const textFont = chooseOptionFrom([[bold, 'font-bold']], 'font-normal');
+  const textDisplay = chooseOptionFrom([[inline, 'inline-flex']], 'flex');
+  const textStyle = chooseOptionFrom([[italic, 'italic']], 'not-italic') 
 
   if (typeof leftIcon === "string") leftIcon = { src: leftIcon };
   if (typeof rightIcon === "string") rightIcon = { src: rightIcon };
@@ -27,9 +47,11 @@ const Button = ({
     bg-[#3f3f3f] 
   */ 
   const [_mutableProps, _setMutableProps] = useState({
-    self_className: "relative flex items-center px-2 text-white transition-all bg-[#3f3f3f] rounded custom-button min-w-fit w-fit text-sm",
+    self_className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textFont}`,
     selected: false,
   })
+
+  const finalClassName = `${_mutableProps.self_className} ${className}`;
 
   /*
     The 'clickReport' object holds methods and metadata that we can pass through the
@@ -71,7 +93,7 @@ const Button = ({
         <Icon 
         utility 
         src={icon.src} 
-        self_className={icon.self_className || "w-5 h-5 invert"}
+        className={icon.className || `w-5 h-5 invert`}
         />
       );
     }
@@ -83,22 +105,22 @@ const Button = ({
   const renderButtonContent = () => <>
     {renderIcon(leftIcon)}
 
-    <span className="flex-auto p-2 text-left rounded text-md">
+    <span className="flex-auto p-2 text-left rounded">
       {children}
     </span>
 
     {renderIcon(rightIcon)}
   </>
-
+  
   return (
     href
-      ? <Link className={_mutableProps.self_className} href={href}>
+      ? <Link className={finalClassName} href={href}>
           {renderButtonContent()}
         </Link>
-      : <button className={_mutableProps.self_className} onClick={processClick}>
+      : <button className={finalClassName} onClick={processClick}>
           {renderButtonContent()}
         </button>
-  );
+  )
 };
 
 export default Button;

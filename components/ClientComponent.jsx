@@ -1,6 +1,8 @@
 "use client";
 
 import Button from "./Buttons/Button";
+import Text from "./Typography/Text";
+import Icon from "./Graphics/Icon";
 import removeClass from "@/util/removeClass";
 import addClass from "@/util/addClass";
 
@@ -41,22 +43,26 @@ const ClientComponent = ({ children }) => {
     console.log("after: ", buttonState.selected);
   }
 
-  return <div className="flex flex-col gap-4 p-5">
-    <Button onClick={onClick}>Hello</Button>
+  return <div className="p-5">
 
-    <Button rightIcon="/icons/plus_icon.svg">
-      Testing
-    </Button>
+    
+    <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, nesciunt.</Text>
+    {/* <Button inline>Button</Button> */}
+    <Text inline>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia, architecto.</Text>
 
-    <Button leftIcon="/icons/trash_icon.svg">
-      Delete
-    </Button>
+    <Button inline>Button</Button>
 
-    <Button leftIcon="/icons/gem_icon.svg" rightIcon="/icons/gem_icon.svg" activateOnRender onClick={() => console.log("clicked initially")}>
-      Favorites
-    </Button>
+    <Text inline>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cupiditate, consequuntur.</Text>
 
-    <Button href="https://www.youtube.com">YouTube</Button>
+    <div className="w-full h-10"></div>
+
+    <Text>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore natus id earum ipsum repellat et provident corporis ducimus rerum facilis.
+      <Button inline leftIcon="/icons/profile_icon.svg">Demo</Button>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus enim soluta facere, eum quidem pariatur error impedit molestiae commodi.
+      <Button>Demo</Button>
+      Lorem ipsum dolor sit amet.
+    </Text>
   </div>
 };
 

@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import Text from '@/components/Typography/Text'
+import Button from '@/components/Buttons/Button'
 
 /*
   This is the home page component, meaning it should remain a server-side component. Therefore,
@@ -12,9 +14,6 @@ export default function Home() {
 
   return (
     <main>
-      <p className="">Hello world</p>
-
-      {/* Here we load in the client component with the button to be tested */}
       <ClientComponent/>
     </main>
   )

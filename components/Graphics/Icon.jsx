@@ -6,7 +6,7 @@ const Icon = ({
   height, 
   alt, 
   utility=false,
-  self_className=""
+  className=""
 }) => {
   height = height || width
 
@@ -36,8 +36,8 @@ const Icon = ({
   */
 
   return (
-    <div 
-    className={"relative overflow-hidden icon " + self_className}
+    <span 
+    className={"relative overflow-hidden inline-block custom-icon " + className}
     style={{ width, height }}
     >
       <Image
@@ -50,7 +50,7 @@ const Icon = ({
       }
       alt={alt || "icon alongside text"}
       />
-    </div>
+    </span>
   )
 }
 
