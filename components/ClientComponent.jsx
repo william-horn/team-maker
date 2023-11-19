@@ -8,22 +8,36 @@ import ButtonGroup from "./Buttons/ButtonGroup";
 
 const ClientComponent = ({ children }) => {
 
+  const groupClick = (data) => {
+    console.log("group click: ", data);
+  }
+
+  const buttonClick = (data) => {
+    console.log("button click: ", data);
+  }
+
   return <div className="p-5">
 
-    {/* <ButtonGroup
-    mode="choose"
+    <ButtonGroup
+    mode="select"
+    limit="2"
+    onClick={groupClick}
+    groupName="group one"
     >
-      <ButtonGroup.Button option="one">Choice One</ButtonGroup.Button>
+      <ButtonGroup.Button option="one" onClick={buttonClick}>Choice One</ButtonGroup.Button>
       <ButtonGroup.Button option="two">Choice Two</ButtonGroup.Button>
       <ButtonGroup.Button option="three">Choice Three</ButtonGroup.Button>
-    </ButtonGroup> */}
+    </ButtonGroup>
 
-    <Text>Lorem ipsum dolor sit, amet <Button leftIcon="/icons/plus_icon.svg" inline>Again</Button>consectetur adipisicing elit. Possimus, here:<Button display="inline-flex">Hello world</Button></Text>
-    <Button>Hello world</Button>
+    <ButtonGroup
+    onClick={groupClick}
+    groupName="group two"
+    >
+      <ButtonGroup.Button option="one" onClick={buttonClick}>Choice A</ButtonGroup.Button>
+      <ButtonGroup.Button option="two">Choice B</ButtonGroup.Button>
+      <ButtonGroup.Button option="three">Choice C</ButtonGroup.Button>
+    </ButtonGroup>
 
-    <Heading>Welcome</Heading>
-    <Text>Lorem ipsum dolor sit amet.</Text>
-    <Text large bold>Lorem, ipsum dolor.</Text>
 
     {/* <ButtonGroup>
       <ButtonGroup.Checkbox></ButtonGroup.Checkbox>

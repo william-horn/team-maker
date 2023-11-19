@@ -48,6 +48,7 @@ const Button = ({
     
     // defaults
     display: 'flex',
+    size: 'text-xs'
   }, {
 
     // custom prop rules
