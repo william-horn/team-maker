@@ -1,32 +1,27 @@
-import chooseOptionFrom from "@/util/chooseOptionFrom";
+import getStylesFromProps from "@/util/getStylesFromProps";
 
 const Heading = ({ 
   children, 
   className='',
-  size='',
-  small='',
-  medium='',
-  large=true,
-  italic='',
-  inline='',
-  bold=true,
+  ...rest
 }) => {
-  const textSize = chooseOptionFrom([
-    [size, size],
-    [large, 'text-lg'],
-    [medium, 'text-md'],
-    [small, 'text-sm']
-  ], 'text-sm');
-
-  const textFont = chooseOptionFrom([[bold, 'font-bold']], 'font-normal');
-  const textDisplay = chooseOptionFrom([[inline, 'inline']], 'block');
-  const textStyle = chooseOptionFrom([[italic, 'italic']], 'not-italic') 
+  const {
+    size: textSize,
+    style: textStyle, 
+    weight: textWeight, 
+    display: textDisplay,
+  } = getStylesFromProps({
+    ...rest, 
+  }, {
+    size: 'text-lg',
+    weight: 'font-bold'
+  });   
 
   // todo: adapt line height to text size
 
   return (
     <h2 
-    className={`custom-text leading-6 py-3 ${textSize} text-white ${textDisplay} ${textFont} ${textStyle} ${className}`}>
+    className={`custom-text leading-6 py-3 ${textSize} text-white ${textDisplay} ${textWeight} ${textStyle} ${className}`}>
       {children}
     </h2>
   );

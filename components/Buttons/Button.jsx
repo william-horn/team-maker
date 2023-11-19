@@ -2,7 +2,8 @@
 
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
-import chooseOptionFrom from "@/util/chooseOptionFrom";
+import getStylesFromProps from "@/util/getStylesFromProps";
+import emptyFunc from "@/util/emptyFunc";
 
 import { 
   useEffect, 
@@ -11,77 +12,68 @@ import {
 
 const Button = ({
   children,
-  className='',
-  onClick=() => {},
-  onMouseEnter=() => {},
-  onMouseLeave=() => {},
-  activateOnRender,
+
+  onClick=emptyFunc,
+  onMouseEnter=emptyFunc,
+  onMouseLeave=emptyFunc,
+  
+  activateOnRender=false,
   leftIcon=false,
   rightIcon=false,
   href=false,
   
-  bold='',
-  italic='',
-  inline='',
-  size='',
-  xsmall='',
-  small='',
-  medium='',
-  large='',
+  className='',
+
+  ...rest
+  // size='',
+  // bold=false,
+  // italic=false,
+  // xsmall=true,
+  // small=false,
+  // medium=false,
+  // large=false,
+  // inline=false,
 }) => {
-  const textSize = chooseOptionFrom([
-    [size, size],
-    [large, 'text-lg'],
-    [medium, 'text-md'],
-    [small, 'text-sm'],
-    [xsmall, 'text-xs'],
-  ], 'text-xs');
 
-  const textFont = chooseOptionFrom([[bold, 'font-bold']], 'font-normal');
-  const textDisplay = chooseOptionFrom([[inline, 'inline-flex']], 'flex');
-  const textStyle = chooseOptionFrom([[italic, 'italic']], 'not-italic') 
+  const {
+    size: textSize,
+    style: textStyle, // italic, etc
+    weight: textWeight, // bold, etc
+    display: textDisplay,
+    
+  } = getStylesFromProps({
+    // config
+    ...rest, 
+  }, {
+    
+    // defaults
+    display: 'flex',
+  }, {
 
+    // custom prop rules
+    inline: { [true]: 'inline-flex', [false]: 'flex' },
+  });   
+
+  // Convert icon props to correct format
   if (typeof leftIcon === "string") leftIcon = { src: leftIcon };
   if (typeof rightIcon === "string") rightIcon = { src: rightIcon };
 
-  /*  
-    Create an object of mutable component props. This will group the props together
-    so we can change them later.
-
-    bg-[#3f3f3f] 
-  */ 
+  // Create button state
   const [_mutableProps, _setMutableProps] = useState({
-    className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textFont}`,
+    className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`,
     selected: false,
   })
 
-  const finalClassName = `${_mutableProps.className} ${className}`;
-
-  /*
-    The 'buttonData' object holds methods and metadata that we can pass through the
-    'onClick' callback function. 
-    
-    This object also holds the current state of the button component, along with 
-    the setter function of said state. Therefore, we can mutate the button state with 
-    code inside the button click event handler.
-
-    *note:
-    We should not have any state inside our button component named 'update', since that
-    variable will be overwritten by the 'update()' setter function inside the 'buttonState' field.
-  */
+  // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
     updateState: query => _setMutableProps(prev => ({...prev, ...query})),
     getState: () => ({ ..._mutableProps })
   }
 
-  /*
-    This 'useEffect' is responsible for triggering the 'onClick' event on the initial page
-    render, if that option is being used.
-  */ 
+  // Handle page mount events
   useEffect(() => {
     if (activateOnRender) onClick(buttonData)
   }, [])
-
 
   const renderIcon = icon => {
     if (icon) {
@@ -116,13 +108,13 @@ const Button = ({
   
   return (
     href
-      ? <Link className={finalClassName} href={href}>
+      ? <Link className={_mutableProps.className} href={href}>
           {renderButtonContent()}
         </Link>
       : <button 
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
-        className={finalClassName} 
+        className={_mutableProps.className} 
         onClick={() => onClick(buttonData)}
         >
           {renderButtonContent()}
