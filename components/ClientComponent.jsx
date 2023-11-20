@@ -39,6 +39,7 @@ const ClientComponent = ({ children }) => {
 
     <Heading>Welcome to Raven</Heading>
     <Text className="pb-4">Before we get started, please select the following options:</Text>
+    
     <ButtonGroup
     mode="select"
     defaultSelect="three"
@@ -49,11 +50,11 @@ const ClientComponent = ({ children }) => {
     onSelectionLimitReached={onSelectionLimitReached}
     groupName="group one"
     >
-      <ButtonGroup.Button id="one">Choice One</ButtonGroup.Button>
-      <ButtonGroup.Button id="two">Choice Two</ButtonGroup.Button>
-      <ButtonGroup.Button id="three">Choice Three</ButtonGroup.Button>
-      <ButtonGroup.Button id="four">Choice Three</ButtonGroup.Button>
-      <ButtonGroup.Button id="five">Choice Three</ButtonGroup.Button>
+      <ButtonGroup.Button id="one" value={1}>Choice One</ButtonGroup.Button>
+      <ButtonGroup.Button id="two" value={2}>Choice Two</ButtonGroup.Button>
+      <ButtonGroup.Button id="three" value={3}>Choice Three</ButtonGroup.Button>
+      <ButtonGroup.Button id="four" value={4}>Choice Four</ButtonGroup.Button>
+      <ButtonGroup.Button id="five" value={5}>Choice Five</ButtonGroup.Button>
     </ButtonGroup>
 
     {/* <ButtonGroup

@@ -30,6 +30,7 @@ const GroupButton = ({
     onSelectionLimitReached,
     unselectLastChoice,
     buttonIdList,
+    selectionReport,
     activeIds,
     selectionLimit,
     onSelect: group_onSelect,
@@ -64,8 +65,10 @@ const GroupButton = ({
     onUnselect(...args);
   }
 
-  const buttonClick = (_systemButtonData) => {
+  // todo:
+  // add buttonData to selectionReport object when buttons are selected/unselected
 
+  const buttonClick = () => {
     if (selectionLimit > -1 && activeIds.length >= selectionLimit && !isSelected) {
       if (unselectLastChoice) {
         activeIds.pop();
@@ -87,7 +90,7 @@ const GroupButton = ({
       fireOnUnselect(buttonData);
     }
 
-    updateActiveIds(id, buttonData.isSelected);
+    updateActiveIds(buttonData);
   }
 
   return (
@@ -126,7 +129,7 @@ const ButtonGroup = function({
   });
 
   const buttonIdList = [];
-  const formData = useRef([]);
+  const selectionReport = useRef({});
 
   const findButtonId = (buttonId) => {
     const idIndex = buttonIdList.findIndex(id => id === buttonId);
@@ -138,15 +141,17 @@ const ButtonGroup = function({
     return { found: idIndex !== -1, index: idIndex };
   }
   
-  const updateActiveIds = (buttonId, isSelected) => {
+  const updateActiveIds = (buttonData) => {
+    const { id, isSelected } = buttonData;
+    
     if (isSelected) {
       _setActiveIds(prev => {
-        prev.push(buttonId);
+        prev.push(id);
         return [...prev];
       });
 
     } else {
-      const idResult = findActiveId(buttonId);
+      const idResult = findActiveId(id);
       
       _setActiveIds(prev => {
         prev.splice(idResult.index, 1);
@@ -163,6 +168,7 @@ const ButtonGroup = function({
       mode,
       selectionLimit,
       findButtonId,
+      selectionReport,
       findActiveId,
       updateActiveIds,
       activeIds,
