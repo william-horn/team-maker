@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-export default function Icon({ src, width="48px", height, alt }) {
+export default function Icon({ src, width="48px", height, alt, sizes }) {
   height = height || width
 
   return (
@@ -11,7 +11,7 @@ export default function Icon({ src, width="48px", height, alt }) {
       <Image
       fill
       src={src}
-      sizes="(max-width: 640px) 48px, 100px"
+      sizes={sizes || "(max-width: 640px) 48px, 100px"}
       alt={alt || "icon alongside text"}
       />
     </div>
