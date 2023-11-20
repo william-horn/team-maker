@@ -21,8 +21,6 @@ const Button = ({
   leftIcon=false,
   rightIcon=false,
   href=false,
-  
-  className='',
 
   ...rest
   // size='',
@@ -61,14 +59,22 @@ const Button = ({
 
   // Create button state
   const [_mutableProps, _setMutableProps] = useState({
-    className: `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`,
     selected: false,
   })
 
+  const className = `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`
+
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
-    updateState: query => _setMutableProps(prev => ({...prev, ...query})),
-    getState: () => ({ ..._mutableProps })
+    updateState: function(query) {
+      _setMutableProps(prev => {
+        const newState = {...prev, ...query};
+        this.state = newState;
+        return newState;
+      })
+    },
+
+    state: _mutableProps
   }
 
   // Handle page mount events
@@ -109,13 +115,13 @@ const Button = ({
   
   return (
     href
-      ? <Link className={_mutableProps.className} href={href}>
+      ? <Link className={className} href={href}>
           {renderButtonContent()}
         </Link>
       : <button 
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
-        className={_mutableProps.className} 
+        className={className} 
         onClick={() => onClick(buttonData)}
         >
           {renderButtonContent()}

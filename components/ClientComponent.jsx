@@ -6,6 +6,9 @@ import Icon from "./Graphics/Icon";
 import Heading from "./Typography/Heading";
 import ButtonGroup from "./Buttons/ButtonGroup";
 
+import addClass from "@/util/addClass";
+import removeClass from "@/util/removeClass";
+
 const ClientComponent = ({ children }) => {
 
   const groupClick = (data) => {
@@ -17,11 +20,15 @@ const ClientComponent = ({ children }) => {
   }
 
   const buttonSelected = (data) => {
-    console.log("button has been selected: ", data);
+    const state = data.state;
+
+    console.log("button has been selected: ", data, state);
   }
 
   const buttonUnselected = (data) => {
-    console.log("button has been unselected: ", data);
+    const state = data.state;
+
+    console.log("button has been unselected: ", data, state);
   }
 
   return <div className="p-5">
@@ -30,7 +37,6 @@ const ClientComponent = ({ children }) => {
     mode="select"
     limit="2"
     defaultSelect="one"
-    onClick={groupClick}
     onSelect={buttonSelected}
     onUnselect={buttonUnselected}
     groupName="group one"

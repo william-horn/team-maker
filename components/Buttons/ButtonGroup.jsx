@@ -26,6 +26,8 @@ const GroupButton = ({
     mode,
     findActiveId,
     updateActiveIds,
+    findButtonId,
+    buttonIdList,
     onSelect: group_onSelect,
     onUnselect: group_onUnselect,
   } = buttonGroupContext;
@@ -34,15 +36,18 @@ const GroupButton = ({
     throw Error("ButtonGroup.Button components can only be used in <ButtonGroup> with mode='select'");
   } else if (!id) {
     throw Error("ButtonGroup.Button components must be given a unique id prop");
+  } else if (findButtonId(id).found) {
+    throw Error("ButtonGroup.Button must have a unique id, '" + id + "' already exists.");
   }
 
-  const initiallySelected = findActiveId(id).found;
+  buttonIdList.push(id);
+  const isSelected = findActiveId(id).found;
   
   const buttonData = { 
     id, 
     value, 
     groupName, 
-    isSelected: initiallySelected 
+    isSelected
   };
 
   const fireOnSelect = (...args) => {
@@ -55,18 +60,27 @@ const GroupButton = ({
     onUnselect(...args);
   }
 
-  const buttonClick = () => {
-    buttonData.isSelected = !initiallySelected;
+  const buttonClick = (_systemButtonData) => {
+    buttonData.isSelected = !isSelected;
+    _systemButtonData.buttonGroup = buttonData;
+
+    /*
+    button state must be updated before handlers are fired, so that the
+    handlers have access to the new updated state values.
+    */
+    _systemButtonData.updateState({ 
+      selected: buttonData.isSelected 
+    });
     
-    group_onClick(buttonData);
-    onClick(buttonData);
+    group_onClick(_systemButtonData);
+    onClick(_systemButtonData);
 
     if (buttonData.isSelected) {
-      fireOnSelect(buttonData);
+      fireOnSelect(_systemButtonData);
     } else {
-      fireOnUnselect(buttonData);
+      fireOnUnselect(_systemButtonData);
     }
-
+    
     updateActiveIds(id, buttonData.isSelected);
   }
 
@@ -98,7 +112,13 @@ const ButtonGroup = ({
     return defaultSelect;
   });
 
+  const buttonIdList = [];
   const formData = useRef([]);
+
+  const findButtonId = (buttonId) => {
+    const idIndex = buttonIdList.findIndex(id => id === buttonId);
+    return { found: idIndex !== -1, index: idIndex }
+  }
 
   const findActiveId = (buttonId) => {
     const idIndex = activeIds.findIndex(id => id === buttonId);
@@ -108,33 +128,16 @@ const ButtonGroup = ({
   const updateActiveIds = (buttonId, isSelected) => {
     if (isSelected) {
       _setActiveIds(prev => {
-        if (multipleSelected) {
-
-          // ? checking to prevent duping button ids in react strict mode
-          if (!prev.some(id => id === buttonId)) {
-            prev.push(buttonId);
-            return [...prev];
-          }
-
-        } else {
-          prev[0] = buttonId;
-          return [...prev];
-        }
-
-        return prev;
+        prev.push(buttonId);
+        return [...prev];
       });
-      
+
     } else {
+      const idResult = findActiveId(buttonId);
+      
       _setActiveIds(prev => {
-        const idResult = findActiveId(buttonId);
-
-        // ? checking to prevent duping button ids in react strict mode
-        if (idResult.found) {
-          prev.splice(idResult.index, 1);
-          return [...prev];
-        }
-
-        return prev;
+        prev.splice(idResult.index, 1);
+        return [...prev];
       });
     }
   }
@@ -145,9 +148,11 @@ const ButtonGroup = ({
       onClick,
       groupName,
       mode,
+      findButtonId,
       findActiveId,
       updateActiveIds,
       onSelect,
+      buttonIdList,
       onUnselect,
     }}
     >
