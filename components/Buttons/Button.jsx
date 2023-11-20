@@ -10,7 +10,7 @@ import {
   useState 
 } from "react";
 
-const Button = ({
+const Button = function({
   children,
 
   onClick=emptyFunc,
@@ -31,7 +31,7 @@ const Button = ({
   // medium=false,
   // large=false,
   // inline=false,
-}) => {
+}) {
 
   const {
     size: textSize,
@@ -66,10 +66,13 @@ const Button = ({
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
-    updateState: function(query) {
+    updateState: function(query, onUpdateFinish) {
       _setMutableProps(prev => {
         const newState = {...prev, ...query};
+
         this.state = newState;
+        onUpdateFinish(newState);
+        
         return newState;
       })
     },

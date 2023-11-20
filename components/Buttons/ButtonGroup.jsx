@@ -62,25 +62,16 @@ const GroupButton = ({
 
   const buttonClick = (_systemButtonData) => {
     buttonData.isSelected = !isSelected;
-    _systemButtonData.buttonGroup = buttonData;
 
-    /*
-    button state must be updated before handlers are fired, so that the
-    handlers have access to the new updated state values.
-    */
-    _systemButtonData.updateState({ 
-      selected: buttonData.isSelected 
-    });
-    
-    group_onClick(_systemButtonData);
-    onClick(_systemButtonData);
+    group_onClick(buttonData);
+    onClick(buttonData);
 
     if (buttonData.isSelected) {
-      fireOnSelect(_systemButtonData);
+      fireOnSelect(buttonData);
     } else {
-      fireOnUnselect(_systemButtonData);
+      fireOnUnselect(buttonData);
     }
-    
+
     updateActiveIds(id, buttonData.isSelected);
   }
 
@@ -91,7 +82,7 @@ const GroupButton = ({
   )
 }
 
-const ButtonGroup = ({ 
+const ButtonGroup = function({ 
   children,
 
   // handlers
@@ -104,7 +95,7 @@ const ButtonGroup = ({
   mode="select",
 
   limit=false,
-}) => {
+}) {
   const multipleSelected = Array.isArray(defaultSelect);
 
   const [activeIds, _setActiveIds] = useState(() => {
