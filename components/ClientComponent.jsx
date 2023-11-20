@@ -31,19 +31,29 @@ const ClientComponent = ({ children }) => {
     console.log("button has been unselected: ", data, state);
   }
 
+  const onSelectionLimitReached = data => {
+    console.log("selection limit reached: ", data);
+  }
+
   return <div className="p-5">
 
+    <Heading>Welcome to Raven</Heading>
+    <Text className="pb-4">Before we get started, please select the following options:</Text>
     <ButtonGroup
     mode="select"
-    limit="2"
-    defaultSelect="one"
+    defaultSelect="three"
+    selectionLimit="2"
+    unselectLastChoice={true}
     onSelect={buttonSelected}
     onUnselect={buttonUnselected}
+    onSelectionLimitReached={onSelectionLimitReached}
     groupName="group one"
     >
       <ButtonGroup.Button id="one">Choice One</ButtonGroup.Button>
       <ButtonGroup.Button id="two">Choice Two</ButtonGroup.Button>
       <ButtonGroup.Button id="three">Choice Three</ButtonGroup.Button>
+      <ButtonGroup.Button id="four">Choice Three</ButtonGroup.Button>
+      <ButtonGroup.Button id="five">Choice Three</ButtonGroup.Button>
     </ButtonGroup>
 
     {/* <ButtonGroup

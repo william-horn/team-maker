@@ -27,7 +27,11 @@ const GroupButton = ({
     findActiveId,
     updateActiveIds,
     findButtonId,
+    onSelectionLimitReached,
+    unselectLastChoice,
     buttonIdList,
+    activeIds,
+    selectionLimit,
     onSelect: group_onSelect,
     onUnselect: group_onUnselect,
   } = buttonGroupContext;
@@ -61,6 +65,17 @@ const GroupButton = ({
   }
 
   const buttonClick = (_systemButtonData) => {
+
+    if (selectionLimit > -1 && activeIds.length >= selectionLimit && !isSelected) {
+      if (unselectLastChoice) {
+        activeIds.pop();
+
+      } else {
+        onSelectionLimitReached(buttonData);
+        return;
+      }
+    }
+
     buttonData.isSelected = !isSelected;
 
     group_onClick(buttonData);
@@ -76,7 +91,11 @@ const GroupButton = ({
   }
 
   return (
-    <Button onClick={buttonClick} {...rest}>
+    <Button 
+    rightIcon={`/icons/checkbox_${isSelected ? 'selected' : 'unselected'}.svg`}
+    onClick={buttonClick} 
+    {...rest}
+    >
       {children}
     </Button>
   )
@@ -89,12 +108,15 @@ const ButtonGroup = function({
   onClick=emptyFunc,
   onSelect=emptyFunc,
   onUnselect=emptyFunc,
+  onSelectionLimitReached=emptyFunc,
+
+  unselectLastChoice=false,
 
   defaultSelect=[],
   groupName="Button Group",
   mode="select",
 
-  limit=false,
+  selectionLimit=-1,
 }) {
   const multipleSelected = Array.isArray(defaultSelect);
 
@@ -139,15 +161,19 @@ const ButtonGroup = function({
       onClick,
       groupName,
       mode,
+      selectionLimit,
       findButtonId,
       findActiveId,
       updateActiveIds,
+      activeIds,
       onSelect,
+      unselectLastChoice,
+      onSelectionLimitReached,
       buttonIdList,
       onUnselect,
     }}
     >
-      <div className="flex custom-button-group">
+      <div className="flex flex-col gap-2 custom-button-group">
         {children}
       </div>
     </ButtonGroupProvider>

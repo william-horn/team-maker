@@ -62,7 +62,7 @@ const Button = function({
     selected: false,
   })
 
-  const className = `custom-button align-middle px-2 m-1 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`
+  const className = `custom-button align-middle px-2 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
