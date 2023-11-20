@@ -28,7 +28,7 @@ const ClientComponent = ({ children }) => {
   const buttonUnselected = (data) => {
     const state = data.state;
 
-    console.log("button has been unselected: ", data, state);
+    console.log("button has been unselected: ", data);
   }
 
   const onSelectionLimitReached = data => {
@@ -43,8 +43,8 @@ const ClientComponent = ({ children }) => {
     <ButtonGroup
     mode="select"
     defaultSelect="three"
-    selectionLimit="2"
-    unselectLastChoice={true}
+    // selectionLimit="1"
+    // unselectLastChoice={true}
     onSelect={buttonSelected}
     onUnselect={buttonUnselected}
     onSelectionLimitReached={onSelectionLimitReached}

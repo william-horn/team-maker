@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ButtonGroupProvider from "@/providers/ButtonGroupProvider";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
 import Button from "./Button";
@@ -65,21 +65,20 @@ const GroupButton = ({
     onUnselect(...args);
   }
 
-  // todo:
-  // add buttonData to selectionReport object when buttons are selected/unselected
-
   const buttonClick = () => {
-    if (selectionLimit > -1 && activeIds.length >= selectionLimit && !isSelected) {
+    buttonData.isSelected = !isSelected;
+
+    if (selectionLimit > -1 && activeIds.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
-        activeIds.pop();
+        const unselectedButtonId = activeIds.pop(); // not best practice?
+        const unselectedButtonData = selectionReport.current[unselectedButtonId];
+        fireOnUnselect(unselectedButtonData);
 
       } else {
         onSelectionLimitReached(buttonData);
         return;
       }
     }
-
-    buttonData.isSelected = !isSelected;
 
     group_onClick(buttonData);
     onClick(buttonData);
@@ -91,6 +90,12 @@ const GroupButton = ({
     }
 
     updateActiveIds(buttonData);
+  }
+
+  if (isSelected) {
+    selectionReport.current[id] = buttonData;
+  } else {
+    delete selectionReport.current[id];
   }
 
   return (
@@ -159,6 +164,10 @@ const ButtonGroup = function({
       });
     }
   }
+
+  useEffect(() => {
+    console.log("selection report: ", selectionReport.current);
+  })
 
   return (
     <ButtonGroupProvider
