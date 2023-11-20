@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .wireframe * {
   outline: 1px solid red !important;
 } 
@@ -9,3 +10,12 @@
 .text-hide {
   color: rgba(0, 0, 0, 0);
 }
+
+.custom-icon {
+  vertical-align: middle;
+}
+
+/* .custom-text .custom-button {
+  display: inline-flex;
+} */
+
