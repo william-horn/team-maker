@@ -5,6 +5,7 @@ import Text from "./Typography/Text";
 import Icon from "./Graphics/Icon";
 import Heading from "./Typography/Heading";
 import ButtonGroup from "./Buttons/ButtonGroup";
+import ImageButton from "./Buttons/ImageButton";
 
 import addClass from "@/util/addClass";
 import removeClass from "@/util/removeClass";
@@ -36,11 +37,8 @@ const ClientComponent = ({ children }) => {
   }
 
   return <div className="p-5">
-
-    <Heading>Welcome to Raven</Heading>
-    <Text className="pb-4">Before we get started, please select the following options:</Text>
     
-    <ButtonGroup
+    {/* <ButtonGroup
     mode="select"
     defaultSelect="three"
     // selectionLimit="1"
@@ -55,7 +53,13 @@ const ClientComponent = ({ children }) => {
       <ButtonGroup.Button id="three" value={3}>Choice Three</ButtonGroup.Button>
       <ButtonGroup.Button id="four" value={4}>Choice Four</ButtonGroup.Button>
       <ButtonGroup.Button id="five" value={5}>Choice Five</ButtonGroup.Button>
-    </ButtonGroup>
+    </ButtonGroup> */}
+
+    {/* <Button>Rouge <Icon src="/icons/profile_icon.svg"/> button</Button> */}
+
+    <Button>
+      something
+    </Button>
 
     {/* <ButtonGroup
     onClick={groupClick}

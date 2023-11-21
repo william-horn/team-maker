@@ -2,13 +2,11 @@ import Image from "next/image"
 
 const Icon = ({
   src, 
-  width, 
-  height, 
+  width='5', 
+  height='5', 
   alt, 
   utility=false,
-  className=""
 }) => {
-  height = height || width
 
   /* 
   TODO: 
@@ -35,12 +33,21 @@ const Icon = ({
   quality of the image will change based on breakpoints.
   */
 
+  const className = {
+    self: `w-${width} h-${height} ${filter} relative overflow-hidden inline-block custom-icon`,
+
+    image: {
+      self: ""
+    }
+  }
+
   return (
     <span 
-    className={"relative overflow-hidden inline-block custom-icon " + className}
+    className={className.self}
     style={{ width, height }}
     >
       <Image
+      className={className.image.self}
       fill
       src={src}
       sizes={

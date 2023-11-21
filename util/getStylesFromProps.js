@@ -14,35 +14,37 @@ const styles = {
   inline: {
     [true]: 'inline',
     [false]: 'block'
+  },
+
+  noBackground: {
+    [true]: "bg-opacity-0",
+    [false]: false
+  },
+
+  textSize: {
+    
   }
 }
 
-const getStylesFromProps = (options, defaults, propData={}) => {
-  const {
-    bold,
-    italic,
-    inline,
-  
-    size,
-    large,
-    medium,
-    small,
-    xsmall,
-  } = options
+const getStylesFromProps = (props, defaults={}, customStyles={}) => {
+  const compiledProps = {...defaults, ...props}
+  const finalProps = {};
 
-  const sizes = {
-    [large]: ['text-lg', 'large'], 
-    [medium]: ['text-md', 'medium'], 
-    [small]: ['text-sm', 'small'], 
-    [xsmall]: ['text-xs', 'xsmall']
+  for (let key in compiledProps) {
+    const value = compiledProps[key];
+    const style = styles[key];
+    const customStyle = customStyles[key];
+
+    if (customStyle) {
+      finalProps[key] = customStyle[value];
+    } else if (style) {
+      finalProps[key] = style[value];
+    } else {
+      finalProps[key] = defaults[key];
+    }
   }
 
-  return {
-    size: size || sizes[true] ? (propData.sizes ? propData.sizes[sizes[true][1]] : sizes[true][0]) : defaults.size || 'text-xs',
-    weight: styles.bold[bold] || defaults.weight || styles.bold[false],
-    style: styles.italic[italic] || defaults.style || styles.italic[false],
-    display: styles.inline[inline] ? (propData.inline ? propData.inline[inline] : styles.inline[inline]) : defaults.display || styles.inline[false]
-  }
+  return finalProps;
 }
 
 export default getStylesFromProps;

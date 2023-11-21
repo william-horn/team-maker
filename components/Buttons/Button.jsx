@@ -1,5 +1,8 @@
 "use client";
 
+/*
+  File imports
+*/
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
 import getStylesFromProps from "@/util/getStylesFromProps";
@@ -10,6 +13,9 @@ import {
   useState 
 } from "react";
 
+/*
+  React component starts
+*/
 const Button = function({
   children,
 
@@ -17,52 +23,63 @@ const Button = function({
   onMouseEnter=emptyFunc,
   onMouseLeave=emptyFunc,
   
-  activateOnRender=false,
-  leftIcon=false,
-  rightIcon=false,
-  href=false,
+  activateOnRender,
+  leftIcon,
+  rightIcon,
+  href,
+
+  size='sm',
+  innerPadding='p-2',
+  outerPadding='px-2',
 
   ...rest
-  // size='',
-  // bold=false,
-  // italic=false,
-  // xsmall=true,
-  // small=false,
-  // medium=false,
-  // large=false,
-  // inline=false,
+  // noBackground,
+  // bold,
+  // italic,
+  // inline,
 }) {
+  // button mode
+  const mode = href ? 'link' : 'button';
 
-  const {
-    size: textSize,
-    style: textStyle, // italic, etc
-    weight: textWeight, // bold, etc
-    display: textDisplay,
-    
-  } = getStylesFromProps({
-    // config
-    ...rest, 
+  const styles = getStylesFromProps({
+    ...rest
+
   }, {
-    
     // defaults
-    display: 'flex',
-    size: 'text-xs'
+    inline: false,
+
   }, {
+    // custom props
+    inline: {
+      [true]: 'inline-flex',
+      [false]: 'flex'
+    }
+  })
 
-    // custom prop rules
-    inline: { [true]: 'inline-flex', [false]: 'flex' },
-  });   
+  /*
+    Styles for component and sub-components
+  */
+  const className = {
+    self: `text-${size} ${outerPadding} ${styles.noBackground || 'bg-[#3f3f3f]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
+    inner: { self: `${innerPadding}` },
 
-  // Convert icon props to correct format
-  if (typeof leftIcon === "string") leftIcon = { src: leftIcon };
-  if (typeof rightIcon === "string") rightIcon = { src: rightIcon };
+    leftIcon: {
+      width: '5',
+      height: '5',
+      filter: 'invert'
+    },
+
+    rightIcon: {
+      width: '5',
+      height: '5',
+      filter: 'invert',
+    },
+  }
 
   // Create button state
   const [_mutableProps, _setMutableProps] = useState({
     selected: false,
   })
-
-  const className = `custom-button align-middle px-2 text-white items-center transition-all bg-[#3f3f3f] rounded w-fit ${textDisplay} ${textStyle} ${textSize} ${textWeight}`
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
@@ -85,13 +102,15 @@ const Button = function({
     if (activateOnRender) onClick(buttonData)
   }, [])
 
-  const renderIcon = icon => {
+  const renderIcon = (icon, className) => {
     if (icon) {
       return (
         <Icon 
         utility 
-        src={icon.src} 
-        className={icon.className || `w-5 h-5 invert`}
+        src={icon}
+        filter="invert"
+        width="5"
+        height="5"
         />
       );
     }
@@ -101,7 +120,7 @@ const Button = function({
     Render the content inside the <button> element
   */
   const renderButtonContent = () => <>
-    {renderIcon(leftIcon)}
+    {renderIcon(leftIcon, className.leftIcon.self)}
 
     {/* 
       previously had:  
@@ -109,22 +128,22 @@ const Button = function({
         *rounded
         *flex-auto
     */}
-    <span className="p-2">
+    <span className={className.inner.self}>
       {children}
     </span>
 
-    {renderIcon(rightIcon)}
+    {renderIcon(rightIcon, className.rightIcon.self)}
   </>
   
   return (
     href
-      ? <Link className={className} href={href}>
+      ? <Link className={className.self} href={href}>
           {renderButtonContent()}
         </Link>
       : <button 
+        className={className.self} 
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
-        className={className} 
         onClick={() => onClick(buttonData)}
         >
           {renderButtonContent()}
