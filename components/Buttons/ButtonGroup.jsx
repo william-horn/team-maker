@@ -5,9 +5,12 @@ import ButtonGroupProvider from "@/providers/ButtonGroupProvider";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
 import Button from "./Button";
 import emptyFunc from "@/util/emptyFunc";
+import Text from "../Typography/Text";
+import ImageButton from "./ImageButton";
 
 const GroupButton = ({ 
   children,
+  mode,
 
   onClick=emptyFunc,
   onSelect=emptyFunc,
@@ -22,8 +25,8 @@ const GroupButton = ({
 
   const {
     groupName,
+    mode: group_mode,
     onClick: group_onClick,
-    mode,
     findActiveId,
     updateActiveIds,
     findButtonId,
@@ -35,17 +38,20 @@ const GroupButton = ({
     selectionLimit,
     onSelect: group_onSelect,
     onUnselect: group_onUnselect,
+    rightIconSelected,
+    rightIconUnselected,
+    leftIconUnselected,
+    leftIconSelected,
   } = buttonGroupContext;
 
-  if (mode !== "select") {
-    throw Error("ButtonGroup.Button components can only be used in <ButtonGroup> with mode='select'");
-  } else if (!id) {
+  if (!id) {
     throw Error("ButtonGroup.Button components must be given a unique id prop");
   } else if (findButtonId(id).found) {
     throw Error("ButtonGroup.Button must have a unique id, '" + id + "' already exists.");
   }
 
   buttonIdList.push(id);
+  mode = mode || group_mode;
   const isSelected = findActiveId(id).found;
   
   const buttonData = { 
@@ -98,33 +104,61 @@ const GroupButton = ({
     delete selectionReport.current[id];
   }
 
-  return (
-    <Button 
-    rightIcon={`/icons/checkbox_${isSelected ? 'selected' : 'unselected'}.svg`}
-    onClick={buttonClick} 
-    {...rest}
-    >
-      {children}
-    </Button>
-  )
+  const renderButton = () => {
+    switch (mode) {
+      case "select":
+
+        return (
+          <Button 
+          rightIcon={isSelected ? rightIconSelected : rightIconUnselected}
+          leftIcon={isSelected ? leftIconSelected : leftIconUnselected}
+          onClick={buttonClick} 
+          {...rest}>
+            {children}
+          </Button>
+        );
+
+      case "checkbox":
+
+        return (
+          <span className="flex items-center">
+            <Text inline>
+              {children} 
+            </Text>
+            <ImageButton 
+            onClick={buttonClick} 
+            src={isSelected ? "/icons/checkbox_selected.svg" : "/icons/checkbox_unselected.svg"}
+            filter="invert" 
+            inline
+            />
+          </span>
+        );
+    }
+  } 
+
+  return renderButton();
 }
 
 const ButtonGroup = function({ 
   children,
 
-  // handlers
+  // handlers, global
   onClick=emptyFunc,
   onSelect=emptyFunc,
   onUnselect=emptyFunc,
   onSelectionLimitReached=emptyFunc,
 
+  // global
   unselectLastChoice=false,
-
   defaultSelect=[],
   groupName="Button Group",
+  selectionLimit=-1,
   mode="select",
 
-  selectionLimit=-1,
+  rightIconSelected,
+  rightIconUnselected,
+  leftIconUnselected,
+  leftIconSelected,
 }) {
   const [activeIds, _setActiveIds] = useState(defaultSelect);
 
@@ -185,6 +219,10 @@ const ButtonGroup = function({
       onSelectionLimitReached,
       buttonIdList,
       onUnselect,
+      rightIconSelected,
+      rightIconUnselected,
+      leftIconUnselected,
+      leftIconSelected,
     }}
     >
       <div className="flex flex-col gap-2 custom-button-group">

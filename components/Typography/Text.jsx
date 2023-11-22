@@ -25,13 +25,18 @@ const Text = ({
     italic: false,
     noBackground: false,
 
+  }, {
+    // inline: {
+    //   [false]: 'flex',
+    //   [true]: 'inline'
+    // }
   });
 
   // todo: adapt line height to text size
 
   return (
     <p 
-    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white`}>
+    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white items-center`}>
       {children}
     </p>
   );

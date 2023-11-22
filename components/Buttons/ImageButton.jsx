@@ -5,7 +5,9 @@ import Button from "./Button";
 
 export default function ImageButton({
   src,
-  className,
+  width,
+  height,
+  filter,
   ...rest
 }) {
   return (
@@ -17,7 +19,9 @@ export default function ImageButton({
     >
       <Icon
       src={src}
-      className={className}
+      width={width}
+      height={height}
+      filter={filter}
       />
     </Button>
   )
