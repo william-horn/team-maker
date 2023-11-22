@@ -35,7 +35,6 @@ const ClientComponent = ({ children }) => {
     {/* Testing button group */}
     <ButtonGroup
     mode="select"
-    defaultSelect={["three"]}
     selectionLimit="1"
     unselectLastChoice={true}
     onSelect={buttonSelected}
@@ -46,7 +45,7 @@ const ClientComponent = ({ children }) => {
     groupName="group one"
     >
       <ButtonGroup.Button id="one" value={1}>Choice One</ButtonGroup.Button>
-      <ButtonGroup.Button id="two" value={2}>Choice Two</ButtonGroup.Button>
+      <ButtonGroup.Button id="two" value={2} activateOnRender>Choice Two</ButtonGroup.Button>
       <Text>Sup!</Text>
       <ButtonGroup.Button id="three" value={3}>Choice Three</ButtonGroup.Button>
       <ButtonGroup.Button id="four" value={4} mode="checkbox">Choice Four</ButtonGroup.Button>
@@ -58,7 +57,6 @@ const ClientComponent = ({ children }) => {
     {/* Testing button group */}
     <ButtonGroup
     mode="checkbox"
-    defaultSelect={["three"]}
     selectionLimit="1"
     unselectLastChoice={true}
     onSelect={buttonSelected}
