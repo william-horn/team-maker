@@ -22,8 +22,8 @@ const Text = ({
     inline: false,
     bold: false,
     italic: false,
-    noBackground: false,
-    // underline: false,
+    noBackground: true,
+    underline: false,
 
   }, {
     // inline: {
@@ -37,7 +37,7 @@ const Text = ({
 
   return (
     <p 
-    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white align-middle`}>
+    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} ${styles.noBackground || 'bg-black'} ${styles.underline} custom-text leading-6 text-white align-middle`}>
       {children}
     </p>
   );
