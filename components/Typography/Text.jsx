@@ -32,7 +32,6 @@ const Text = ({
     // }
   });
 
-  console.log(styles);
   // todo: adapt line height to text size
 
   return (

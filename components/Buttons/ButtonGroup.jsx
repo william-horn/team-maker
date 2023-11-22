@@ -76,9 +76,11 @@ const GroupButton = ({
 
     if (selectionLimit > -1 && activeIds.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
-        const unselectedButtonId = activeIds.pop();
+        const unselectedButtonId = activeIds[activeIds.length - 1];
         const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
+        unselectedButtonData.isSelected = false;
         fireOnUnselect(unselectedButtonData);
+        updateActiveIds(unselectedButtonData);
 
       } else {
         onSelectionLimitReached(buttonData);
@@ -196,9 +198,9 @@ const ButtonGroup = function({
     }
   }
 
-  useEffect(() => {
-    console.log("selection report: ", selectionReport.current);
-  })
+  // useEffect(() => {
+  //   console.log("selection report: ", selectionReport.current);
+  // })
 
   return (
     <ButtonGroupProvider
