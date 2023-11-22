@@ -36,7 +36,7 @@ const Text = ({
 
   return (
     <p 
-    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white items-center`}>
+    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white align-middle`}>
       {children}
     </p>
   );

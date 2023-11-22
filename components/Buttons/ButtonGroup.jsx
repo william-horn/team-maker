@@ -76,7 +76,7 @@ const GroupButton = ({
 
     if (selectionLimit > -1 && activeIds.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
-        const unselectedButtonId = activeIds.pop(); // not best practice?
+        const unselectedButtonId = activeIds.pop();
         const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
         fireOnUnselect(unselectedButtonData);
 
@@ -121,12 +121,10 @@ const GroupButton = ({
       case "checkbox":
 
         return (
-          <span className="flex items-center">
-            <Text inline>
-              {children} 
-            </Text>
+          <span>
+            <Text inline>{children}</Text>
             <ImageButton 
-            onClick={buttonClick} 
+            onClick={buttonClick}
             src={isSelected ? "/icons/checkbox_selected.svg" : "/icons/checkbox_unselected.svg"}
             filter="invert" 
             inline
