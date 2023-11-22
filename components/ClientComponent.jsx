@@ -19,14 +19,10 @@ const ClientComponent = ({ children }) => {
   }
 
   const buttonSelected = (data) => {
-    const state = data.state;
-
-    console.log("button has been selected: ", data, state);
+    console.log("button has been selected: ", data);
   }
 
   const buttonUnselected = (data) => {
-    const state = data.state;
-
     console.log("button has been unselected: ", data);
   }
 

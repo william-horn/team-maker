@@ -87,18 +87,18 @@ const Button = function({
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
-    updateState: function(query, onUpdateFinish) {
-      _setMutableProps(prev => {
-        const newState = {...prev, ...query};
+    // updateState: function(query, onUpdateFinish) {
+    //   _setMutableProps(prev => {
+    //     const newState = {...prev, ...query};
 
-        this.state = newState;
-        onUpdateFinish(newState);
+    //     this.state = newState;
+    //     onUpdateFinish(newState);
         
-        return newState;
-      })
-    },
+    //     return newState;
+    //   })
+    // },
 
-    state: _mutableProps
+    // state: _mutableProps
   }
 
   // Handle page mount events
