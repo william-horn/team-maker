@@ -198,10 +198,6 @@ const ButtonGroup = function({
     }
   }
 
-  // useEffect(() => {
-  //   console.log("selection report: ", selectionReport.current);
-  // })
-
   return (
     <ButtonGroupProvider
     value={{

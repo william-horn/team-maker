@@ -86,20 +86,7 @@ const Button = function({
   })
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
-  const buttonData = {
-    // updateState: function(query, onUpdateFinish) {
-    //   _setMutableProps(prev => {
-    //     const newState = {...prev, ...query};
-
-    //     this.state = newState;
-    //     onUpdateFinish(newState);
-        
-    //     return newState;
-    //   })
-    // },
-
-    // state: _mutableProps
-  }
+  const buttonData = {};
 
   // Handle page mount events
   useEffect(() => {
