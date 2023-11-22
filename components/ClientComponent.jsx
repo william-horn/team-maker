@@ -110,7 +110,7 @@ const ClientComponent = ({ children }) => {
     <div className="w-full h-5 my-8 bg-black"></div>
 
     {/* Testing typography */}
-    <Heading bold>Welcome</Heading>
+    <Heading bold underline>Welcome</Heading>
 
     <Text inline>Some sub-text<Button size="text-lg" inline>Normal Button</Button>lol</Text>
     <Text inline>Sounds good!</Text>
@@ -123,7 +123,7 @@ const ClientComponent = ({ children }) => {
     <Text inline>Some sub-text</Text>
     <Text inline>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Necessitatibus, rem? Consequuntur molestias eligendi facere inventore tempora tenetur rerum commodi quasi.</Text>
     <Button outerPadding="px-0 py-0 my-1" innerPadding="px-2 py-1" bold>Buy</Button>
-    <Text bold>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, quasi?</Text>
+    <Text underline bold inline>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, quasi?</Text>
 
     <div className="w-full h-5 my-8 bg-black"></div>
 
