@@ -35,7 +35,7 @@ const Icon = ({
   */
 
   const className = {
-    self: `${width} ${height} ${filter} relative overflow-hidden flex custom-icon`,
+    self: `${width} ${height} ${filter} relative overflow-hidden inline-block custom-icon`,
 
     image: {
       self: ""
