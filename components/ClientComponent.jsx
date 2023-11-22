@@ -44,12 +44,12 @@ const ClientComponent = ({ children }) => {
     leftIconUnselected="/icons/checkbox_unselected.svg"
     groupName="group one"
     >
-      <ButtonGroup.Button id="one" value={1}>Choice One</ButtonGroup.Button>
+      <ButtonGroup.Button id="one" value={1} bold>Choice One</ButtonGroup.Button>
       <ButtonGroup.Button id="two" value={2} activateOnRender>Choice Two</ButtonGroup.Button>
       <Text>Sup!</Text>
       <ButtonGroup.Button id="three" value={3}>Choice Three</ButtonGroup.Button>
       <ButtonGroup.Button id="four" value={4} mode="checkbox">Choice Four</ButtonGroup.Button>
-      <ButtonGroup.Button id="five" value={5}>Choice Five</ButtonGroup.Button>
+      <ButtonGroup.Button id="five" value={5} underline>Choice Five</ButtonGroup.Button>
     </ButtonGroup>
 
     <div className="w-full h-5 my-8 bg-black"></div>
