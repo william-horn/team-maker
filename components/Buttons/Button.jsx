@@ -28,8 +28,8 @@ const Button = function({
   rightIcon,
   href,
 
-  size='sm',
-  innerPadding='p-2',
+  size='text-sm',
+  innerPadding='py-2 px-1',
   outerPadding='px-2',
 
   ...rest
@@ -47,6 +47,9 @@ const Button = function({
   }, {
     // defaults
     inline: false,
+    bold: false,
+    italic: false,
+    noBackground: false,
 
   }, {
     // custom props
@@ -60,18 +63,18 @@ const Button = function({
     Styles for component and sub-components
   */
   const className = {
-    self: `text-${size} ${outerPadding} ${styles.noBackground || 'bg-[#3f3f3f]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
+    self: `${size} ${outerPadding} ${styles.noBackground || 'bg-[#3f3f3f]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
     inner: { self: `${innerPadding}` },
 
     leftIcon: {
-      width: '5',
-      height: '5',
+      width: 'w-5',
+      height: 'h-5',
       filter: 'invert'
     },
 
     rightIcon: {
-      width: '5',
-      height: '5',
+      width: 'w-5',
+      height: 'h-5',
       filter: 'invert',
     },
   }
@@ -108,9 +111,9 @@ const Button = function({
         <Icon 
         utility 
         src={icon}
-        filter="invert"
-        width="5"
-        height="5"
+        filter={className.filter}
+        width={className.width}
+        height={className.height}
         />
       );
     }
@@ -120,7 +123,7 @@ const Button = function({
     Render the content inside the <button> element
   */
   const renderButtonContent = () => <>
-    {renderIcon(leftIcon, className.leftIcon.self)}
+    {renderIcon(leftIcon, className.leftIcon)}
 
     {/* 
       previously had:  
@@ -132,7 +135,7 @@ const Button = function({
       {children}
     </span>
 
-    {renderIcon(rightIcon, className.rightIcon.self)}
+    {renderIcon(rightIcon, className.rightIcon)}
   </>
   
   return (

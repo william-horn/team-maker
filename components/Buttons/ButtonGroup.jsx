@@ -71,7 +71,7 @@ const GroupButton = ({
     if (selectionLimit > -1 && activeIds.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
         const unselectedButtonId = activeIds.pop(); // not best practice?
-        const unselectedButtonData = selectionReport.current[unselectedButtonId];
+        const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
         fireOnUnselect(unselectedButtonData);
 
       } else {
@@ -126,12 +126,11 @@ const ButtonGroup = function({
 
   selectionLimit=-1,
 }) {
-  const multipleSelected = Array.isArray(defaultSelect);
+  const [activeIds, _setActiveIds] = useState(defaultSelect);
 
-  const [activeIds, _setActiveIds] = useState(() => {
-    if (!multipleSelected) return [defaultSelect];
-    return defaultSelect;
-  });
+  if (selectionLimit > -1 && defaultSelect.length > selectionLimit) {
+    throw Error("In <ButtonGroup>: Initially selected options '[" + defaultSelect + "]' cannot exceed selection limit of '" + selectionLimit + "'");
+  }
 
   const buttonIdList = [];
   const selectionReport = useRef({});

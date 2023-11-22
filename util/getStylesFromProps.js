@@ -29,6 +29,7 @@ const styles = {
 const getStylesFromProps = (props, defaults={}, customStyles={}) => {
   const compiledProps = {...defaults, ...props}
   const finalProps = {};
+  const notFound = "[not found]";
 
   for (let key in compiledProps) {
     const value = compiledProps[key];
@@ -39,8 +40,10 @@ const getStylesFromProps = (props, defaults={}, customStyles={}) => {
       finalProps[key] = customStyle[value];
     } else if (style) {
       finalProps[key] = style[value];
-    } else {
-      finalProps[key] = defaults[key];
+    }
+
+    if (finalProps[key] === undefined) {
+      finalProps[key] = notFound;
     }
   }
 

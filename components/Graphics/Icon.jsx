@@ -2,10 +2,11 @@ import Image from "next/image"
 
 const Icon = ({
   src, 
-  width='5', 
-  height='5', 
+  width='w-5', 
+  height='h-5', 
   alt, 
   utility=false,
+  filter="",
 }) => {
 
   /* 
@@ -34,7 +35,7 @@ const Icon = ({
   */
 
   const className = {
-    self: `w-${width} h-${height} ${filter} relative overflow-hidden inline-block custom-icon`,
+    self: `${width} ${height} ${filter} relative overflow-hidden inline-block custom-icon`,
 
     image: {
       self: ""
@@ -44,7 +45,7 @@ const Icon = ({
   return (
     <span 
     className={className.self}
-    style={{ width, height }}
+    // style={{ width, height }}
     >
       <Image
       className={className.image.self}

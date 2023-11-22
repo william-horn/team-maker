@@ -4,6 +4,8 @@ import getStylesFromProps from "@/util/getStylesFromProps";
 const Text = ({ 
   children, 
   className='',
+  size='text-sm',
+
   ...rest
   // size='',
   // small='',
@@ -13,22 +15,23 @@ const Text = ({
   // inline='',
   // bold='',
 }) => {
-  const {
-    size: textSize,
-    style: textStyle, 
-    weight: textWeight, 
-    display: textDisplay,
-  } = getStylesFromProps({
-    ...rest, 
+  const styles = getStylesFromProps({
+    ...rest
+
   }, {
-    size: 'text-sm',
-  });   
+    // defaults
+    inline: false,
+    bold: false,
+    italic: false,
+    noBackground: false,
+
+  });
 
   // todo: adapt line height to text size
 
   return (
     <p 
-    className={`custom-text leading-6 ${textSize} text-white ${textDisplay} ${textWeight} ${textStyle} ${className}`}>
+    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} custom-text leading-6 text-white`}>
       {children}
     </p>
   );

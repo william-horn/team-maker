@@ -38,11 +38,11 @@ const ClientComponent = ({ children }) => {
 
   return <div className="p-5">
     
-    {/* <ButtonGroup
+    <ButtonGroup
     mode="select"
-    defaultSelect="three"
-    // selectionLimit="1"
-    // unselectLastChoice={true}
+    defaultSelect={["three"]}
+    selectionLimit="1"
+    unselectLastChoice={true}
     onSelect={buttonSelected}
     onUnselect={buttonUnselected}
     onSelectionLimitReached={onSelectionLimitReached}
@@ -53,14 +53,33 @@ const ClientComponent = ({ children }) => {
       <ButtonGroup.Button id="three" value={3}>Choice Three</ButtonGroup.Button>
       <ButtonGroup.Button id="four" value={4}>Choice Four</ButtonGroup.Button>
       <ButtonGroup.Button id="five" value={5}>Choice Five</ButtonGroup.Button>
-    </ButtonGroup> */}
+    </ButtonGroup>
 
-    {/* <Button>Rouge <Icon src="/icons/profile_icon.svg"/> button</Button> */}
+    <Button 
+    innerPadding="p-0" 
+    outerPadding="p-0"
+    noBackground>
+      <Icon 
+      src="/icons/plus_icon.svg"
+      filter="invert"
+      />
+    </Button>
 
-    <Button>
+    <Button size="text-xl">
       something
     </Button>
 
+    <Button leftIcon="/icons/trash_icon.svg">Stuff</Button>
+
+    <Heading>Welcome</Heading>
+
+    <Text inline>Some sub-text<Button size="text-xs" inline>Normal Button</Button>lol</Text>
+    <Text inline>Sounds good!</Text>
+    <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod blanditiis optio exercitationem aliquid quaerat maxime!</Text>
+
+    <Text inline>Some sub-text</Text>
+    <Button size="text-xs" inline>Normal Button</Button>
+    <Text inline>Some sub-text</Text>
     {/* <ButtonGroup
     onClick={groupClick}
     groupName="group two"
