@@ -21,8 +21,9 @@ const styles = {
     [false]: false
   },
 
-  textSize: {
-    
+  underline: {
+    [true]: "underline",
+    [false]: "none",
   }
 }
 

@@ -50,6 +50,7 @@ const Button = function({
     bold: false,
     italic: false,
     noBackground: false,
+    underline: false,
 
   }, {
     // custom props
@@ -63,7 +64,7 @@ const Button = function({
     Styles for component and sub-components
   */
   const className = {
-    self: `${size} ${outerPadding} ${styles.noBackground || 'bg-[#3f3f3f] hover:bg-[#525252]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
+    self: `${size} ${outerPadding} ${styles.underline} ${styles.noBackground || 'bg-[#3f3f3f] hover:bg-[#525252]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
     inner: { self: `${innerPadding}` },
 
     leftIcon: {

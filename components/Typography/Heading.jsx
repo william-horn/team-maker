@@ -2,7 +2,6 @@ import getStylesFromProps from "@/util/getStylesFromProps";
 
 const Heading = ({ 
   children, 
-  className='',
   size='text-xl',
   ...rest
 }) => {
@@ -15,6 +14,7 @@ const Heading = ({
     bold: true,
     italic: false,
     noBackground: false,
+    underline: false,
 
   });
 
@@ -22,7 +22,7 @@ const Heading = ({
 
   return (
     <h2 
-    className={`${styles.inline} ${styles.bold} ${styles.italic} ${size} custom-text leading-6 py-3 text-white`}>
+    className={`${styles.inline} ${styles.bold} ${styles.italic} ${size} ${styles.underline} custom-text leading-6 py-3 text-white`}>
       {children}
     </h2>
   );

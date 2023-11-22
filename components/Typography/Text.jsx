@@ -3,7 +3,6 @@ import getStylesFromProps from "@/util/getStylesFromProps";
 
 const Text = ({ 
   children, 
-  className='',
   size='text-sm',
 
   ...rest
@@ -24,14 +23,16 @@ const Text = ({
     bold: false,
     italic: false,
     noBackground: false,
+    // underline: false,
 
   }, {
     // inline: {
-    //   [false]: 'flex',
-    //   [true]: 'inline'
+    //   [false]: 'block',
+    //   [true]: 'inline-block'
     // }
   });
 
+  console.log(styles);
   // todo: adapt line height to text size
 
   return (

@@ -116,19 +116,24 @@ const ClientComponent = ({ children }) => {
     <div className="w-full h-5 my-8 bg-black"></div>
 
     {/* Testing typography */}
-    <Heading>Welcome</Heading>
+    <Heading bold>Welcome</Heading>
 
-    <Text inline>Some sub-text<Button size="text-xs" inline>Normal Button</Button>lol</Text>
+    <Text inline>Some sub-text<Button size="text-lg" inline>Normal Button</Button>lol</Text>
     <Text inline>Sounds good!</Text>
     <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod blanditiis optio exercitationem aliquid quaerat maxime!</Text>
 
     <div className="w-full h-5 my-8 bg-black"></div>
 
+    <Text inline underline>Some sub-text</Text>
+    <Button size="text-lg" outerPadding="p-1" innerPadding="p-1" inline bold>Normal Button</Button>
     <Text inline>Some sub-text</Text>
-    <Button size="text-xs" inline>Normal Button</Button>
-    <Text inline>Some sub-text</Text>
+    <Text inline>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Necessitatibus, rem? Consequuntur molestias eligendi facere inventore tempora tenetur rerum commodi quasi.</Text>
+    <Button outerPadding="px-0 py-0 my-1" innerPadding="px-2 py-1" bold>Buy</Button>
+    <Text bold>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, quasi?</Text>
 
     <div className="w-full h-5 my-8 bg-black"></div>
+
+    {/* ! BOLD PROP ISN'T WORKING */}
 
     {/* Testing image buttons */}
     <ImageButton 
