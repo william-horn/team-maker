@@ -91,7 +91,7 @@ const Button = function({
   // Handle page mount events
   useEffect(() => {
     if (activateOnRender) onClick(buttonData)
-  }, [])
+  }, [activateOnRender, buttonData, onClick])
 
   const renderIcon = (icon, className) => {
     if (icon) {
