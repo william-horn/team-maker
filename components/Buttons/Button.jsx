@@ -13,6 +13,25 @@ import {
   useState 
 } from "react";
 
+//  custom-button items-center align-middle text-white transition-all rounded w-fit
+
+const className = {
+  "bg-color": "bg-[#3f3f3f]",
+  "text-color": "text-white",
+
+  "items-center": true,
+  "align-middle": true,
+  "transition-all": true,
+  "rounded": true,
+
+  "width": "w-fit",
+  "text-size": "text-sm",
+
+  inner: {
+    "padding": "py-2 px-1"
+  }
+}
+
 /*
   React component starts
 */
@@ -23,119 +42,83 @@ const Button = function({
   onMouseEnter=emptyFunc,
   onMouseLeave=emptyFunc,
   
+  state,
+  preset,
   activateOnRender,
   leftIcon,
   rightIcon,
   href,
 
-  size='text-sm',
-  innerPadding='py-2 px-1',
-  outerPadding='px-2',
-
   ...rest
-  // noBackground,
-  // bold,
-  // italic,
-  // inline,
 }) {
-  // button mode
-  const mode = href ? 'link' : 'button';
-
-  const styles = getStylesFromProps({
-    ...rest
-
-  }, {
-    // defaults
-    inline: false,
-    bold: false,
-    italic: false,
-    noBackground: false,
-    underline: false,
-
-  }, {
-    // custom props
-    inline: {
-      [true]: 'inline-flex',
-      [false]: 'flex'
-    }
-  })
-
-  /*
-    Styles for component and sub-components
-  */
-  const className = {
-    self: `${size} ${outerPadding} ${styles.underline} ${styles.noBackground || 'bg-[#3f3f3f] hover:bg-[#525252]'} ${styles.bold} ${styles.italic} ${styles.inline} custom-button items-center align-middle text-white transition-all rounded w-fit`,
-    inner: { self: `${innerPadding}` },
-
-    leftIcon: {
-      width: 'w-5',
-      height: 'h-5',
-      filter: 'invert'
-    },
-
-    rightIcon: {
-      width: 'w-5',
-      height: 'h-5',
-      filter: 'invert',
-    },
-  }
 
   // Create button state
-  const [_mutableProps, _setMutableProps] = useState({
-    selected: false,
-  })
+  const [_isSelected, _setSelected] = state ? [state._isSelected, emptyFunc] : useState(false);
+
+  const styles = getStylesFromProps(
+    className, 
+    preset || {...rest},
+    state || { _isSelected }
+  );
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
-  const buttonData = {};
+  const buttonData = {
+    isSelected: _isSelected,
+  };
+
+  const processClick = () => {
+    
+    if (!state) {
+      buttonData.isSelected = !buttonData.isSelected;
+      _setSelected(buttonData.isSelected);
+
+      onClick(buttonData);
+
+    } else {
+
+      onClick();
+    }
+  }
 
   // Handle page mount events
   useEffect(() => {
-    if (activateOnRender) onClick(buttonData)
+    if (activateOnRender) processClick();
   }, [])
 
-  const renderIcon = (icon, className) => {
+  const renderIcon = (icon) => {
     if (icon) {
       return (
         <Icon 
         utility 
         src={icon}
-        filter={className.filter}
-        width={className.width}
-        height={className.height}
+        filter
+        width
+        height
         />
       );
     }
   }
 
-  /* 
-    Render the content inside the <button> element
-  */
   const renderButtonContent = () => <>
-    {renderIcon(leftIcon, className.leftIcon)}
+    {renderIcon(leftIcon)}
 
-    {/* 
-      previously had:  
-        *text-left
-        *rounded
-        *flex-auto
-    */}
-    <span className={className.inner.self}>
+    <span className={styles.inner.self}>
       {children}
     </span>
 
-    {renderIcon(rightIcon, className.rightIcon)}
+    {renderIcon(rightIcon)}
   </>
   
   return (
     href
-      ? <Link className={className.self} href={href}>
+      ? <Link className={styles.self} href={href}>
           {renderButtonContent()}
         </Link>
       : <button 
-        className={className.self} 
+        className={styles.self}
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
-        onClick={() => onClick(buttonData)}
+        onClick={processClick}
         >
           {renderButtonContent()}
         </button>

@@ -16,6 +16,7 @@ const GroupButton = ({
   onSelect=emptyFunc,
   onUnselect=emptyFunc,
 
+  preset,
   id,
   value,
   
@@ -34,7 +35,7 @@ const GroupButton = ({
     unselectLastChoice,
     buttonIdList,
     selectionReport,
-    activeIds,
+    _activeIds,
     selectionLimit,
     onSelect: group_onSelect,
     onUnselect: group_onUnselect,
@@ -42,6 +43,7 @@ const GroupButton = ({
     rightIconUnselected,
     leftIconUnselected,
     leftIconSelected,
+    buttonPreset: group_preset,
   } = buttonGroupContext;
 
   if (!id) {
@@ -50,8 +52,9 @@ const GroupButton = ({
     throw Error("ButtonGroup.Button must have a unique id, '" + id + "' already exists.");
   }
 
-  buttonIdList.push(id);
   mode = mode || group_mode;
+
+  buttonIdList.push(id);
   const isSelected = findActiveId(id).found;
   
   const buttonData = { 
@@ -74,15 +77,20 @@ const GroupButton = ({
   const buttonClick = () => {
     buttonData.isSelected = !isSelected;
 
-    if (selectionLimit > -1 && activeIds.length >= selectionLimit && buttonData.isSelected) {
+    if (selectionLimit > -1 && _activeIds.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
-        const unselectedButtonId = activeIds[activeIds.length - 1];
-        const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
-        unselectedButtonData.isSelected = false;
-        fireOnUnselect(unselectedButtonData);
-        updateActiveIds(unselectedButtonData);
+        const unselectedButtonId = _activeIds[_activeIds.length - 1];
+
+        if (unselectedButtonId !== buttonData.id) {
+          const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
+          unselectedButtonData.isSelected = false;
+          
+          fireOnUnselect(unselectedButtonData);
+          updateActiveIds(unselectedButtonId, unselectedButtonData.isSelected);
+        }
 
       } else {
+        
         onSelectionLimitReached(buttonData);
         return;
       }
@@ -97,7 +105,7 @@ const GroupButton = ({
       fireOnUnselect(buttonData);
     }
 
-    updateActiveIds(buttonData);
+    updateActiveIds(buttonData.id, buttonData.isSelected);
   }
 
   if (isSelected) {
@@ -115,7 +123,10 @@ const GroupButton = ({
           rightIcon={isSelected ? rightIconSelected : rightIconUnselected}
           leftIcon={isSelected ? leftIconSelected : leftIconUnselected}
           onClick={buttonClick} 
-          {...rest}>
+          state={{ _isSelected: isSelected }}
+          preset={(group_preset && preset) ? {...group_preset, ...preset} : group_preset || preset}
+          {...rest}
+          >
             {children}
           </Button>
         );
@@ -155,12 +166,13 @@ const ButtonGroup = function({
   selectionLimit=-1,
   mode="select",
 
+  buttonPreset,
   rightIconSelected,
   rightIconUnselected,
   leftIconUnselected,
   leftIconSelected,
 }) {
-  const [activeIds, _setActiveIds] = useState(defaultSelect);
+  const [_activeIds, _setActiveIds] = useState(defaultSelect);
 
   if (selectionLimit > -1 && defaultSelect.length > selectionLimit) {
     throw Error("In <ButtonGroup>: Initially selected options '[" + defaultSelect + "]' cannot exceed selection limit of '" + selectionLimit + "'");
@@ -175,13 +187,11 @@ const ButtonGroup = function({
   }
 
   const findActiveId = (buttonId) => {
-    const idIndex = activeIds.findIndex(id => id === buttonId);
+    const idIndex = _activeIds.findIndex(id => id === buttonId);
     return { found: idIndex !== -1, index: idIndex };
   }
   
-  const updateActiveIds = (buttonData) => {
-    const { id, isSelected } = buttonData;
-    
+  const updateActiveIds = (id, isSelected) => {
     if (isSelected) {
       _setActiveIds(prev => {
         prev.push(id);
@@ -209,7 +219,7 @@ const ButtonGroup = function({
       selectionReport,
       findActiveId,
       updateActiveIds,
-      activeIds,
+      _activeIds,
       onSelect,
       unselectLastChoice,
       onSelectionLimitReached,
@@ -219,6 +229,7 @@ const ButtonGroup = function({
       rightIconUnselected,
       leftIconUnselected,
       leftIconSelected,
+      buttonPreset,
     }}
     >
       <div className="flex flex-col gap-2 custom-button-group">

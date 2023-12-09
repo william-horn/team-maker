@@ -1,55 +1,62 @@
 import stringIsEmpty from "./stringIsEmpty";
 
-const styles = {
-  bold: {
-    [true]: 'font-bold',
-    [false]: 'font-normal',
-  },
 
-  italic: {
-    [true]: 'italic',
-    [false]: 'not-italic',
-  },
+const getStylesFromProps = (initialStyles, preset, state) => {
+  const updatedStyles = {};
+  
+  const deepSearch = (dirPreset, dirInitial, dirCurrent) => {
+    dirCurrent.self = "";
 
-  inline: {
-    [true]: 'inline',
-    [false]: 'block'
-  },
+    for (key in dirPreset) {
+      let presetVal = dirPreset[key];
+      const initialVal = dirInitial[key];
+      const valSelected = key.match(/-selected+$/);
+      const finalKey = valSelected ? key.substring(0, valSelected.index) : key;
 
-  noBackground: {
-    [true]: "bg-opacity-0",
-    [false]: false
-  },
+      if (typeof presetVal === 'boolean') {
+        presetVal = finalKey;
+      }
 
-  underline: {
-    [true]: "underline",
-    [false]: "none",
-  }
-}
+      if (initialVal === undefined) {
+        dirCurrent.self += ` ${presetVal}`
 
-const getStylesFromProps = (props, defaults={}, customStyles={}) => {
-  const compiledProps = {...defaults, ...props}
-  const finalProps = {};
-  const notFound = "[not found]";
+      } else if (typeof presetVal === "object") {
+        const subDir = {};
+        dirCurrent[key] = subDir;
+        deepSearch(presetVal, initialVal, subDir);
 
-  for (let key in compiledProps) {
-    const value = compiledProps[key];
-    const style = styles[key];
-    const customStyle = customStyles[key];
+      } else if (valSelected && state._isSelected) {
+        dirCurrent.self += ` ${presetVal}`;
 
-    if (customStyle) {
-      finalProps[key] = customStyle[value];
-    } else if (style) {
-      finalProps[key] = style[value];
-    }
-
-    if (finalProps[key] === undefined) {
-      finalProps[key] = notFound;
+      } else if (!valSelected) {
+        dirCurrent.self += ` ${presetVal}`;
+      }
     }
   }
 
-  return finalProps;
+  deepSearch(preset, initialStyles, updatedStyles);
+
+  return updatedStyles;
 }
 
 export default getStylesFromProps;
 
+/*
+  styles = {
+    "bg": "thing",
+    "color": "a",
+
+    inner: {
+      "bg": "something"
+    }
+  }
+
+  =>
+
+  styles = {
+    self: "bg-thing color-a",
+    inner: {
+      self: "bg-something"
+    }
+  }
+*/
