@@ -8,13 +8,8 @@ import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
 
 const buttonPreset1 = {
-  "bg-color": "",
-  "bg-opacity": "",
-  "bg-color-selected": "",
-  "bg-opacity-selected": "",
-  "bg-color-hover": "",
-  "bg-opacity-hover": "",
-  "align-items": true,
+  "bg-color": "bg-pink",
+  "bg-color-selected": "bg-green",
 
   inner: {
     "padding": "p-0",
@@ -35,20 +30,19 @@ const ClientComponent = ({ children }) => {
   return (
     <div className="p-5">
       <Button preset={buttonPreset1}>
-        Button
+        Button 1
       </Button>
 
       <Button {...buttonPreset1}>
-        Button
+        Button 2
       </Button>
 
       <Button
       bg-color="bg-black"
       inner={{
         "padding": "p-0"
-      }}
-      >
-
+      }}>
+        Button 3
       </Button>
     </div>
   );

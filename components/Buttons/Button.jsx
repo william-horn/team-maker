@@ -76,7 +76,7 @@ const Button = function({
 
     } else {
 
-      onClick();
+      onClick(state);
     }
   }
 
@@ -91,9 +91,6 @@ const Button = function({
         <Icon 
         utility 
         src={icon}
-        filter
-        width
-        height
         />
       );
     }
@@ -118,8 +115,7 @@ const Button = function({
         className={styles.self}
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
-        onClick={processClick}
-        >
+        onClick={processClick}>
           {renderButtonContent()}
         </button>
   )

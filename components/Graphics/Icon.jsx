@@ -1,12 +1,23 @@
 import Image from "next/image"
+import getStylesFromProps from "@/util/getStylesFromProps"
+
+const className = {
+  "relative": true,
+  "overflow-hidden": true,
+  "inline-block": true,
+  "custom-icon": true,
+  "invert": true,
+
+  "width": "w-5",
+  "height": "h-5",
+}
 
 const Icon = ({
   src, 
-  width='w-5', 
-  height='h-5', 
   alt, 
   utility=false,
-  filter="",
+  preset,
+  ...rest
 }) => {
 
   /* 
@@ -34,21 +45,18 @@ const Icon = ({
   quality of the image will change based on breakpoints.
   */
 
-  const className = {
-    self: `${width} ${height} ${filter} relative overflow-hidden inline-block custom-icon`,
-
-    image: {
-      self: ""
-    }
-  }
+  const styles = getStylesFromProps(
+    className,
+    preset || {...rest},
+    state
+  );
 
   return (
     <span 
-    className={className.self}
-    // style={{ width, height }}
+    className={styles.self}
     >
       <Image
-      className={className.image.self}
+      className={styles.image.self}
       fill
       src={src}
       sizes={

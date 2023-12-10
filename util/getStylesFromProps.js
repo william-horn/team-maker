@@ -1,42 +1,100 @@
 import stringIsEmpty from "./stringIsEmpty";
+import removeExtraWhitespace from "./removeExtraWhitespace";
 
 
-const getStylesFromProps = (initialStyles, preset, state) => {
-  const updatedStyles = {};
+const getStylesFromProps = (initialStyles, preset, state={}) => {
+  const initialStyles__copy = {...initialStyles}; // merged initial styles with preset styles
+  const stagedStyles = {}; // hold all styles computed with state
+  const renderedStyles = {};
   
-  const deepSearch = (dirPreset, dirInitial, dirCurrent) => {
-    dirCurrent.self = "";
+  const stylesCache = {
+    _isSelected: [],
+  }
 
-    for (key in dirPreset) {
-      let presetVal = dirPreset[key];
-      const initialVal = dirInitial[key];
-      const valSelected = key.match(/-selected+$/);
-      const finalKey = valSelected ? key.substring(0, valSelected.index) : key;
+  // First merge preset styles with initial styles
+  const applyPresetStyles = (stylesDir, presetDir) => {
+    for (let key in presetDir) {
+      const preset_val = presetDir[key];
+      const styles_val = stylesDir[key];
 
-      if (typeof presetVal === 'boolean') {
-        presetVal = finalKey;
+      if (typeof preset_val === "object") {
+        applyPresetStyles(styles_val, preset_val);
+      } else {
+        stylesDir[key] = preset_val;
       }
+    }
+  } 
 
-      if (initialVal === undefined) {
-        dirCurrent.self += ` ${presetVal}`
+  applyPresetStyles(initialStyles__copy, preset);
 
-      } else if (typeof presetVal === "object") {
-        const subDir = {};
-        dirCurrent[key] = subDir;
-        deepSearch(presetVal, initialVal, subDir);
 
-      } else if (valSelected && state._isSelected) {
-        dirCurrent.self += ` ${presetVal}`;
+  // ...then extract the non-state affected classes into the "stagedStyles" object, while
+  // caching the stateful classes
+  const extractBaseStyles = (stylesDir, stagedDir) => {
+    for (let key in stylesDir) {
+      let val = stylesDir[key];
+      const val_isSelected = key.match(/-selected+$/);
+      const root_key = val_isSelected ? key.substring(0, val_isSelected.index) : key;
 
-      } else if (!valSelected) {
-        dirCurrent.self += ` ${presetVal}`;
+      if (!val_isSelected) {
+        if (typeof val === "object") {
+          const newDir = {};
+          stagedDir[root_key] = newDir;
+          extractBaseStyles(val, newDir);
+
+        } else {
+          stagedDir[root_key] = val;
+        }
+
+      } else {
+
+        stylesCache._isSelected.push([stagedDir, root_key, val]);
       }
     }
   }
 
-  deepSearch(preset, initialStyles, updatedStyles);
+  extractBaseStyles(initialStyles__copy, stagedStyles);
 
-  return updatedStyles;
+  // ...then update the staged classes with the cached stateful classes based on state
+  if (state._isSelected) {
+    const cacheDir = stylesCache._isSelected;
+
+    for (let i = 0; i < cacheDir.length; i++) {
+      const selected = cacheDir[i];
+      selected[0][selected[1]] = selected[2];
+    }
+  }
+
+  // ...then create new object with compiled tailwind classes
+  const compileRenderedStyles = (stagedDir, renderedDir) => {
+    renderedDir.self = "";
+
+    for (let key in stagedDir) {
+      let val = stagedDir[key];
+
+      if (typeof val === "boolean") {
+        if (val === true) {
+          val = key;
+        } else if (val === false) {
+          continue;
+        }
+      }
+
+      if (typeof val === "object") {
+        const newDir = {};
+        renderedDir[key] = newDir;
+        compileRenderedStyles(val, newDir);
+      } else {
+        renderedDir.self += ` ${val}`;
+      }
+    }
+
+    renderedDir.self = removeExtraWhitespace(renderedDir.self);
+  }
+
+  compileRenderedStyles(stagedStyles, renderedStyles);
+  
+  return renderedStyles;
 }
 
 export default getStylesFromProps;
