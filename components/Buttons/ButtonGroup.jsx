@@ -16,7 +16,7 @@ import ImageButton from "./ImageButton";
 
 const GroupButton = ({ 
   children,
-  className: importedClassName,
+  className: importedClassName={},
   mode,
 
   onClick=emptyFunc,
@@ -188,7 +188,7 @@ const ButtonGroup = function({
 }) {
 
   // Button group styles
-  const className = mergeClass({
+  let className = {
     self: "flex flex-col gap-2 custom-button-group",
 
     selectButton: {
@@ -198,10 +198,14 @@ const ButtonGroup = function({
     checkboxButton: {
       self: "",
       text: { self: "" },
-      imageButton: { self: "" },
+      imageButton: { self: "bg-transparent" },
     },
-  }, importedClassName);
+  }
 
+  className = mergeClass(
+    className,
+    importedClassName,
+  );
 
   // Button group state (active buttons)
   const [_activeIds, _setActiveIds] = useState(defaultSelect);

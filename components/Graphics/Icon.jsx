@@ -20,7 +20,7 @@ const Icon = ({
   src, 
   alt, 
   utility=false,
-  className: importedClassName,
+  className: importedClassName={},
   // preset,
   // ...rest
 }) => {
@@ -55,13 +55,18 @@ const Icon = ({
   //   [preset, {...rest}],
   // );
 
-  const className = mergeClass({
+  let className = {
     self: "relative overflow-hidden inline-block align-middle w-5 h-5",
 
     image: {
       self: "invert"
     }
-  }, importedClassName);
+  };
+
+  className = mergeClass(
+    className,
+    importedClassName
+  );
 
   return (
     <span 

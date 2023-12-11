@@ -28,25 +28,37 @@ const ClientComponent = ({ children }) => {
       <Button preset={buttonPreset1}>New Test</Button> */}
 
       <ButtonGroup
-      mode="select"
-      selectionLimit="2"
+      mode="checkbox"
+      selectionLimit="1"
       unselectLastChoice
       // itemPreset={buttonPreset1}
       className={{
         self: "",
         selectButton: {
-          self: "bg-blue-500",
+          self: "bg-green-500",
+          __selected: {
+            self: "bg-red-500"
+          }
         },
       }}
       rightIconUnselected="/icons/arrow_down_icon.svg"
       rightIconSelected="/icons/arrow_up_icon.svg"
       >
-        {/* <ButtonGroup.Button id="three" preset={buttonPreset2} bg-color-selected="bg-blue-500">Choice C</ButtonGroup.Button> */}
         <ButtonGroup.Button id="one">Choice One</ButtonGroup.Button>
-        <ButtonGroup.Button id="two" className={{self: "bg-pink-500"}}>Choice Two</ButtonGroup.Button>
+        <ButtonGroup.Button id="two">Choice Two</ButtonGroup.Button>
         <ButtonGroup.Button id="three">Choice Three</ButtonGroup.Button>
-        <ButtonGroup.Button id="four">Choice Four</ButtonGroup.Button>
+
+        <ButtonGroup.Button id="four">
+            Choice Four
+          </ButtonGroup.Button>
+
       </ButtonGroup>
+{/* 
+      <Button>Normal</Button>
+
+      <Button className={{__selected: { self: " text-error" }}}>
+        Something
+      </Button> */}
 
       {/* <Button
       className={{

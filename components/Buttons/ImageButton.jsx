@@ -6,6 +6,7 @@
 
 import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
+import emptyFunc from "@/util/emptyFunc";
 import Button from "./Button";
 
 // const className = {
@@ -23,7 +24,8 @@ import Button from "./Button";
 
 export default function ImageButton({
   src,
-  className: importedClassName,
+  className: importedClassName={},
+  onClick=emptyFunc,
   // preset,
   // ...rest
 }) {
@@ -31,7 +33,7 @@ export default function ImageButton({
   //   {...className},
   //   [preset, {...rest}]
   // );
-  const className = mergeClass({
+  let className = {
     self: "p-0",
 
     inner: {
@@ -41,12 +43,18 @@ export default function ImageButton({
     icon: {
       self: "",
     }
-  }, importedClassName);
+  };
+
+  className = mergeClass(
+    className,
+    importedClassName
+  );
 
   return (
     <Button
     // preset={finalPreset}
     className={className}
+    onClick={onClick}
     >
       <Icon
       src={src}

@@ -4,6 +4,7 @@
   File imports
 */
 import mergeClass from "@/util/mergeClass";
+// import { twMerge } from "tailwind-merge";
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
 // import getStylesFromProps from "@/util/getStylesFromProps";
@@ -55,7 +56,7 @@ import {
 */
 const Button = function({
   children,
-  className: importedClassName,
+  className: importedClassName={},
 
   onClick=emptyFunc,
   onMouseEnter=emptyFunc,
@@ -63,7 +64,7 @@ const Button = function({
   
   state,
   // preset,
-  activateOnRender,
+  activateOnMount=false,
   leftIcon,
   rightIcon,
   href,
@@ -71,8 +72,11 @@ const Button = function({
   // ...rest
 }) {
 
-  const className = mergeClass({
-    self: "bg-[#3f3f3f] text-white inline-flex items-center align-middle transition-all rounded w-fit text-sm px-1",
+  // Create button state
+  const [_isSelected, _setSelected] = useState(false);
+
+  let className = {
+    self: "bg-[#3f3f3f] text-white inline-flex items-center align-middle rounded w-fit text-sm px-1",
 
     inner: {
       self: "py-2 px-1",
@@ -90,11 +94,14 @@ const Button = function({
       image: {
         self: "invert",
       }
-    }
-  }, importedClassName);
+    },
+  }
 
-  // Create button state
-  const [_isSelected, _setSelected] = state ? [state._isSelected, emptyFunc] : useState(false);
+  className = mergeClass(
+    className, 
+    importedClassName,
+    state || { _isSelected }
+  );
 
   // const styles = getStylesFromProps(
   //   className, 
@@ -108,22 +115,15 @@ const Button = function({
   };
 
   const processClick = () => {
-    
-    if (!state) {
-      buttonData.isSelected = !buttonData.isSelected;
-      _setSelected(buttonData.isSelected);
+    buttonData.isSelected = !buttonData.isSelected;
+    _setSelected(buttonData.isSelected);
 
-      onClick(buttonData);
-
-    } else {
-
-      onClick(state);
-    }
+    onClick(buttonData);
   }
 
   // Handle page mount events
   useEffect(() => {
-    if (activateOnRender) processClick();
+    if (activateOnMount) processClick();
   }, [])
 
   const renderIcon = (icon, iconClass) => {
@@ -156,8 +156,8 @@ const Button = function({
         </Link>
       : <button 
         className={className.self}
-        onMouseEnter={() => onMouseEnter(buttonData)} 
-        onMouseLeave={() => onMouseLeave(buttonData)}
+        onMouseEnter={() => onMouseEnter()} 
+        onMouseLeave={() => onMouseLeave()}
         onClick={processClick}>
           {renderButtonContent()}
         </button>
