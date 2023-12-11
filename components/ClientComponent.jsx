@@ -20,6 +20,10 @@ import ImageButton from "./Buttons/ImageButton";
 
 const ClientComponent = ({ children }) => {
 
+  const onSelect = (choice) => {
+    console.log(choice);
+  }
+
   return (
     <div className="p-5">
       {/* <Text>Hello, world! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, quod.</Text>
@@ -29,11 +33,12 @@ const ClientComponent = ({ children }) => {
 
       <ButtonGroup
       mode="checkbox"
-      selectionLimit="1"
+      selectionLimit="2"
       unselectLastChoice
+      onSelect={onSelect}
       // itemPreset={buttonPreset1}
       className={{
-        self: "",
+        self: "gap-1",
         selectButton: {
           self: "bg-green-500",
           __selected: {
@@ -44,15 +49,28 @@ const ClientComponent = ({ children }) => {
       rightIconUnselected="/icons/arrow_down_icon.svg"
       rightIconSelected="/icons/arrow_up_icon.svg"
       >
-        <ButtonGroup.Button id="one">Choice One</ButtonGroup.Button>
-        <ButtonGroup.Button id="two">Choice Two</ButtonGroup.Button>
-        <ButtonGroup.Button id="three">Choice Three</ButtonGroup.Button>
+        <ButtonGroup.Button id="one">Lorem ipsum dolor sit amet.</ButtonGroup.Button>
+        <ButtonGroup.Button id="two">Lorem ipsum dolor sit amet.</ButtonGroup.Button>
+        <ButtonGroup.Button id="three">Lorem ipsum dolor sit amet consectetur.</ButtonGroup.Button>
 
         <ButtonGroup.Button id="four">
-            Choice Four
-          </ButtonGroup.Button>
+          Choice Four
+        </ButtonGroup.Button>
 
       </ButtonGroup>
+
+      <Text>Hello, world! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem, consequuntur.</Text>
+      
+      <Button
+      onSelect={onSelect}
+      className={{
+        self: "bg-blue-500",
+        __selected: {
+          self: "bg-red-500"
+        }
+      }}>
+        Fun Button
+      </Button>
 {/* 
       <Button>Normal</Button>
 

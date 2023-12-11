@@ -13,7 +13,7 @@ import mergeClass from "@/util/mergeClass";
 
 const Text = ({ 
   children, 
-  className: importedClassName,
+  className: importedClassName={},
   // preset,
   // ...rest
 }) => {

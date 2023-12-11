@@ -11,7 +11,7 @@ import mergeClass from "@/util/mergeClass";
 
 const Heading = ({ 
   children, 
-  className: importedClassName,
+  className: importedClassName={},
   // preset,
   // ...rest
 }) => {

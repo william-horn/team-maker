@@ -197,7 +197,7 @@ const ButtonGroup = function({
 
     checkboxButton: {
       self: "",
-      text: { self: "" },
+      text: { self: "inline" },
       imageButton: { self: "bg-transparent" },
     },
   }
