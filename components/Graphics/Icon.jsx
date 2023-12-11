@@ -1,23 +1,28 @@
 import Image from "next/image"
-import getStylesFromProps from "@/util/getStylesFromProps"
+import mergeClass from "@/util/mergeClass"
+// import getStylesFromProps from "@/util/getStylesFromProps"
 
-const className = {
-  "relative": true,
-  "overflow-hidden": true,
-  "inline-block": true,
-  "custom-icon": true,
-  "invert": true,
+// const className = {
+//   "relative": true,
+//   "overflow-hidden": true,
+//   "inline-block": true,
+//   "custom-icon": true,
 
-  "width": "w-5",
-  "height": "h-5",
-}
+//   "width": "w-5",
+//   "height": "h-5",
+
+//   image: {
+//     "invert": true
+//   }
+// }
 
 const Icon = ({
   src, 
   alt, 
   utility=false,
-  preset,
-  ...rest
+  className: importedClassName,
+  // preset,
+  // ...rest
 }) => {
 
   /* 
@@ -45,18 +50,24 @@ const Icon = ({
   quality of the image will change based on breakpoints.
   */
 
-  const styles = getStylesFromProps(
-    className,
-    preset || {...rest},
-    state
-  );
+  // const styles = getStylesFromProps(
+  //   className,
+  //   [preset, {...rest}],
+  // );
+
+  const className = mergeClass({
+    self: "relative overflow-hidden inline-block align-middle w-5 h-5",
+
+    image: {
+      self: "invert"
+    }
+  }, importedClassName);
 
   return (
     <span 
-    className={styles.self}
-    >
+    className={className.self}>
       <Image
-      className={styles.image.self}
+      className={className.image.self}
       fill
       src={src}
       sizes={

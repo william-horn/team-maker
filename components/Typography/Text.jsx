@@ -1,42 +1,36 @@
 
-import getStylesFromProps from "@/util/getStylesFromProps";
+// import getStylesFromProps from "@/util/getStylesFromProps";
+import mergeClass from "@/util/mergeClass";
+
+// const className = {
+//   "custom-text": true,
+//   "line-height": "leading-6",
+//   "text-color": "text-white",
+//   "align-middle": true,
+//   "text-size": "text-sm",
+//   "block": true,
+// }
 
 const Text = ({ 
   children, 
-  size='text-sm',
-
-  ...rest
-  // size='',
-  // small='',
-  // medium='',
-  // large='',
-  // italic='',
-  // inline='',
-  // bold='',
+  className: importedClassName,
+  // preset,
+  // ...rest
 }) => {
-  const styles = getStylesFromProps({
-    ...rest
+  // const styles = getStylesFromProps(
+  //   className,
+  //   preset || {...rest}
+  // );
 
-  }, {
-    // defaults
-    inline: false,
-    bold: false,
-    italic: false,
-    noBackground: true,
-    underline: false,
-
-  }, {
-    // inline: {
-    //   [false]: 'block',
-    //   [true]: 'inline-block'
-    // }
-  });
+  const className = mergeClass({
+    self: "custom-text leading-6 text-white align-middle text-sm block"
+  }, importedClassName);
 
   // todo: adapt line height to text size
 
   return (
     <p 
-    className={`${size} ${styles.inline} ${styles.bold} ${styles.italic} ${styles.noBackground || 'bg-black'} ${styles.underline} custom-text leading-6 text-white align-middle`}>
+    className={className.self}>
       {children}
     </p>
   );

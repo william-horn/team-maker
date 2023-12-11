@@ -1,5 +1,11 @@
 "use client";
 
+// import {
+//   getStylesFromProps,
+//   applyPresetStyles
+// } from "@/util/getStylesFromProps";
+
+import mergeClass from "@/util/mergeClass";
 import { useState, useRef, useEffect } from "react";
 import ButtonGroupProvider from "@/providers/ButtonGroupProvider";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
@@ -10,13 +16,14 @@ import ImageButton from "./ImageButton";
 
 const GroupButton = ({ 
   children,
+  className: importedClassName,
   mode,
 
   onClick=emptyFunc,
   onSelect=emptyFunc,
   onUnselect=emptyFunc,
 
-  preset,
+  // preset={},
   id,
   value,
   
@@ -43,7 +50,8 @@ const GroupButton = ({
     rightIconUnselected,
     leftIconUnselected,
     leftIconSelected,
-    buttonPreset: group_preset,
+    className: group_className,
+    // itemPreset: group_preset,
   } = buttonGroupContext;
 
   if (!id) {
@@ -53,8 +61,8 @@ const GroupButton = ({
   }
 
   mode = mode || group_mode;
-
   buttonIdList.push(id);
+  
   const isSelected = findActiveId(id).found;
   
   const buttonData = { 
@@ -63,6 +71,11 @@ const GroupButton = ({
     groupName, 
     isSelected
   };
+
+  // preset = applyPresetStyles(
+  //   {...group_preset},
+  //   preset
+  // );
 
   const fireOnSelect = (...args) => {
     group_onSelect(...args);
@@ -124,7 +137,8 @@ const GroupButton = ({
           leftIcon={isSelected ? leftIconSelected : leftIconUnselected}
           onClick={buttonClick} 
           state={{ _isSelected: isSelected }}
-          preset={(group_preset && preset) ? {...group_preset, ...preset} : group_preset || preset}
+          className={mergeClass(group_className.selectButton, importedClassName)}
+          // preset={preset}
           {...rest}
           >
             {children}
@@ -132,16 +146,15 @@ const GroupButton = ({
         );
 
       case "checkbox":
+        const checkboxClass = mergeClass(group_className.checkboxButton, importedClassName);
 
         return (
-          <span>
-            <Text inline>{children}</Text>
+          <span className={checkboxClass.self}>
+            <Text className={checkboxClass.text}>{children}</Text>
             <ImageButton 
+            className={checkboxClass.imageButton}
             onClick={buttonClick}
-            src={isSelected ? "/icons/checkbox_selected.svg" : "/icons/checkbox_unselected.svg"}
-            filter="invert" 
-            inline
-            />
+            src={isSelected ? "/icons/checkbox_selected.svg" : "/icons/checkbox_unselected.svg"}/>
           </span>
         );
     }
@@ -152,6 +165,7 @@ const GroupButton = ({
 
 const ButtonGroup = function({ 
   children,
+  className: importedClassName,
 
   // handlers, global
   onClick=emptyFunc,
@@ -166,12 +180,30 @@ const ButtonGroup = function({
   selectionLimit=-1,
   mode="select",
 
-  buttonPreset,
+  // itemPreset={},
   rightIconSelected,
   rightIconUnselected,
   leftIconUnselected,
   leftIconSelected,
 }) {
+
+  // Button group styles
+  const className = mergeClass({
+    self: "flex flex-col gap-2 custom-button-group",
+
+    selectButton: {
+      self: ""
+    },
+
+    checkboxButton: {
+      self: "",
+      text: { self: "" },
+      imageButton: { self: "" },
+    },
+  }, importedClassName);
+
+
+  // Button group state (active buttons)
   const [_activeIds, _setActiveIds] = useState(defaultSelect);
 
   if (selectionLimit > -1 && defaultSelect.length > selectionLimit) {
@@ -229,10 +261,11 @@ const ButtonGroup = function({
       rightIconUnselected,
       leftIconUnselected,
       leftIconSelected,
-      buttonPreset,
+      className,
+      // itemPreset,
     }}
     >
-      <div className="flex flex-col gap-2 custom-button-group">
+      <div className={className.self}>
         {children}
       </div>
     </ButtonGroupProvider>

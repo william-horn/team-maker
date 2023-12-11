@@ -1,8 +1,23 @@
 import stringIsEmpty from "./stringIsEmpty";
 import removeExtraWhitespace from "./removeExtraWhitespace";
 
+export const applyPresetStyles = (stylesDir={}, presetDir={}) => {
+  for (let key in presetDir) {
+    const preset_val = presetDir[key];
+    const styles_val = stylesDir[key];
 
-const getStylesFromProps = (initialStyles, preset, state={}) => {
+    if (typeof preset_val === "object" && typeof styles_val === "object") {
+      applyPresetStyles(styles_val, preset_val);
+    } else {
+      stylesDir[key] = preset_val;
+    }
+  }
+
+  return stylesDir;
+}
+
+export const getStylesFromProps = (initialStyles, presetArray, state={}) => {
+  const preset = applyPresetStyles(...presetArray);
   const initialStyles__copy = {...initialStyles}; // merged initial styles with preset styles
   const stagedStyles = {}; // hold all styles computed with state
   const renderedStyles = {};
@@ -12,21 +27,7 @@ const getStylesFromProps = (initialStyles, preset, state={}) => {
   }
 
   // First merge preset styles with initial styles
-  const applyPresetStyles = (stylesDir, presetDir) => {
-    for (let key in presetDir) {
-      const preset_val = presetDir[key];
-      const styles_val = stylesDir[key];
-
-      if (typeof preset_val === "object") {
-        applyPresetStyles(styles_val, preset_val);
-      } else {
-        stylesDir[key] = preset_val;
-      }
-    }
-  } 
-
   applyPresetStyles(initialStyles__copy, preset);
-
 
   // ...then extract the non-state affected classes into the "stagedStyles" object, while
   // caching the stateful classes
@@ -80,12 +81,16 @@ const getStylesFromProps = (initialStyles, preset, state={}) => {
         }
       }
 
-      if (typeof val === "object") {
-        const newDir = {};
-        renderedDir[key] = newDir;
-        compileRenderedStyles(val, newDir);
+      if (!key.match('^_')) {
+        if (typeof val === "object") {
+          const newDir = {};
+          renderedDir[key] = newDir;
+          compileRenderedStyles(val, newDir);
+        } else {
+          renderedDir.self += ` ${val}`;
+        }
       } else {
-        renderedDir.self += ` ${val}`;
+        renderedDir[key] = val;
       }
     }
 
@@ -95,26 +100,40 @@ const getStylesFromProps = (initialStyles, preset, state={}) => {
   compileRenderedStyles(stagedStyles, renderedStyles);
   
   return renderedStyles;
-}
 
-export default getStylesFromProps;
-
-/*
-  styles = {
-    "bg": "thing",
-    "color": "a",
-
+  /*
+  input {
+    "bg-color": "class-a",
+    "text-color": "class-b",
+    ...,
     inner: {
-      "bg": "something"
+      "bg-color": "class-a",
+      "text-color": "class-b",
+      ...
+    }
+
+    _component {
+      "bg-color": "class-c",
+      "text-color": "class-d",
+      ...
     }
   }
 
   =>
 
-  styles = {
-    self: "bg-thing color-a",
+  styles {
+    self: "class-a class-b ...",
     inner: {
-      self: "bg-something"
+      self: "class-a class-b ..."
+    }
+    _component {
+      "bg-color": "class-c",
+      "text-color": "class-d",
+      ...
     }
   }
-*/
+  */
+}
+
+export default getStylesFromProps;
+

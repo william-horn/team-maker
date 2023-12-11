@@ -7,43 +7,57 @@ import Heading from "./Typography/Heading";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
 
-const buttonPreset1 = {
-  "bg-color": "bg-pink",
-  "bg-color-selected": "bg-green",
+// const buttonPreset1 = {
+//   "bg-color": "bg-black",
+//   "bg-color-selected": "bg-pink-500",
+//   "text-color": "text-green-500",
+// }
 
-  inner: {
-    "padding": "p-0",
-    "padding-selected": "p-2"
-  }
-}
+// const buttonPreset2 = {
+//   "bg-color": "bg-red-500",
+//   "bg-color-selected": "bg-yellow-500"
+// }
 
 const ClientComponent = ({ children }) => {
 
-  const groupClick = (data) => {
-    // console.log("group click: ", data);
-  }
-
-  const buttonClick = (data) => {
-    // console.log("button click: ", data);
-  }
-
   return (
     <div className="p-5">
-      <Button preset={buttonPreset1}>
-        Button 1
-      </Button>
+      {/* <Text>Hello, world! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, quod.</Text>
+      <Text inline={true}>How are we? Lorem ipsum dolor sit amet.</Text><Button>test</Button><Text>lol</Text>
+      <Button>Default</Button>
+      <Button preset={buttonPreset1}>New Test</Button> */}
 
-      <Button {...buttonPreset1}>
-        Button 2
-      </Button>
+      <ButtonGroup
+      mode="select"
+      selectionLimit="2"
+      unselectLastChoice
+      // itemPreset={buttonPreset1}
+      className={{
+        self: "",
+        selectButton: {
+          self: "bg-blue-500",
+        },
+      }}
+      rightIconUnselected="/icons/arrow_down_icon.svg"
+      rightIconSelected="/icons/arrow_up_icon.svg"
+      >
+        {/* <ButtonGroup.Button id="three" preset={buttonPreset2} bg-color-selected="bg-blue-500">Choice C</ButtonGroup.Button> */}
+        <ButtonGroup.Button id="one">Choice One</ButtonGroup.Button>
+        <ButtonGroup.Button id="two" className={{self: "bg-pink-500"}}>Choice Two</ButtonGroup.Button>
+        <ButtonGroup.Button id="three">Choice Three</ButtonGroup.Button>
+        <ButtonGroup.Button id="four">Choice Four</ButtonGroup.Button>
+      </ButtonGroup>
 
-      <Button
-      bg-color="bg-black"
-      inner={{
-        "padding": "p-0"
-      }}>
-        Button 3
-      </Button>
+      {/* <Button
+      className={{
+        self: "text-green-500", 
+        inner: {
+          self: "p-0"
+        }}}
+      >
+        Something
+      </Button> */}
+
     </div>
   );
 };

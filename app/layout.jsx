@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
       <head>
         <title>My Custom Components</title>
       </head>
-      <body className={inter.className + " bg-[#181818]"}>
+      <body className={inter.className + " theme-dark bg-page"}>
         {children}
       </body>
     </html>

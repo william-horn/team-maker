@@ -1,27 +1,57 @@
 
 
+// import {
+//   applyPresetStyles
+// } from "@/util/getStylesFromProps";
+
+import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
 import Button from "./Button";
 
+// const className = {
+//   "padding": "p-0",
+
+//   inner: {
+//     "padding": "p-1",
+//   },
+
+//   // extensions here cannot exist inside the button component className or they will merge
+//   _image: {
+//     // icon preset settings
+//   }
+// }
+
 export default function ImageButton({
   src,
-  width,
-  height,
-  filter,
-  ...rest
+  className: importedClassName,
+  // preset,
+  // ...rest
 }) {
+  // const finalPreset = applyPresetStyles(
+  //   {...className},
+  //   [preset, {...rest}]
+  // );
+  const className = mergeClass({
+    self: "p-0",
+
+    inner: {
+      self: "p-1"
+    },
+
+    icon: {
+      self: "",
+    }
+  }, importedClassName);
+
   return (
     <Button
-    outerPadding="p-0"
-    innerPadding="p-1"
-    noBackground
-    {...rest}
+    // preset={finalPreset}
+    className={className}
     >
       <Icon
       src={src}
-      width={width}
-      height={height}
-      filter={filter}
+      className={className.icon}
+      // preset={finalPreset._image}
       />
     </Button>
   )

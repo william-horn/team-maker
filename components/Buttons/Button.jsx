@@ -3,9 +3,10 @@
 /*
   File imports
 */
+import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
-import getStylesFromProps from "@/util/getStylesFromProps";
+// import getStylesFromProps from "@/util/getStylesFromProps";
 import emptyFunc from "@/util/emptyFunc";
 
 import { 
@@ -15,51 +16,91 @@ import {
 
 //  custom-button items-center align-middle text-white transition-all rounded w-fit
 
-const className = {
-  "bg-color": "bg-[#3f3f3f]",
-  "text-color": "text-white",
+// const className = {
+//   "bg-color": "bg-[#3f3f3f]",
+//   "text-color": "text-white",
 
-  "items-center": true,
-  "align-middle": true,
-  "transition-all": true,
-  "rounded": true,
+//   "inline-flex": true,
+//   "items-center": true,
+//   "align-middle": true,
+//   "transition-all": true,
+//   "rounded": true,
 
-  "width": "w-fit",
-  "text-size": "text-sm",
+//   "width": "w-fit",
+//   "text-size": "text-sm",
 
-  inner: {
-    "padding": "py-2 px-1"
-  }
-}
+//   inner: {
+//     "padding": "py-2 px-2"
+//   },
+
+//   _leftIcon: {
+//     "width": "w-7",
+//     "height": "h-7",
+//     image: {
+//       "invert": true
+//     }
+//   },
+
+//   _rightIcon: {
+//     "width": "w-7",
+//     "height": "h-7",
+//     image: {
+//       "invert": true
+//     }
+//   },
+// }
 
 /*
   React component starts
 */
 const Button = function({
   children,
+  className: importedClassName,
 
   onClick=emptyFunc,
   onMouseEnter=emptyFunc,
   onMouseLeave=emptyFunc,
   
   state,
-  preset,
+  // preset,
   activateOnRender,
   leftIcon,
   rightIcon,
   href,
 
-  ...rest
+  // ...rest
 }) {
+
+  const className = mergeClass({
+    self: "bg-[#3f3f3f] text-white inline-flex items-center align-middle transition-all rounded w-fit text-sm px-1",
+
+    inner: {
+      self: "py-2 px-1",
+    },
+
+    leftIcon: {
+      self: "",
+      image: {
+        self: "invert",
+      }
+    },
+
+    rightIcon: {
+      self: "",
+      image: {
+        self: "invert",
+      }
+    }
+  }, importedClassName);
 
   // Create button state
   const [_isSelected, _setSelected] = state ? [state._isSelected, emptyFunc] : useState(false);
 
-  const styles = getStylesFromProps(
-    className, 
-    preset || {...rest},
-    state || { _isSelected }
-  );
+  // const styles = getStylesFromProps(
+  //   className, 
+  //   [preset, {...rest}],
+  //   state || { _isSelected }
+  // );
 
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
@@ -85,10 +126,12 @@ const Button = function({
     if (activateOnRender) processClick();
   }, [])
 
-  const renderIcon = (icon) => {
+  const renderIcon = (icon, iconClass) => {
     if (icon) {
       return (
         <Icon 
+        // preset={iconPreset}
+        className={iconClass}
         utility 
         src={icon}
         />
@@ -97,22 +140,22 @@ const Button = function({
   }
 
   const renderButtonContent = () => <>
-    {renderIcon(leftIcon)}
+    {renderIcon(leftIcon, className.leftIcon)}
 
-    <span className={styles.inner.self}>
+    <span className={className.inner.self}>
       {children}
     </span>
 
-    {renderIcon(rightIcon)}
+    {renderIcon(rightIcon, className.rightIcon)}
   </>
   
   return (
     href
-      ? <Link className={styles.self} href={href}>
+      ? <Link className={className.self} href={href}>
           {renderButtonContent()}
         </Link>
       : <button 
-        className={styles.self}
+        className={className.self}
         onMouseEnter={() => onMouseEnter(buttonData)} 
         onMouseLeave={() => onMouseLeave(buttonData)}
         onClick={processClick}>

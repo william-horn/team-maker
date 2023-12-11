@@ -2,25 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
 
-.wireframe * {
-  outline: 1px solid red !important;
-} 
+  /* :root {
 
-.text-hide {
-  color: rgba(0, 0, 0, 0);
+  } */
+
+  .wireframe * {
+    outline: 1px solid red !important;
+  } 
+
+  .theme-dark {
+    --color-logo: orange;
+
+    --bg-color-page: #2a2a32;
+
+    --text-color-primary: white;
+    --text-color-secondary: orange;
+    --text-color-muted: gray;
+    --text-color-error: red;
+  }
 }
-
-.custom-icon {
-  vertical-align: middle;
-}
-
-/* Manually added this because tailwind class wasn't working */
-.font-bold {
-  font-weight: bold;
-}
-
-/* .custom-text .custom-button {
-  display: inline-flex;
-} */
 
