@@ -71,6 +71,11 @@ const ClientComponent = ({ children }) => {
       }}>
         Fun Button
       </Button>
+
+      <Button className={{self: "flex"}}>Just a Normal Button</Button>
+
+      <Button rightIcon="/icons/arrow_down_icon.svg">Menu</Button>
+
 {/* 
       <Button>Normal</Button>
 

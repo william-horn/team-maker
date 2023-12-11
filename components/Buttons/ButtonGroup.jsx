@@ -31,6 +31,10 @@ const GroupButton = ({
 }) => {
   const buttonGroupContext = useButtonGroupContext();
 
+  if (!buttonGroupContext) {
+    throw Error("ButtonGroup.Button can only be used inside a <ButtonGroup> component.");
+  }
+
   const {
     groupName,
     mode: group_mode,
@@ -198,7 +202,7 @@ const ButtonGroup = function({
     checkboxButton: {
       self: "",
       text: { self: "inline" },
-      imageButton: { self: "bg-transparent" },
+      imageButton: { self: "bg-transparent hover:bg-transparent" },
     },
   }
 

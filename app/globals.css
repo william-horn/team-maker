@@ -17,6 +17,10 @@
 
     --bg-color-page: #2a2a32;
 
+    --button-color-primary: #616161;
+    --button-color-secondary: blue;
+    --button-hover-color-primary: #4f4f4f;
+
     --text-color-primary: white;
     --text-color-secondary: orange;
     --text-color-muted: gray;

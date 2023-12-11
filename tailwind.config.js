@@ -8,7 +8,9 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        page: "var(--bg-color-page)"
+        page: "var(--bg-color-page)",
+        "button-primary": "var(--button-color-primary)",
+        "button-hover-primary": "var(--button-hover-color-primary)",
       },
 
       textColor: {
@@ -16,7 +18,7 @@ module.exports = {
         secondary: "var(--text-color-secondary)",
         muted: "var(--text-color-muted)",
         error: "var(--text-color-error)"
-      }
+      },
     },
   },
   plugins: [],

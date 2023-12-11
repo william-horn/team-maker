@@ -15,41 +15,6 @@ import {
   useState 
 } from "react";
 
-//  custom-button items-center align-middle text-white transition-all rounded w-fit
-
-// const className = {
-//   "bg-color": "bg-[#3f3f3f]",
-//   "text-color": "text-white",
-
-//   "inline-flex": true,
-//   "items-center": true,
-//   "align-middle": true,
-//   "transition-all": true,
-//   "rounded": true,
-
-//   "width": "w-fit",
-//   "text-size": "text-sm",
-
-//   inner: {
-//     "padding": "py-2 px-2"
-//   },
-
-//   _leftIcon: {
-//     "width": "w-7",
-//     "height": "h-7",
-//     image: {
-//       "invert": true
-//     }
-//   },
-
-//   _rightIcon: {
-//     "width": "w-7",
-//     "height": "h-7",
-//     image: {
-//       "invert": true
-//     }
-//   },
-// }
 
 /*
   React component starts
@@ -76,7 +41,7 @@ const Button = function({
   const [_isSelected, _setSelected] = useState(false);
 
   let className = {
-    self: "bg-[#3f3f3f] text-white inline-flex items-center align-middle rounded w-fit text-sm px-1",
+    self: "bg-button-primary text-white inline-flex items-center align-middle rounded transition-all w-fit text-sm px-1 hover:bg-button-hover-primary",
 
     inner: {
       self: "py-2 px-1",
