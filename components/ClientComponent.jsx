@@ -6,6 +6,7 @@ import Icon from "./Graphics/Icon";
 import Heading from "./Typography/Heading";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
+import Dropdown from "./Buttons/Dropdown";
 
 // const buttonPreset1 = {
 //   "bg-color": "bg-black",
@@ -45,6 +46,12 @@ const ClientComponent = ({ children }) => {
             self: "bg-red-500"
           }
         },
+        checkboxButton: {
+          self: "transition-all bg-transparent",
+          __selected: {
+            self: "bg-red-500"
+          }
+        }
       }}
       rightIconUnselected="/icons/arrow_down_icon.svg"
       rightIconSelected="/icons/arrow_up_icon.svg"
@@ -75,6 +82,34 @@ const ClientComponent = ({ children }) => {
       <Button className={{self: "flex"}}>Just a Normal Button</Button>
 
       <Button rightIcon="/icons/arrow_down_icon.svg">Menu</Button>
+
+      <Heading className={{self: "font-bold"}}>Some Heading</Heading>
+      <Text>Some paragraph test</Text>
+
+      <Button href="https://www.youtube.com">YouTube</Button>
+
+      <Dropdown
+      mode="select"
+      className={{
+        list: {
+          // self: " w-[200%]"
+          self: "overflow-y-scroll"
+        },  
+        menuButton: {
+          __selected: {
+            self: "rounded-b-none"
+          }
+        }
+      }}
+      // mode="links"
+      >
+        <Dropdown.Item>Item One</Dropdown.Item>
+        <Dropdown.Item rightIcon="/icons/trash_icon.svg">Item Two</Dropdown.Item>
+        <Dropdown.Item rightIcon="/icons/trash_icon.svg">Item Three Long Name</Dropdown.Item>
+        <Dropdown.Item>Item Three</Dropdown.Item>
+        <Dropdown.Item>Item Three</Dropdown.Item>
+        <Dropdown.Item>Item Three</Dropdown.Item>
+      </Dropdown>
 
 {/* 
       <Button>Normal</Button>

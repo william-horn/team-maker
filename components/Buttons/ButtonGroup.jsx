@@ -150,7 +150,11 @@ const GroupButton = ({
         );
 
       case "checkbox":
-        const checkboxClass = mergeClass(group_className.checkboxButton, importedClassName);
+        const checkboxClass = mergeClass(
+          group_className.checkboxButton, 
+          importedClassName, 
+          { _isSelected: isSelected 
+        });
 
         return (
           <span className={checkboxClass.self}>

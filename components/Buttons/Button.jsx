@@ -1,6 +1,21 @@
 "use client";
 
 /*
+  TODO:
+
+  * Button State
+    Button component currently uses state even when the user does not need a stateful button or
+    is importing their own state for the button to use. React does not recommend conditional logic 
+    for React hooks, so that is not an option. Create a clone of this button component that doesn't
+    use state, and use that as the template for this Button allowing for the option to use either.
+
+  * Stateful Button Side-Icons
+    Button component currently does NOT have the option to change side icons
+    based on button state, unlike it's <ButtonGroup.Button> counterpart. In the 
+    future, create an option for this in props for the Button component.
+*/
+
+/*
   File imports
 */
 import mergeClass from "@/util/mergeClass";
@@ -68,12 +83,6 @@ const Button = function({
     state || { _isSelected }
   );
 
-  // const styles = getStylesFromProps(
-  //   className, 
-  //   [preset, {...rest}],
-  //   state || { _isSelected }
-  // );
-
   // Button data holding state setter and getter. Gets passes to handler callbacks
   const buttonData = {
     isSelected: _isSelected,
@@ -83,7 +92,7 @@ const Button = function({
     buttonData.isSelected = !buttonData.isSelected;
     _setSelected(buttonData.isSelected);
 
-    onClick(buttonData);
+    onClick(state || buttonData);
   }
 
   // Handle page mount events
@@ -95,7 +104,6 @@ const Button = function({
     if (icon) {
       return (
         <Icon 
-        // preset={iconPreset}
         className={iconClass}
         utility 
         src={icon}

@@ -21,7 +21,7 @@ const Heading = ({
   // );
   // todo: adapt line height to text size
   const className = mergeClass({
-    self: "custom-heading leading-6 py-3 text-white text-sm"
+    self: "custom-heading leading-6 py-2 text-white text-lg"
   }, importedClassName);
 
   return (
