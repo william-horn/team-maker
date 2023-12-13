@@ -45,7 +45,7 @@ const GroupButton = ({
     onSelectionLimitReached,
     unselectLastChoice,
     buttonIdList,
-    selectionReport,
+    exportData,
     _activeIds,
     selectionLimit,
     onSelect: group_onSelect,
@@ -99,7 +99,7 @@ const GroupButton = ({
         const unselectedButtonId = _activeIds[_activeIds.length - 1];
 
         if (unselectedButtonId !== buttonData.id) {
-          const unselectedButtonData = selectionReport.current[unselectedButtonId] || { error: "no data" };
+          const unselectedButtonData = exportData.current[unselectedButtonId] || { error: "no data" };
           unselectedButtonData.isSelected = false;
           
           fireOnUnselect(unselectedButtonData);
@@ -126,9 +126,9 @@ const GroupButton = ({
   }
 
   if (isSelected) {
-    selectionReport.current[id] = buttonData;
+    exportData.current[id] = buttonData;
   } else {
-    delete selectionReport.current[id];
+    delete exportData.current[id];
   }
 
   const renderButton = () => {
@@ -223,7 +223,7 @@ const ButtonGroup = function({
   }
 
   const buttonIdList = [];
-  const selectionReport = useRef({});
+  const exportData = useRef({});
 
   const findButtonId = (buttonId) => {
     const idIndex = buttonIdList.findIndex(id => id === buttonId);
@@ -260,7 +260,7 @@ const ButtonGroup = function({
       mode,
       selectionLimit,
       findButtonId,
-      selectionReport,
+      exportData,
       findActiveId,
       updateActiveIds,
       _activeIds,

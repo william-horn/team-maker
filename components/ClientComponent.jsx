@@ -35,6 +35,7 @@ const ClientComponent = ({ children }) => {
       <ButtonGroup
       mode="checkbox"
       selectionLimit="2"
+      defaultSelect={["two"]}
       unselectLastChoice
       onSelect={onSelect}
       // itemPreset={buttonPreset1}
@@ -90,6 +91,11 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="select"
+      placeholder="Select State"
+      defaultSelect="two"
+      defaultValue="def"
+      rightIconUnselected="/icons/arrow_down_icon.svg"
+      rightIconSelected="/icons/arrow_up_icon.svg"
       className={{
         list: {
           // self: " w-[200%]"
@@ -101,14 +107,18 @@ const ClientComponent = ({ children }) => {
           }
         }
       }}
-      // mode="links"
-      >
-        <Dropdown.Item>Item One</Dropdown.Item>
-        <Dropdown.Item rightIcon="/icons/trash_icon.svg">Item Two</Dropdown.Item>
-        <Dropdown.Item rightIcon="/icons/trash_icon.svg">Item Three Long Name</Dropdown.Item>
-        <Dropdown.Item>Item Three</Dropdown.Item>
-        <Dropdown.Item>Item Three</Dropdown.Item>
-        <Dropdown.Item>Item Three</Dropdown.Item>
+      itemData={[
+        { id: "one", value: "uno", text: "Item One" },
+        { id: "two", value: "dos", text: "Item Two" },
+        { id: "three", value: "tres", text: "Item Three" },
+        { id: "four", value: "quatro", text: "Item Four" },
+        { id: "five", value: "sinco", text: "Item Five" }
+      ]}>
+        <Dropdown.Item id="one">Item One</Dropdown.Item>
+        <Dropdown.Item id="two">Item Two</Dropdown.Item>
+        <Dropdown.Item id="three">Item Three</Dropdown.Item>
+        <Dropdown.Item id="four">Item Four</Dropdown.Item>
+        <Dropdown.Item id="five">Item Five</Dropdown.Item>
       </Dropdown>
 
 {/* 

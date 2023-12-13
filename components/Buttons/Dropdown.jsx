@@ -8,16 +8,40 @@ import mergeClass from "@/util/mergeClass";
 
 const DropdownItem = function({
   children,
+  id,
   ...rest
 }) {
-  // const {
-    
-  // } = useDropdownContext();
+  const {
+    _menuOpen: group_menuOpen,
+    _setMenuOpen: group_setMenuOpen,
+    _itemSelected: group_itemSelected,
+    _setItemSelected: group_setItemSelected,
+    itemData: group_itemData,
+  } = useDropdownContext();
+
+  const itemData = group_itemData.find(v => v.id === id);
+  const isSelected = group_itemSelected.id === id;
+
+  if (!itemData) {
+    throw Error("Item data does not exist for id \"" + id + "\"");
+  }
+
+  const onItemSelected = () => {
+    if (!isSelected) {
+      group_setItemSelected(itemData);
+      group_setMenuOpen(false);
+    }
+  }
 
   return (
     <Button 
+    onClick={onItemSelected}
+    state={{ _isSelected: isSelected }}
     className={{
       self: "w-full rounded-none relative bg-transparent justify-center", 
+      __selected: {
+        self: "bg-button-hover-primary"
+      }
     }}
     {...rest}>
       {children}
@@ -26,13 +50,27 @@ const DropdownItem = function({
 }
 
 const Dropdown = function({
+  itemData,
   children,
+  placeholder,
+  defaultValue,
+  defaultSelect,
+  rightIconSelected,
+  leftIconSelected,
+  rightIconUnselected,
+  leftIconUnselected,
   className: importedClassName={}
 }) {
 
-  const [_itemSelected, _setItemSelected] = useState(null);
+  // initialize state hooks
+  const [_itemSelected, _setItemSelected] = useState(
+    defaultSelect 
+      ? itemData.find(v => v.id === defaultSelect) 
+      : { id: null, value: defaultValue, text: "Choose an Option" }
+  );
   const [_menuOpen, _setMenuOpen] = useState(false);
 
+  // all component styles
   let className = {
     self: "dropdown relative w-fit",
 
@@ -63,14 +101,20 @@ const Dropdown = function({
   return (
     <DropdownProvider
     value={{
-      
+      _itemSelected,
+      _setItemSelected,
+      _menuOpen,
+      _setMenuOpen,
+      itemData,
     }}>
       <div className={className.self}>
         <Button 
+        rightIcon={_menuOpen ? rightIconSelected : rightIconUnselected}
+        leftIcon={_menuOpen ? leftIconSelected : leftIconUnselected}
         className={className.menuButton}
         onClick={onMenuClick} 
         state={{ _isSelected: _menuOpen }}>
-          Some-Dropdown
+          {_itemSelected.text}
         </Button>
         <div className={className.list.self}>
           {children}
