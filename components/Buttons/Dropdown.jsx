@@ -10,6 +10,8 @@ import emptyFunc from "@/util/emptyFunc";
 const DropdownItem = function({
   children,
   id,
+  href,
+  className: importedClassName,
   ...rest
 }) {
   const {
@@ -18,14 +20,20 @@ const DropdownItem = function({
     _itemSelected: group_itemSelected,
     _setItemSelected: group_setItemSelected,
     itemData: group_itemData,
+    mode: group_mode,
+    className: group_className,
   } = useDropdownContext();
 
   const itemData = group_itemData[id];
-  const isSelected = group_itemSelected.id === id;
 
   if (!itemData) {
     throw Error("Item data does not exist for id \"" + id + "\"");
+  } else if (href && group_mode !== "weblink") {
+    throw Error("href can only be used in DropdownItem components if Dropdown mode is set to \"weblink\"");
   }
+
+  const isSelected = group_itemSelected.id === id;
+  const className = mergeClass(group_className.list.buttons, importedClassName);
 
   const onItemSelected = () => {
     if (!isSelected) {
@@ -34,26 +42,41 @@ const DropdownItem = function({
     }
   }
 
-  return (
-    <Button 
-    onClick={onItemSelected}
-    state={{ _isSelected: isSelected }}
-    className={{
-      self: "w-full rounded-none relative bg-transparent justify-center", 
-      __selected: {
-        self: "bg-button-hover-primary"
-      }
-    }}
-    {...rest}>
-      {children}
-    </Button>
-  );  
+  const renderButtonItem = () => {
+    switch (group_mode) {
+      case "select":
+        return (
+          <Button 
+          onClick={onItemSelected}
+          state={{ _isSelected: isSelected }}
+          className={className}
+          {...rest}>
+            {children}
+          </Button>
+        );
+
+      case "weblink":
+        return (
+          <Button 
+          className={className}
+          href={href}
+          {...rest}>
+            {children}
+          </Button>
+        );
+    }
+  }
+
+  return renderButtonItem();
 }
 
 const Dropdown = function({
+  mode="select",
   itemData={},
   children,
   hideMenuOnBlur=true,
+  toggleOnHover=false,
+  toggleOnClick=true,
   placeholder="Select an Option",
   defaultValue,
   defaultSelect,
@@ -67,7 +90,10 @@ const Dropdown = function({
   for (let key in itemData) itemData[key].id = key;
 
   // initialize state hooks
-  const [_itemSelected, _setItemSelected] = useState(itemData[defaultSelect] || { value: defaultValue, text: placeholder });
+  const [_itemSelected, _setItemSelected] = useState(
+    itemData[defaultSelect] 
+      || { id: "default", value: defaultValue, text: placeholder }
+  );
   const [_menuOpen, _setMenuOpen] = useState(false);
 
   // all component styles
@@ -75,11 +101,17 @@ const Dropdown = function({
     self: "dropdown relative w-fit",
 
     list: {
-      self: "absolute hidden flex-col w-full bg-button-primary list rounded-b overflow-hidden max-h-28"
+      self: "absolute hidden flex-col w-full bg-button-primary list rounded-b overflow-hidden max-h-28 z-[9999]",
+
+      buttons: {
+        self: "w-full rounded-none relative bg-transparent justify-center", 
+        __selected: {
+          self: "bg-button-hover-primary"
+        }
+      },
     },
 
     menuButton: {},
-    buttons: {},
 
     __selected: {
       list: {
@@ -95,12 +127,17 @@ const Dropdown = function({
   );
 
   const onMenuClick = () => {
-    _setMenuOpen(!_menuOpen);
+    if (toggleOnClick) {
+      _setMenuOpen(!_menuOpen);
+    }
   }
 
-  // useEffect(() => {
-  //   console.log("dropdown: ", _itemSelected);
-  // });
+  const showDropdown = () => _setMenuOpen(true);
+  const hideDropdown = () => _setMenuOpen(false);
+
+  useEffect(() => {
+    console.log("dropdown: ", _itemSelected);
+  });
 
   return (
     <DropdownProvider
@@ -109,11 +146,14 @@ const Dropdown = function({
       _setItemSelected,
       _menuOpen,
       _setMenuOpen,
+      className,
       itemData,
+      mode,
     }}>
-      <div className={className.self}>
+      <div className={className.self} onMouseLeave={toggleOnHover ? hideDropdown : emptyFunc}>
         <Button 
-        onBlur={hideMenuOnBlur ? () => _setMenuOpen(false) : emptyFunc}
+        onMouseEnter={toggleOnHover ? showDropdown : emptyFunc}
+        onBlur={hideMenuOnBlur ? hideDropdown : emptyFunc}
         rightIcon={_menuOpen ? rightIconSelected : rightIconUnselected}
         leftIcon={_menuOpen ? leftIconSelected : leftIconUnselected}
         className={className.menuButton}

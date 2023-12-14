@@ -97,9 +97,11 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="select"
-      hideMenuOnBlur={false}
-      placeholder="Select State"
-      defaultSelect="two"
+      hideMenuOnBlur={true}
+      toggleOnHover={false}
+      toggleOnClick={true}
+      // placeholder="Select State"
+      // defaultSelect="two"
       defaultValue="def"
       rightIconUnselected="/icons/arrow_down_icon.svg"
       rightIconSelected="/icons/trash_icon.svg"
@@ -143,6 +145,41 @@ const ClientComponent = ({ children }) => {
         <ButtonGroup.Button id="yes" className={{ text: { self: "text-green-500" }}}>Yes</ButtonGroup.Button>
         <ButtonGroup.Button id="no" className={{ text: { self: "text-red-500" }}}>No</ButtonGroup.Button>
       </ButtonGroup>
+
+
+      <Dropdown
+      mode="weblink"
+      hideMenuOnBlur={false}
+      toggleOnHover={true}
+      toggleOnClick={false}
+      // placeholder="Select State"
+      // defaultSelect="two"
+      defaultValue="def"
+      rightIconUnselected="/icons/arrow_down_icon.svg"
+      rightIconSelected="/icons/trash_icon.svg"
+      className={{
+        list: {
+          self: "overflow-y-scroll w-[200%]"
+        },  
+        menuButton: {
+          __selected: {
+            self: "rounded-b-none"
+          }
+        }
+      }}
+      itemData={{
+        "one": { value: "uno", text: "Item One" },
+        "two": { value: "dos", text: "Item Two" },
+        "three": { value: "tres", text: "Item Three" },
+        "four": { value: "quatro", text: "Item Four" },
+        "five": { value: "sinco", text: "Item Five" },
+      }}>
+        <Dropdown.Item id="one" href="https://www.youtube.com">Item One</Dropdown.Item>
+        <Dropdown.Item id="two" href="https://www.youtube.com">Item Two</Dropdown.Item>
+        <Dropdown.Item id="three" href="https://www.youtube.com">Item Three</Dropdown.Item>
+        <Dropdown.Item id="four" href="https://www.youtube.com">Item Four</Dropdown.Item>
+        <Dropdown.Item id="five" href="https://www.youtube.com">Item Five</Dropdown.Item>
+      </Dropdown>
 
 {/* 
       <Button>Normal</Button>
