@@ -8,16 +8,22 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        page: "var(--bg-color-page)",
+        "page": "var(--bg-color-page)",
         "button-primary": "var(--button-color-primary)",
         "button-hover-primary": "var(--button-hover-color-primary)",
+        "search-bar": "var(--bg-color-search-bar)",
+        "search-bar-list": "var(--bg-color-search-bar-list)",
+        "search-bar-result": "var(--bg-color-search-bar-result)",
+        "search-bar-result-hover": "var(--bg-color-hover-search-bar-result)",
       },
 
       textColor: {
-        primary: "var(--text-color-primary)",
-        secondary: "var(--text-color-secondary)",
-        muted: "var(--text-color-muted)",
-        error: "var(--text-color-error)"
+        "primary": "var(--text-color-primary)",
+        "secondary": "var(--text-color-secondary)",
+        "search-bar-result": "var(--text-color-search-bar-result)",
+        "search-bar-input": "var(--text-color-search-bar-input)",
+        "muted": "var(--text-color-muted)",
+        "error": "var(--text-color-error)"
       },
     },
   },

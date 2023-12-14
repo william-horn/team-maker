@@ -8,18 +8,52 @@
 
   } */
 
+  input {
+    all: unset;
+  }
+
   .wireframe * {
     outline: 1px solid red !important;
   } 
+
+    /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 15px rgba(47, 47, 51, 0.7); 
+    border-radius: 10px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #5f677e; 
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5f677e; 
+  }
 
   .theme-dark {
     --color-logo: orange;
 
     --bg-color-page: #2a2a32;
 
-    --button-color-primary: #616161;
+    --bg-color-search-bar: #404049;
+    --bg-color-search-bar-list: #404049;
+    --bg-color-search-bar-result: #404049;
+    --bg-color-hover-search-bar-result: #33333b;
+
+    --text-color-search-bar-result: white;
+    --text-color-search-bar-input: #d9d8df;
+
+    --button-color-primary: #404049;
     --button-color-secondary: blue;
-    --button-hover-color-primary: #4f4f4f;
+    --button-hover-color-primary: #505059;
 
     --text-color-primary: white;
     --text-color-secondary: orange;

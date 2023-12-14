@@ -1,26 +1,12 @@
 
-// import getStylesFromProps from "@/util/getStylesFromProps";
 import mergeClass from "@/util/mergeClass";
+import React from "react";
 
-// const className = {
-//   "custom-text": true,
-//   "line-height": "leading-6",
-//   "text-color": "text-white",
-//   "align-middle": true,
-//   "text-size": "text-sm",
-//   "block": true,
-// }
-
-const Text = ({ 
+const Text = React.forwardRef(({ 
   children, 
   className: importedClassName={},
-  // preset,
-  // ...rest
-}) => {
-  // const styles = getStylesFromProps(
-  //   className,
-  //   preset || {...rest}
-  // );
+  ...rest
+}, ref) => {
 
   const className = mergeClass({
     self: "custom-text leading-6 text-white align-middle text-sm block"
@@ -30,11 +16,13 @@ const Text = ({
 
   return (
     <p 
-    className={className.self}>
+    ref={ref}
+    className={className.self}
+    {...rest}>
       {children}
     </p>
   );
-};
+});
 
 export default Text;
 

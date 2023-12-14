@@ -1,7 +1,11 @@
+"use client";
 
 import { useRef } from 'react';
+import emptyFunc from '@/util/emptyFunc';
 
 const useLocalStorageRequest = (key, value) => {
+  if (typeof window === "undefined") return [emptyFunc, emptyFunc];
+
   let dataRef = useRef(value);
   const saved = JSON.parse(localStorage.getItem(key));
 

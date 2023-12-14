@@ -8,6 +8,8 @@ import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
 import Dropdown from "./Buttons/Dropdown";
 import Quantifier from "./Buttons/Quantifier";
+import Textbox from "./Textbox";
+import SearchBar from "./Searchbar";
 
 const ClientComponent = ({ children }) => {
 
@@ -18,11 +20,46 @@ const ClientComponent = ({ children }) => {
   return (
     <div className="p-5">
 
+      <SearchBar
+      placeholder="Search here or die"
+      leftIcon="/icons/search_icon.svg"
+      rightIcon="/icons/upload_icon.svg"
+      historySize={10}
+      className={{
+        self: "bg-search-bar w-[300px]",
+        historyList: {
+          self: "bg-search-bar",
+          inner: {
+            resultButton: {
+              self: "text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover"
+            }
+          }
+        }
+      }}
+      />
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
+
+      {/* <SearchBar
+      placeholder=""
+      leftIcon=""
+      rightIcon=""
+      onSearch={{}}
+      historyDomain={{}}
+      historySize={4}
+      /> */}
+
+      {/* <Textbox
+      placeholder="hello!"
+      /> */}
+
+      <Text className={{ self: "inline" }}>Please select a number: </Text>
       <Quantifier
-      increment={1}
+      className={{self: "inline-flex"}}
+      increment={9}
       defaultValue={5}
-      upperLimit={10}
-      lowerLimit={-10}
+      upperLimit={100000}
+      lowerLimit={-100000}
       />
 
       <ButtonGroup
@@ -90,7 +127,7 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="select"
-      hideMenuOnBlur={false}
+      hideMenuOnBlur={true}
       toggleOnHover={false}
       toggleOnClick={true}
       // placeholder="Select State"

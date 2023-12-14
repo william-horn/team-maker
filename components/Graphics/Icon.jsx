@@ -1,20 +1,5 @@
 import Image from "next/image"
 import mergeClass from "@/util/mergeClass"
-// import getStylesFromProps from "@/util/getStylesFromProps"
-
-// const className = {
-//   "relative": true,
-//   "overflow-hidden": true,
-//   "inline-block": true,
-//   "custom-icon": true,
-
-//   "width": "w-5",
-//   "height": "h-5",
-
-//   image: {
-//     "invert": true
-//   }
-// }
 
 const Icon = ({
   src, 
