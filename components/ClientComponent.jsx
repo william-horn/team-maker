@@ -20,6 +20,19 @@ const ClientComponent = ({ children }) => {
   return (
     <div className="p-5">
 
+      <Text className={{ self: "inline" }}>Wand Drops: </Text>
+      <Quantifier
+      className={{self: "inline-flex"}}
+      increment={1}
+      defaultValue={0}
+      upperLimit={100000}
+      lowerLimit={-100000}
+      />
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
+
+
+      {/* // !default search bar styles to these settings below */}
       <SearchBar
       placeholder="Search here or die"
       leftIcon="/icons/search_icon.svg"
