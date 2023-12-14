@@ -26,20 +26,17 @@ export default function ImageButton({
   src,
   className: importedClassName={},
   onClick=emptyFunc,
-  // preset,
   // ...rest
 }) {
-  // const finalPreset = applyPresetStyles(
-  //   {...className},
-  //   [preset, {...rest}]
-  // );
   let className = {
+    // button styles
     self: "p-0",
 
     inner: {
       self: "p-1"
     },
 
+    // icon styles
     icon: {
       self: "",
     }
@@ -52,14 +49,12 @@ export default function ImageButton({
 
   return (
     <Button
-    // preset={finalPreset}
     className={className}
     onClick={onClick}
     >
       <Icon
       src={src}
       className={className.icon}
-      // preset={finalPreset._image}
       />
     </Button>
   )

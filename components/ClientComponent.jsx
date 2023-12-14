@@ -7,30 +7,23 @@ import Heading from "./Typography/Heading";
 import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
 import Dropdown from "./Buttons/Dropdown";
-
-// const buttonPreset1 = {
-//   "bg-color": "bg-black",
-//   "bg-color-selected": "bg-pink-500",
-//   "text-color": "text-green-500",
-// }
-
-// const buttonPreset2 = {
-//   "bg-color": "bg-red-500",
-//   "bg-color-selected": "bg-yellow-500"
-// }
+import Quantifier from "./Buttons/Quantifier";
 
 const ClientComponent = ({ children }) => {
 
   const onSelect = (choice) => {
-    console.log("choice: ", choice);
+    // console.log("choice: ", choice);
   }
 
   return (
     <div className="p-5">
-      {/* <Text>Hello, world! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, quod.</Text>
-      <Text inline={true}>How are we? Lorem ipsum dolor sit amet.</Text><Button>test</Button><Text>lol</Text>
-      <Button>Default</Button>
-      <Button preset={buttonPreset1}>New Test</Button> */}
+
+      <Quantifier
+      increment={1}
+      defaultValue={5}
+      upperLimit={10}
+      lowerLimit={-10}
+      />
 
       <ButtonGroup
       mode="checkbox"
@@ -97,7 +90,7 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="select"
-      hideMenuOnBlur={true}
+      hideMenuOnBlur={false}
       toggleOnHover={false}
       toggleOnClick={true}
       // placeholder="Select State"

@@ -1,9 +1,5 @@
 "use client";
 
-// import {
-//   getStylesFromProps,
-//   applyPresetStyles
-// } from "@/util/getStylesFromProps";
 
 import mergeClass from "@/util/mergeClass";
 import { useState, useRef, useEffect } from "react";
@@ -23,10 +19,7 @@ const GroupButton = ({
   onSelect=emptyFunc,
   onUnselect=emptyFunc,
 
-  // preset={},
   id,
-  // value,
-  
   ...rest
 }) => {
   const buttonGroupContext = useButtonGroupContext();
@@ -42,11 +35,8 @@ const GroupButton = ({
     findActiveItemById,
     updateActiveItems,
     itemData,
-    // findButtonId,
     onSelectionLimitReached,
     unselectLastChoice,
-    // buttonIdList,
-    // exportData,
     _activeItems,
     selectionLimit,
     onSelect: group_onSelect,
@@ -56,7 +46,6 @@ const GroupButton = ({
     leftIconUnselected,
     leftIconSelected,
     className: group_className,
-    // itemPreset: group_preset,
   } = buttonGroupContext;
 
   // todo: throw error if button id already exists
@@ -65,8 +54,6 @@ const GroupButton = ({
   }
 
   mode = mode || group_mode;
-  // buttonIdList.push(id);
-  
   const isSelected = findActiveItemById(id).found;
   
   const buttonData = { 
@@ -74,11 +61,6 @@ const GroupButton = ({
     groupName, 
     isSelected
   };
-
-  // preset = applyPresetStyles(
-  //   {...group_preset},
-  //   preset
-  // );
 
   const fireOnSelect = (...args) => {
     group_onSelect(...args);
@@ -134,7 +116,6 @@ const GroupButton = ({
           onClick={buttonClick} 
           state={{ _isSelected: isSelected }}
           className={mergeClass(group_className.selectButton, importedClassName)}
-          // preset={preset}
           {...rest}
           >
             {children}
@@ -181,7 +162,6 @@ const ButtonGroup = function({
   selectionLimit=-1,
   mode="select",
 
-  // itemPreset={},
   rightIconSelected,
   rightIconUnselected,
   leftIconUnselected,
@@ -218,14 +198,6 @@ const ButtonGroup = function({
     throw Error("In <ButtonGroup>: Initially selected options '[" + defaultSelect + "]' cannot exceed selection limit of '" + selectionLimit + "'");
   }
 
-  // const buttonIdList = [];
-  // const exportData = useRef({});
-
-  // const findButtonId = (buttonId) => {
-  //   const idIndex = buttonIdList.findIndex(id => id === buttonId);
-  //   return { found: idIndex !== -1, index: idIndex }
-  // }
-
   const findActiveItemById = (id) => {
     const idIndex = _activeItems.findIndex(data => data.id === id);
     return { found: idIndex !== -1, index: idIndex };
@@ -260,22 +232,18 @@ const ButtonGroup = function({
       mode,
       selectionLimit,
       itemData,
-      // findButtonId,
-      // exportData,
       findActiveItemById,
       updateActiveItems,
       _activeItems,
       onSelect,
       unselectLastChoice,
       onSelectionLimitReached,
-      // buttonIdList,
       onUnselect,
       rightIconSelected,
       rightIconUnselected,
       leftIconUnselected,
       leftIconSelected,
       className,
-      // itemPreset,
     }}
     >
       <div className={className.self}>

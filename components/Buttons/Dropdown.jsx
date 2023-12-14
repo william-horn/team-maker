@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Button from "./Button";
 import DropdownProvider from "@/providers/DropdownProvider";
 import { useDropdownContext } from "@/providers/DropdownProvider";
@@ -95,6 +95,7 @@ const Dropdown = function({
       || { id: "default", value: defaultValue, text: placeholder }
   );
   const [_menuOpen, _setMenuOpen] = useState(false);
+  const dropdownContainer = useRef(null);
 
   // all component styles
   let className = {
@@ -135,9 +136,18 @@ const Dropdown = function({
   const showDropdown = () => _setMenuOpen(true);
   const hideDropdown = () => _setMenuOpen(false);
 
+  // >> This logic is required for hiding the dropdown when focus is lost since "onBlur" fires before click events
+  const onDropdownBlur = (event) => {
+    if (!dropdownContainer.current.contains(event.target) && hideMenuOnBlur) {
+      hideDropdown();
+    }
+  }
+
   useEffect(() => {
-    console.log("dropdown: ", _itemSelected);
-  });
+    window.addEventListener("mousedown", onDropdownBlur);
+    return () => window.removeEventListener("mousedown", onDropdownBlur);
+  }, []);
+  // <<
 
   return (
     <DropdownProvider
@@ -150,18 +160,22 @@ const Dropdown = function({
       itemData,
       mode,
     }}>
-      <div className={className.self} onMouseLeave={toggleOnHover ? hideDropdown : emptyFunc}>
+      <div 
+      ref={dropdownContainer}
+      className={className.self} 
+      onMouseLeave={toggleOnHover ? hideDropdown : emptyFunc}>
         <Button 
+        onClick={onMenuClick} 
+        // onBlur={hideMenuOnBlur ? hideDropdown : emptyFunc}
         onMouseEnter={toggleOnHover ? showDropdown : emptyFunc}
-        onBlur={hideMenuOnBlur ? hideDropdown : emptyFunc}
         rightIcon={_menuOpen ? rightIconSelected : rightIconUnselected}
         leftIcon={_menuOpen ? leftIconSelected : leftIconUnselected}
         className={className.menuButton}
-        onClick={onMenuClick} 
         state={{ _isSelected: _menuOpen }}>
           {_itemSelected.text}
         </Button>
-        <div className={className.list.self}>
+        <div 
+        className={className.list.self}>
           {children}
         </div>
       </div>
