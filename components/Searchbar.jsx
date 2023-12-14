@@ -118,14 +118,15 @@ const SearchBar = ({
   }
 
   let className = {
-    self: "relative rounded",
+    self: "relative rounded bg-search-bar",
 
     historyList: {
-      self: "absolute w-full bg-white rounded-b-md top-full z-[1000]",
+      self: "absolute w-full rounded-b-md top-full z-[1000] bg-search-bar",
       inner: {
         self: "px-3 py-2 overflow-y-auto max-h-[200px]",
         resultButton: {
-          self: "w-full text-left text-[#6900ff] font-medium transition-colors duration-200 rounded hover:bg-gray-200 items-center",
+          //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
+          self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover items-center ",
         },
       }
     }

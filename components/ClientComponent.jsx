@@ -32,22 +32,13 @@ const ClientComponent = ({ children }) => {
       <div className="h-[10px] my-5 w-full bg-black"></div>
 
 
-      {/* // !default search bar styles to these settings below */}
       <SearchBar
       placeholder="Search here or die"
       leftIcon="/icons/search_icon.svg"
       rightIcon="/icons/upload_icon.svg"
       historySize={10}
       className={{
-        self: "bg-search-bar w-[300px]",
-        historyList: {
-          self: "bg-search-bar",
-          inner: {
-            resultButton: {
-              self: "text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover"
-            }
-          }
-        }
+        self: "w-[300px]",
       }}
       />
 
@@ -192,9 +183,9 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="weblink"
-      hideMenuOnBlur={false}
+      hideMenuOnBlur={true}
       toggleOnHover={true}
-      toggleOnClick={false}
+      toggleOnClick={true}
       // placeholder="Select State"
       // defaultSelect="two"
       defaultValue="def"
