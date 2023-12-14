@@ -97,6 +97,7 @@ const ClientComponent = ({ children }) => {
 
       <Dropdown
       mode="select"
+      hideMenuOnBlur={false}
       placeholder="Select State"
       defaultSelect="two"
       defaultValue="def"

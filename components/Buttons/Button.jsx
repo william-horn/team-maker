@@ -49,7 +49,7 @@ const Button = function({
   rightIcon,
   href,
 
-  // ...rest
+  ...rest
 }) {
 
   // Create button state
@@ -124,14 +124,15 @@ const Button = function({
   
   return (
     href
-      ? <Link className={className.self} href={href}>
+      ? <Link className={className.self} href={href} {...rest}>
           {renderButtonContent()}
         </Link>
       : <button 
         className={className.self}
         onMouseEnter={() => onMouseEnter()} 
         onMouseLeave={() => onMouseLeave()}
-        onClick={processClick}>
+        onClick={processClick}
+        {...rest}>
           {renderButtonContent()}
         </button>
   )

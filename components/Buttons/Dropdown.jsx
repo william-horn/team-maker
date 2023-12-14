@@ -5,6 +5,7 @@ import Button from "./Button";
 import DropdownProvider from "@/providers/DropdownProvider";
 import { useDropdownContext } from "@/providers/DropdownProvider";
 import mergeClass from "@/util/mergeClass";
+import emptyFunc from "@/util/emptyFunc";
 
 const DropdownItem = function({
   children,
@@ -52,6 +53,7 @@ const DropdownItem = function({
 const Dropdown = function({
   itemData={},
   children,
+  hideMenuOnBlur=true,
   placeholder="Select an Option",
   defaultValue,
   defaultSelect,
@@ -111,6 +113,7 @@ const Dropdown = function({
     }}>
       <div className={className.self}>
         <Button 
+        onBlur={hideMenuOnBlur ? () => _setMenuOpen(false) : emptyFunc}
         rightIcon={_menuOpen ? rightIconSelected : rightIconUnselected}
         leftIcon={_menuOpen ? leftIconSelected : leftIconUnselected}
         className={className.menuButton}
