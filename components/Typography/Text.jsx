@@ -24,5 +24,6 @@ const Text = React.forwardRef(function({
   );
 });
 
+Text.displayName = "Text"; // for ESlint
 export default Text;
 

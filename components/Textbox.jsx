@@ -10,4 +10,5 @@ const Textbox = React.forwardRef(function({
   );
 });
 
+Textbox.displayName = "Textbox"; // for ESlint
 export default Textbox;
