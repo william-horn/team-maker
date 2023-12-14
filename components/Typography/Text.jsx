@@ -2,11 +2,11 @@
 import mergeClass from "@/util/mergeClass";
 import React from "react";
 
-const Text = React.forwardRef(({ 
+const Text = React.forwardRef(function({ 
   children, 
   className: importedClassName={},
   ...rest
-}, ref) => {
+}, ref) {
 
   const className = mergeClass({
     self: "custom-text leading-6 text-white align-middle text-sm block"

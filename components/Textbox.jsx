@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-const Textbox = React.forwardRef(({
+const Textbox = React.forwardRef(function({
   
-}, ref) => {
+}, ref) {
   return (
     <input className="bg-white"/>
   );
