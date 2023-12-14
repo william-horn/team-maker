@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import DropdownProvider from "@/providers/DropdownProvider";
 import { useDropdownContext } from "@/providers/DropdownProvider";
@@ -19,7 +19,7 @@ const DropdownItem = function({
     itemData: group_itemData,
   } = useDropdownContext();
 
-  const itemData = group_itemData.find(v => v.id === id);
+  const itemData = group_itemData[id];
   const isSelected = group_itemSelected.id === id;
 
   if (!itemData) {
@@ -50,9 +50,9 @@ const DropdownItem = function({
 }
 
 const Dropdown = function({
-  itemData,
+  itemData={},
   children,
-  placeholder,
+  placeholder="Select an Option",
   defaultValue,
   defaultSelect,
   rightIconSelected,
@@ -61,13 +61,11 @@ const Dropdown = function({
   leftIconUnselected,
   className: importedClassName={}
 }) {
+  // mutate itemData object to include id within metadata object
+  for (let key in itemData) itemData[key].id = key;
 
   // initialize state hooks
-  const [_itemSelected, _setItemSelected] = useState(
-    defaultSelect 
-      ? itemData.find(v => v.id === defaultSelect) 
-      : { id: null, value: defaultValue, text: "Choose an Option" }
-  );
+  const [_itemSelected, _setItemSelected] = useState(itemData[defaultSelect] || { value: defaultValue, text: placeholder });
   const [_menuOpen, _setMenuOpen] = useState(false);
 
   // all component styles
@@ -97,6 +95,10 @@ const Dropdown = function({
   const onMenuClick = () => {
     _setMenuOpen(!_menuOpen);
   }
+
+  // useEffect(() => {
+  //   console.log("dropdown: ", _itemSelected);
+  // });
 
   return (
     <DropdownProvider

@@ -25,7 +25,7 @@ const GroupButton = ({
 
   // preset={},
   id,
-  value,
+  // value,
   
   ...rest
 }) => {
@@ -39,14 +39,15 @@ const GroupButton = ({
     groupName,
     mode: group_mode,
     onClick: group_onClick,
-    findActiveId,
-    updateActiveIds,
-    findButtonId,
+    findActiveItemById,
+    updateActiveItems,
+    itemData,
+    // findButtonId,
     onSelectionLimitReached,
     unselectLastChoice,
-    buttonIdList,
-    exportData,
-    _activeIds,
+    // buttonIdList,
+    // exportData,
+    _activeItems,
     selectionLimit,
     onSelect: group_onSelect,
     onUnselect: group_onUnselect,
@@ -58,20 +59,18 @@ const GroupButton = ({
     // itemPreset: group_preset,
   } = buttonGroupContext;
 
+  // todo: throw error if button id already exists
   if (!id) {
     throw Error("ButtonGroup.Button components must be given a unique id prop");
-  } else if (findButtonId(id).found) {
-    throw Error("ButtonGroup.Button must have a unique id, '" + id + "' already exists.");
   }
 
   mode = mode || group_mode;
-  buttonIdList.push(id);
+  // buttonIdList.push(id);
   
-  const isSelected = findActiveId(id).found;
+  const isSelected = findActiveItemById(id).found;
   
   const buttonData = { 
-    id, 
-    value, 
+    ...itemData[id],
     groupName, 
     isSelected
   };
@@ -94,16 +93,15 @@ const GroupButton = ({
   const buttonClick = () => {
     buttonData.isSelected = !isSelected;
 
-    if (selectionLimit > -1 && _activeIds.length >= selectionLimit && buttonData.isSelected) {
+    if (selectionLimit > -1 && _activeItems.length >= selectionLimit && buttonData.isSelected) {
       if (unselectLastChoice) {
-        const unselectedButtonId = _activeIds[_activeIds.length - 1];
+        const unselectedButtonData = _activeItems[_activeItems.length - 1];
 
-        if (unselectedButtonId !== buttonData.id) {
-          const unselectedButtonData = exportData.current[unselectedButtonId] || { error: "no data" };
+        if (unselectedButtonData.id !== buttonData.id) {
           unselectedButtonData.isSelected = false;
           
           fireOnUnselect(unselectedButtonData);
-          updateActiveIds(unselectedButtonId, unselectedButtonData.isSelected);
+          updateActiveItems(unselectedButtonData);
         }
 
       } else {
@@ -122,13 +120,7 @@ const GroupButton = ({
       fireOnUnselect(buttonData);
     }
 
-    updateActiveIds(buttonData.id, buttonData.isSelected);
-  }
-
-  if (isSelected) {
-    exportData.current[id] = buttonData;
-  } else {
-    delete exportData.current[id];
+    updateActiveItems(buttonData);
   }
 
   const renderButton = () => {
@@ -184,6 +176,7 @@ const ButtonGroup = function({
   // global
   unselectLastChoice=false,
   defaultSelect=[],
+  itemData={},
   groupName="Button Group",
   selectionLimit=-1,
   mode="select",
@@ -194,6 +187,9 @@ const ButtonGroup = function({
   leftIconUnselected,
   leftIconSelected,
 }) {
+
+  // mutate itemData object to include id within metadata object
+  for (let key in itemData) itemData[key].id = key;
 
   // Button group styles
   let className = {
@@ -216,41 +212,45 @@ const ButtonGroup = function({
   );
 
   // Button group state (active buttons)
-  const [_activeIds, _setActiveIds] = useState(defaultSelect);
+  const [_activeItems, _setActiveItems] = useState(defaultSelect.map(id => itemData[id]));
 
   if (selectionLimit > -1 && defaultSelect.length > selectionLimit) {
     throw Error("In <ButtonGroup>: Initially selected options '[" + defaultSelect + "]' cannot exceed selection limit of '" + selectionLimit + "'");
   }
 
-  const buttonIdList = [];
-  const exportData = useRef({});
+  // const buttonIdList = [];
+  // const exportData = useRef({});
 
-  const findButtonId = (buttonId) => {
-    const idIndex = buttonIdList.findIndex(id => id === buttonId);
-    return { found: idIndex !== -1, index: idIndex }
-  }
+  // const findButtonId = (buttonId) => {
+  //   const idIndex = buttonIdList.findIndex(id => id === buttonId);
+  //   return { found: idIndex !== -1, index: idIndex }
+  // }
 
-  const findActiveId = (buttonId) => {
-    const idIndex = _activeIds.findIndex(id => id === buttonId);
+  const findActiveItemById = (id) => {
+    const idIndex = _activeItems.findIndex(data => data.id === id);
     return { found: idIndex !== -1, index: idIndex };
   }
   
-  const updateActiveIds = (id, isSelected) => {
-    if (isSelected) {
-      _setActiveIds(prev => {
-        prev.push(id);
+  const updateActiveItems = (buttonData) => {
+    if (buttonData.isSelected) {
+      _setActiveItems(prev => {
+        prev.push(buttonData);
         return [...prev];
       });
 
     } else {
-      const idResult = findActiveId(id);
+      const idResult = findActiveItemById(buttonData.id);
       
-      _setActiveIds(prev => {
+      _setActiveItems(prev => {
         prev.splice(idResult.index, 1);
         return [...prev];
       });
     }
   }
+
+  // useEffect(() => {
+  //   console.log("data: ", _activeItems);
+  // });
 
   return (
     <ButtonGroupProvider
@@ -259,15 +259,16 @@ const ButtonGroup = function({
       groupName,
       mode,
       selectionLimit,
-      findButtonId,
-      exportData,
-      findActiveId,
-      updateActiveIds,
-      _activeIds,
+      itemData,
+      // findButtonId,
+      // exportData,
+      findActiveItemById,
+      updateActiveItems,
+      _activeItems,
       onSelect,
       unselectLastChoice,
       onSelectionLimitReached,
-      buttonIdList,
+      // buttonIdList,
       onUnselect,
       rightIconSelected,
       rightIconUnselected,

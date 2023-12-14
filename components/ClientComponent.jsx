@@ -22,7 +22,7 @@ import Dropdown from "./Buttons/Dropdown";
 const ClientComponent = ({ children }) => {
 
   const onSelect = (choice) => {
-    console.log(choice);
+    console.log("choice: ", choice);
   }
 
   return (
@@ -38,6 +38,8 @@ const ClientComponent = ({ children }) => {
       defaultSelect={["two"]}
       unselectLastChoice
       onSelect={onSelect}
+      rightIconUnselected="/icons/arrow_down_icon.svg"
+      rightIconSelected="/icons/arrow_up_icon.svg"
       // itemPreset={buttonPreset1}
       className={{
         self: "gap-1",
@@ -54,8 +56,12 @@ const ClientComponent = ({ children }) => {
           }
         }
       }}
-      rightIconUnselected="/icons/arrow_down_icon.svg"
-      rightIconSelected="/icons/arrow_up_icon.svg"
+      itemData={{
+        "one": { value: "uno" },
+        "two": { value: "dos" },
+        "three": { value: "tres" },
+        "four": { value: "quatro" },
+      }}
       >
         <ButtonGroup.Button id="one">Lorem ipsum dolor sit amet.</ButtonGroup.Button>
         <ButtonGroup.Button id="two">Lorem ipsum dolor sit amet.</ButtonGroup.Button>
@@ -95,11 +101,10 @@ const ClientComponent = ({ children }) => {
       defaultSelect="two"
       defaultValue="def"
       rightIconUnselected="/icons/arrow_down_icon.svg"
-      rightIconSelected="/icons/arrow_up_icon.svg"
+      rightIconSelected="/icons/trash_icon.svg"
       className={{
         list: {
-          // self: " w-[200%]"
-          self: "overflow-y-scroll"
+          self: "overflow-y-scroll w-[200%]"
         },  
         menuButton: {
           __selected: {
@@ -107,19 +112,36 @@ const ClientComponent = ({ children }) => {
           }
         }
       }}
-      itemData={[
-        { id: "one", value: "uno", text: "Item One" },
-        { id: "two", value: "dos", text: "Item Two" },
-        { id: "three", value: "tres", text: "Item Three" },
-        { id: "four", value: "quatro", text: "Item Four" },
-        { id: "five", value: "sinco", text: "Item Five" }
-      ]}>
+      itemData={{
+        "one": { value: "uno", text: "Item One" },
+        "two": { value: "dos", text: "Item Two" },
+        "three": { value: "tres", text: "Item Three" },
+        "four": { value: "quatro", text: "Item Four" },
+        "five": { value: "sinco", text: "Item Five" },
+      }}>
         <Dropdown.Item id="one">Item One</Dropdown.Item>
         <Dropdown.Item id="two">Item Two</Dropdown.Item>
         <Dropdown.Item id="three">Item Three</Dropdown.Item>
         <Dropdown.Item id="four">Item Four</Dropdown.Item>
         <Dropdown.Item id="five">Item Five</Dropdown.Item>
       </Dropdown>
+
+      <Text className={{ self: "inline" }}>Would you like to continue (Yes/No)? </Text>
+      <ButtonGroup
+      mode="checkbox"
+      selectionLimit={1}
+      unselectLastChoice
+      className={{
+        self: "flex-row inline-flex"
+      }}
+      itemData={{
+        "yes": { value: true },
+        "no": { value: false }
+      }}
+      >
+        <ButtonGroup.Button id="yes" className={{ text: { self: "text-green-500" }}}>Yes</ButtonGroup.Button>
+        <ButtonGroup.Button id="no" className={{ text: { self: "text-red-500" }}}>No</ButtonGroup.Button>
+      </ButtonGroup>
 
 {/* 
       <Button>Normal</Button>
