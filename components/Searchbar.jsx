@@ -1,30 +1,35 @@
 
 "use client";
 
-// import stringIsEmpty from '../lib/helpers/stringIsEmpty';
-// import Icon from "./Icon";
-// import Button from "./buttons/Button";
-// // import { useAppContext } from "../providers/AppProvider";
-// import removeExtraWhitespace from "../lib/helpers/removeExtraWhitespace";
-// import useLocalStorageRequest from "../hooks/useLocalStorageRequest";
 import { twMerge } from "tailwind-merge";
 import Icon from './Graphics/Icon';
 import stringIsEmpty from '@/util/stringIsEmpty';
 import Button from './Buttons/Button';
 import removeExtraWhitespace from '@/util/removeExtraWhitespace';
 import useLocalStorageRequest from '@/hooks/useLocalStorageRequest';
+import { filterSearchResults } from "@/util/filterSearchResults";
+import { escapeRegex } from "@/util/escapeRegex";
 import Enum from '../enum';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useEffect } from 'react';
 import mergeClass from '@/util/mergeClass';
+import emptyFunc from "@/util/emptyFunc";
+import Text from "./Typography/Text";
 
 const SearchBar = ({
   className: importedClassName={},
-  placeholder, 
+  placeholder="Search...", 
+
   onSearch=search => console.log('searched for: ', search),
+  onHistoryResultIconClick=emptyFunc,
+
   historyDomain=Enum.StorageKeys.SearchHistoryDomain.Primary.value,
-  historySize=3,
-  leftIcon,
+  historySize=100,
+  displayResultsSize=3,
+  displayHistorySize=3,
+  historyResultIcon,
+
+  leftIcon="/icons/search_icon.svg",
   rightIcon,
 }) => {
   // Get search history getters/setters for local storage
@@ -34,6 +39,7 @@ const SearchBar = ({
 
   // Create search state for when the search bar is interacted with
   const [searchState, setSearchState] = useState(Enum.SearchState.Idle.value);
+  const [searchInput, setSearchInput] = useState("");
   const searchBarRef = useRef(null);
   const searchFieldRef = useRef(null);
 
@@ -57,11 +63,10 @@ const SearchBar = ({
   // todo: centralize this logic in the top level component, and pass a callback to handle this instead of making a new event listener
   useEffect(() => {
     window.addEventListener('mousedown', onSearchUnfocus);
-    window.addEventListener('blur', unfocusSearch);
-    console.log('running search bar');
+    // window.addEventListener('blur', unfocusSearch);
     return () => {
       window.removeEventListener('mousedown', onSearchUnfocus);
-      window.removeEventListener('blur', unfocusSearch);
+      // window.removeEventListener('blur', unfocusSearch);
     }
   }, []);
 
@@ -72,6 +77,7 @@ const SearchBar = ({
 
   const filterSearch = (searchQuery) => {
     unfocusSearch();
+
     const filteredQuery = removeExtraWhitespace(searchQuery);
 
     // Check for whitespace-exclusive searches
@@ -107,13 +113,15 @@ const SearchBar = ({
   // When a search is invoked through the search result drop-down menu
   const onSearchResultQuery = (result) => {
     searchFieldRef.current.value = result;
+    setSearchInput(result);
     filterSearch(result);
   }
 
   // When a search is submitted in the search bar
   const onEnter = (event) => {
     if (event.key === Enum.Keys.Enter.value) {
-      filterSearch(searchFieldRef.current.value);
+      // filterSearch(searchFieldRef.current.value);
+      filterSearch(searchInput);
     }
   }
 
@@ -129,36 +137,81 @@ const SearchBar = ({
           self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover items-center ",
         },
       }
+    },
+
+    __selected: {
+      self: "rounded-b-none"
     }
   }
 
   className = mergeClass(
     className,
-    importedClassName
+    importedClassName,
+    { _isSelected: searchState === Enum.SearchState.Focused }
   );
 
   // Render out a single search result
-  const renderSearchResult = (result) => (
+  const renderSearchResult = (resultData) => (
     <Button 
     key={uuidv4()}
-    onClick={() => onSearchResultQuery(result)}
+    onClick={() => onSearchResultQuery(resultData.source)}
     className={className.historyList.inner.resultButton}>
-      {result}
+      {
+        resultData.tags.map(tagData => {
+          switch (tagData.type) {
+            case Enum.SearchMatchType.FirstMatch:
+              return <span key={tagData.key} className="text-[#d58eff]">{tagData.source}</span>
+
+            case Enum.SearchMatchType.WordMatch:
+              return <span key={tagData.key} className="text-[#fff7b9]">{tagData.source}</span>
+
+            case Enum.SearchMatchType.AnyMatch:
+              return <span key={tagData.key} className="text-[#8effdb]">{tagData.source}</span>
+
+            case Enum.SearchMatchType.Normal:
+              return <span key={tagData.key}>{tagData.source}</span>
+          }
+        })
+      }
     </Button>
   );
 
+  //* EXPENSIVE function
+  const getSearchResults = () => {
+    // pull from search result arrays
+    const historyLogs = (getSearchHistory(historyDomain) || []);
+    // const otherResults = {}; 
+
+    // convert search result arrays to arrays of result data
+    const historyResults = filterSearchResults(
+      historyLogs, 
+      searchInput
+    )
+    .slice(0, displayHistorySize);
+
+    // compile all result data arrays down to one, and sort by search match type
+    const allResults = [
+      ...historyResults,
+    ]
+    .slice(0, displayResultsSize)
+    .sort((a, b) => b.priority - a.priority);
+
+    console.log("results: ", allResults);
+    return allResults;
+  }
+
   // The drop-down search results when the search bar is focused
   const renderSearchResults = () => {
-    const historyLogs = getSearchHistory(historyDomain);
-    
-    if (searchState === Enum.SearchState.Focused.value && historyLogs.length > 0) {
+    if ((searchState === Enum.SearchState.Focused.value || searchState === Enum.SearchState.Typing.value)) {
+      const searchResults = getSearchResults();
+      
       return (
         <div className={className.historyList.self}>
           <div className={className.historyList.inner.self}>
-            {
-              historyLogs.map(result => {
-                return renderSearchResult(result);
-              })
+            { 
+              searchResults.length > 0
+                ? searchResults.map(renderSearchResult)
+                : <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
             }
           </div>
         </div>
@@ -168,9 +221,16 @@ const SearchBar = ({
     return <></>;
   }
 
-  if (searchState === Enum.SearchState.Focused.value) {
-    className.self = twMerge(className.self, "rounded-b-none");
+  const onSearchTyping = () => {
+    setSearchState(Enum.SearchState.Typing.value);
+    setSearchInput(searchFieldRef.current.value);
   }
+
+  // if (searchState === Enum.SearchState.Focused.value) {
+  //   className.self = twMerge(className.self, "rounded-b-none");
+  // }
+
+  console.log("Search state: ", searchState);
 
   return (
     <div
@@ -184,6 +244,7 @@ const SearchBar = ({
         ref={searchFieldRef} 
         onKeyUp={onEnter}
         onFocus={onSearchFocus} 
+        onChange={onSearchTyping}
         className="w-full h-full mx-2 text-[#d9d8df]" 
         type="text" 
         placeholder={placeholder} 

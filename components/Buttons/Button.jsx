@@ -113,13 +113,13 @@ const Button = function({
   }
 
   const renderButtonContent = () => <>
-    {renderIcon(leftIcon, className.leftIcon)}
+    {renderIcon(leftIcon || className.leftIcon.src, className.leftIcon)}
 
     <span className={className.inner.self}>
       {children}
     </span>
 
-    {renderIcon(rightIcon, className.rightIcon)}
+    {renderIcon(rightIcon || className.rightIcon.src, className.rightIcon)}
   </>
   
   return (

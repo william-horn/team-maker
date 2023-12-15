@@ -20,6 +20,23 @@ const ClientComponent = ({ children }) => {
   return (
     <div className="p-5">
 
+      <div className="w-[30%] mx-auto">
+        <SearchBar 
+        // displayHistorySize={100}
+        // displayResultsSize={100}
+        // historyResultIcon
+        // onHistoryResultIconClick={emptyFunc}
+        className={{
+          historyList: {
+            inner: {
+              resultButton: {},
+              historyResultButton: {}
+            }
+          }
+        }}
+        />
+      </div>
+
       <Text className={{ self: "inline" }}>Wand Drops: </Text>
       <Quantifier
       className={{self: "inline-flex"}}

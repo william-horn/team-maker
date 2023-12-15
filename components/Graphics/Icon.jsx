@@ -54,20 +54,22 @@ const Icon = ({
   );
 
   return (
-    <span 
-    className={className.self}>
-      <Image
-      className={className.image.self}
-      fill
-      src={src}
-      sizes={
-        utility
-          ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
-          : "(min-width: 1024px) 512px, (min-width: 640px) 256px, 128px"
-      }
-      alt={alt || "icon alongside text"}
-      />
-    </span>
+    src
+      ? <span 
+          className={className.self}>
+            <Image
+            className={className.image.self}
+            fill
+            src={src}
+            sizes={
+              utility
+                ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
+                : "(min-width: 1024px) 512px, (min-width: 640px) 256px, 128px"
+            }
+            alt={alt || "icon alongside text"}
+            />
+          </span>
+        : <></>
   )
 }
 
