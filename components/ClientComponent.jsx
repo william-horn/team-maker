@@ -10,6 +10,7 @@ import Dropdown from "./Buttons/Dropdown";
 import Quantifier from "./Buttons/Quantifier";
 import Textbox from "./Textbox";
 import SearchBar from "./Searchbar";
+// import Form from "./Form";
 
 const ClientComponent = ({ children }) => {
 
@@ -19,6 +20,47 @@ const ClientComponent = ({ children }) => {
 
   return (
     <div className="p-5">
+
+      
+        <Quantifier
+        className={{self: "inline-flex"}}
+        increment={1}
+        defaultValue={0}
+        upperLimit={100000}
+        lowerLimit={-100000}
+        />
+
+        <Dropdown
+        mode="select"
+        hideMenuOnBlur={true}
+        toggleOnHover={false}
+        toggleOnClick={true}
+        defaultValue="def"
+        rightIconUnselected="/icons/arrow_down_icon.svg"
+        rightIconSelected="/icons/trash_icon.svg"
+        className={{
+          list: {
+            self: "overflow-y-scroll w-[200%]"
+          },  
+          menuButton: {
+            __selected: {
+              self: "rounded-b-none"
+            }
+          }
+        }}
+        itemData={{
+          "one": { value: "uno", text: "Item One" },
+          "two": { value: "dos", text: "Item Two" },
+          "three": { value: "tres", text: "Item Three" },
+          "four": { value: "quatro", text: "Item Four" },
+          "five": { value: "sinco", text: "Item Five" },
+        }}>
+          <Dropdown.Item id="one">Item One</Dropdown.Item>
+          <Dropdown.Item id="two">Item Two</Dropdown.Item>
+          <Dropdown.Item id="three">Item Three</Dropdown.Item>
+          <Dropdown.Item id="four">Item Four</Dropdown.Item>
+          <Dropdown.Item id="five">Item Five</Dropdown.Item>
+        </Dropdown>
 
       <div className="w-[30%] mx-auto">
         <SearchBar 

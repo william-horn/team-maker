@@ -22,6 +22,7 @@ module.exports = {
         "secondary": "var(--text-color-secondary)",
         "search-bar-result": "var(--text-color-search-bar-result)",
         "search-bar-input": "var(--text-color-search-bar-input)",
+        "search-history-result": "var(--text-color-search-history-result)",
         "muted": "var(--text-color-muted)",
         "error": "var(--text-color-error)"
       },

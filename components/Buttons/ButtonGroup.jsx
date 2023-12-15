@@ -5,6 +5,7 @@ import mergeClass from "@/util/mergeClass";
 import { useState, useRef, useEffect } from "react";
 import ButtonGroupProvider from "@/providers/ButtonGroupProvider";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
+// import { useFormContext } from "@/providers/FormProvider";
 import Button from "./Button";
 import emptyFunc from "@/util/emptyFunc";
 import Text from "../Typography/Text";
@@ -159,6 +160,7 @@ const ButtonGroup = function({
   defaultSelect=[],
   itemData={},
   groupName="Button Group",
+  formName="buttonGroup",
   selectionLimit=-1,
   mode="select",
 

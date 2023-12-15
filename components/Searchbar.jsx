@@ -21,7 +21,6 @@ const SearchBar = ({
   placeholder="Search...", 
 
   onSearch=search => console.log('searched for: ', search),
-  onHistoryResultIconClick=emptyFunc,
 
   historyDomain=Enum.StorageKeys.SearchHistoryDomain.Primary.value,
 
@@ -46,6 +45,20 @@ const SearchBar = ({
   const searchBarRef = useRef(null);
   const searchFieldRef = useRef(null);
 
+  // TODO: add focus mover for search results
+  const moveSearchResultFocus = (event) => {
+    // if (searchState === Enum.SearchState.Idle.value) return;
+    // searchFieldRef.current.blur();
+    
+    // const key = event.key;
+    
+    // if (key === "ArrowUp") {
+    //   console.log("move up");
+    // } else if (key === "ArrowDown") {
+    //   console.log("move down");
+    // }
+  }
+
   // Force unfocus on search bar
   const unfocusSearch = () => {
     searchFieldRef.current.blur();
@@ -65,14 +78,17 @@ const SearchBar = ({
   }
 
   // Window events for detecting when using is unfocusing the search bar
+  // TODO: add support for arrow-key focus on search results
   // todo: centralize this logic in the top level component, and pass a callback to handle this instead of making a new event listener
   //* important: when using more than one search bar, you may get repeating messages in output window. this is okay for now.
   useEffect(() => {
     window.addEventListener('mousedown', onSearchUnfocus);
-    // window.addEventListener('blur', unfocusSearch);
+    window.addEventListener('keyup', moveSearchResultFocus);
+    // window.addEventListener('blur', removeSearchResultFocus);
     return () => {
-      return window.removeEventListener('mousedown', onSearchUnfocus);
-      // window.removeEventListener('blur', unfocusSearch);
+      window.removeEventListener('mousedown', onSearchUnfocus);
+      window.removeEventListener('keyup', moveSearchResultFocus);
+      // window.removeEventListener('blur', removeSearchResultFocus);
     }
   }, []);
 
@@ -141,13 +157,19 @@ const SearchBar = ({
     historyList: {
       self: "absolute w-full rounded-b-md top-full z-[1000] bg-search-bar",
       inner: {
-        self: "overflow-y-auto max-h-[200px]",
+        self: "overflow-y-auto overflow-x-clip max-h-[200px]",
         resultButton: {
           //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
-          self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover items-center hover:underline",
+          self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover hover:underline",
+          iconButton: {
+            self: "hover:bg-transparent h-fit",
+            inner: {
+              self: "hover:bg-button-hover-primary hover:rounded"
+            }
+          }
         },
         historyResult: {
-          self: "italic text-[#dbdbdb]"
+          self: "italic text-search-history-result"
         },
         databaseResult: {},
       }
@@ -161,10 +183,7 @@ const SearchBar = ({
   className = mergeClass(
     className,
     importedClassName,
-    { 
-      _isSelected: searchState === Enum.SearchState.Focused.value
-        || searchState === Enum.SearchState.Typing.value 
-    }
+    { _isSelected: searchState !== Enum.SearchState.Idle.value }
   );
 
   // Render out a single search result
@@ -172,7 +191,7 @@ const SearchBar = ({
     const key = uuidv4();
     
     return (
-      <div key={key} className="flex">
+      <div key={key} className="flex items-center">
         {
           resultData.type === Enum.SearchResultType.History.value
             ? <ImageButton
@@ -188,23 +207,13 @@ const SearchBar = ({
                   return {...prev, [historyDomain]: finalResults }
                 });
               }}
-              className={{
-                self: "hover:bg-transparent",
-                inner: {
-                  self: "hover:bg-button-hover-primary hover:rounded"
-                }
-              }}
+              className={className.historyList.inner.resultButton.iconButton}
               hoverImage="/icons/trash_icon.svg"
               src="/icons/history_icon.svg"
               />
             : <ImageButton
               onClick={() => onSearchResultQuery(resultData.source)}
-              className={{
-                self: "hover:bg-transparent",
-                inner: {
-                  self: "hover:bg-button-hover-primary hover:rounded"
-                }
-              }}
+              className={className.historyList.inner.resultButton.iconButton}
               src="/icons/search_icon.svg"
               />
         }
@@ -229,7 +238,7 @@ const SearchBar = ({
                   return <span key={tagData.key} className="text-[#fff7b9] font-bold">{tagData.source}</span>
 
                 case Enum.SearchMatchType.AnyMatch:
-                  return <span key={tagData.key} className="text-[#8effdb] font-bold">{tagData.source}</span>
+                  return <span key={tagData.key} className="text-[#a7ff73] font-bold">{tagData.source}</span>
 
                 case Enum.SearchMatchType.Normal:
                   return <span key={tagData.key}>{tagData.source}</span>
@@ -242,7 +251,7 @@ const SearchBar = ({
   };
 
   //* EXPENSIVE function
-  const getSearchResults = () => {
+  const getSearchResults = (searchInput) => {
     // pull from search result arrays
     const historyLogs = (getSearchHistory(historyDomain) || []);
     const otherLogs = [
@@ -292,8 +301,8 @@ const SearchBar = ({
 
   // The drop-down search results when the search bar is focused
   const renderSearchResults = () => {
-    if ((searchState === Enum.SearchState.Focused.value || searchState === Enum.SearchState.Typing.value)) {
-      const searchResults = getSearchResults();
+    if ((searchState !== Enum.SearchState.Idle.value)) {
+      const searchResults = getSearchResults(searchState === Enum.SearchState.Focused.value ? '' : searchInput);
       
       return (
         <div className={className.historyList.self}>
@@ -317,10 +326,6 @@ const SearchBar = ({
     setSearchState(Enum.SearchState.Typing.value);
     setSearchInput(searchFieldRef.current.value);
   }
-
-  // if (searchState === Enum.SearchState.Focused.value) {
-  //   className.self = twMerge(className.self, "rounded-b-none");
-  // }
 
   return (
     <div
