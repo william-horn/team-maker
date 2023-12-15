@@ -46,6 +46,7 @@ const SearchBar = ({
   // Force unfocus on search bar
   const unfocusSearch = () => {
     searchFieldRef.current.blur();
+    searchFieldRef.current.value = removeExtraWhitespace(searchFieldRef.current.value);
     setSearchState(Enum.SearchState.Idle.value);
   }
 
