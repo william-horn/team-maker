@@ -151,36 +151,43 @@ const SearchBar = ({
   );
 
   // Render out a single search result
-  const renderSearchResult = (resultData) => (
-    <Button 
-    key={uuidv4()}
-    onClick={() => onSearchResultQuery(resultData.source)}
-    className={className.historyList.inner.resultButton}>
-      {
-        resultData.tags.map(tagData => {
-          switch (tagData.type) {
-            case Enum.SearchMatchType.FirstMatch:
-              return <span key={tagData.key} className="text-[#d58eff]">{tagData.source}</span>
+  const renderSearchResult = (resultData) => {
+    const key = uuidv4();
+    
+    return (
+      <div key={key} className="flex gap-2">
+        {/* // ! ADD HISTORY BUTTON HERE!! */}
+        <Button 
+        key={key}
+        onClick={() => onSearchResultQuery(resultData.source)}
+        className={className.historyList.inner.resultButton}>
+          {
+            resultData.tags.map(tagData => {
+              switch (tagData.type) {
+                case Enum.SearchMatchType.FirstMatch:
+                  return <span key={tagData.key} className="text-[#d58eff]">{tagData.source}</span>
 
-            case Enum.SearchMatchType.WordMatch:
-              return <span key={tagData.key} className="text-[#fff7b9]">{tagData.source}</span>
+                case Enum.SearchMatchType.WordMatch:
+                  return <span key={tagData.key} className="text-[#fff7b9]">{tagData.source}</span>
 
-            case Enum.SearchMatchType.AnyMatch:
-              return <span key={tagData.key} className="text-[#8effdb]">{tagData.source}</span>
+                case Enum.SearchMatchType.AnyMatch:
+                  return <span key={tagData.key} className="text-[#8effdb]">{tagData.source}</span>
 
-            case Enum.SearchMatchType.Normal:
-              return <span key={tagData.key}>{tagData.source}</span>
+                case Enum.SearchMatchType.Normal:
+                  return <span key={tagData.key}>{tagData.source}</span>
+              }
+            })
           }
-        })
-      }
-    </Button>
-  );
+        </Button>
+      </div>
+    );
+  };
 
   //* EXPENSIVE function
   const getSearchResults = () => {
     // pull from search result arrays
     const historyLogs = (getSearchHistory(historyDomain) || []);
-    // const otherResults = {}; 
+    // const otherResults = []; 
 
     // convert search result arrays to arrays of result data
     const historyResults = filterSearchResults(
@@ -189,14 +196,19 @@ const SearchBar = ({
     )
     .slice(0, displayHistorySize);
 
+    const otherResults = filterSearchResults(
+      ["hey there!!!"],
+      searchInput
+    );
+
     // compile all result data arrays down to one, and sort by search match type
     const allResults = [
       ...historyResults,
+      ...otherResults
     ]
     .slice(0, displayResultsSize)
     .sort((a, b) => b.priority - a.priority);
 
-    console.log("results: ", allResults);
     return allResults;
   }
 
@@ -229,8 +241,6 @@ const SearchBar = ({
   // if (searchState === Enum.SearchState.Focused.value) {
   //   className.self = twMerge(className.self, "rounded-b-none");
   // }
-
-  console.log("Search state: ", searchState);
 
   return (
     <div

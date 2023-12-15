@@ -22,8 +22,8 @@ const ClientComponent = ({ children }) => {
 
       <div className="w-[30%] mx-auto">
         <SearchBar 
-        // displayHistorySize={100}
-        // displayResultsSize={100}
+        displayHistorySize={100}
+        displayResultsSize={100}
         // historyResultIcon
         // onHistoryResultIconClick={emptyFunc}
         className={{
