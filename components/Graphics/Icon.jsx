@@ -60,7 +60,7 @@ const Icon = ({
             <Image
             className={className.image.self}
             fill
-            src={src}
+            src={className.src || src}
             sizes={
               utility
                 ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"

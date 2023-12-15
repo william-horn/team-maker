@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import emptyFunc from '@/util/emptyFunc';
 
-const useLocalStorageRequest = (key, value) => {
+export const useLocalStorageRequest = (key, value) => {
   if (typeof window === "undefined") return [emptyFunc, emptyFunc];
 
   let dataRef = useRef(value);
@@ -34,4 +34,32 @@ const useLocalStorageRequest = (key, value) => {
   return [getter, updater];
 }
 
-export default useLocalStorageRequest;
+export const useLocalStorageState = (key, value) => {
+  if (typeof window === "undefined") return [emptyFunc, emptyFunc];
+
+  const saved = JSON.parse(localStorage.getItem(key));
+  const [savedData, setSavedData] = useState(saved || value);
+
+  if (!saved) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  const updater = (func) => {
+    setSavedData(prev => {
+      const updated = func(prev);
+      localStorage.setItem(key, JSON.stringify(updated));
+      return updated;
+    });
+  }
+
+  const getter = (domain) => {
+    if (domain) {
+      return savedData[domain] || [];
+    } else {
+      return savedData;
+    }
+  }
+
+  return [getter, updater];
+}
+

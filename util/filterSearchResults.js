@@ -46,7 +46,7 @@ const getTagData = (results, type, resultSource) => {
   return tagData;
 }
 
-export const filterSearchResults = (searchResults, searchInput) => {
+export const filterSearchResults = (searchResults, searchInput, searchResultType) => {
   const results = [];
 
   for (let key in searchResults) {
@@ -54,6 +54,7 @@ export const filterSearchResults = (searchResults, searchInput) => {
 
     const resultData = {
       // priority: 3, 
+      type: searchResultType,
       source: result, 
       tags: [] 
     };

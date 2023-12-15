@@ -22,6 +22,10 @@ const mergeClass = (base, imported, state={}) => {
       // otherwise merge the final className in the current directory
       } else if (key === "self") {
         baseDir[key] = twMerge(base_val, imported_val);
+
+      // copy over all custom non-className entries
+      } else {
+        baseDir[key] = imported_val;
       }
     }
   }
@@ -30,6 +34,10 @@ const mergeClass = (base, imported, state={}) => {
   recursiveMerge(final, imported);
 
   // override styles based on state
+  if (state._isHovered) {
+    recursiveMerge(final, final.__hovered);
+  }
+
   if (state._isSelected) {
     recursiveMerge(final, final.__selected);
   }

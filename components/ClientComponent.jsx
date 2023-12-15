@@ -22,18 +22,10 @@ const ClientComponent = ({ children }) => {
 
       <div className="w-[30%] mx-auto">
         <SearchBar 
-        displayHistorySize={100}
+        displayHistorySize={5}
         displayResultsSize={100}
-        // historyResultIcon
-        // onHistoryResultIconClick={emptyFunc}
-        className={{
-          historyList: {
-            inner: {
-              resultButton: {},
-              historyResultButton: {}
-            }
-          }
-        }}
+        // historyResultIcon="/icons/history_icon.svg"
+        // searchResultIcon="/icons/search_icon.svg"
         />
       </div>
 
@@ -48,7 +40,7 @@ const ClientComponent = ({ children }) => {
 
       <div className="h-[10px] my-5 w-full bg-black"></div>
 
-
+{/* 
       <SearchBar
       placeholder="Search here or die"
       leftIcon="/icons/search_icon.svg"
@@ -57,7 +49,7 @@ const ClientComponent = ({ children }) => {
       className={{
         self: "w-[300px]",
       }}
-      />
+      /> */}
 
       <div className="h-[10px] my-5 w-full bg-black"></div>
 
