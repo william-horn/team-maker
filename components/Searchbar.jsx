@@ -141,7 +141,7 @@ const SearchBar = ({
     historyList: {
       self: "absolute w-full rounded-b-md top-full z-[1000] bg-search-bar",
       inner: {
-        self: "px-3 py-2 overflow-y-auto max-h-[200px]",
+        self: "overflow-y-auto max-h-[200px]",
         resultButton: {
           //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
           self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover items-center hover:underline",
@@ -223,13 +223,13 @@ const SearchBar = ({
             resultData.tags.map(tagData => {
               switch (tagData.type) {
                 case Enum.SearchMatchType.FirstMatch:
-                  return <span key={tagData.key} className="text-[#d58eff]">{tagData.source}</span>
+                  return <span key={tagData.key} className="text-[#d58eff] font-bold">{tagData.source}</span>
 
                 case Enum.SearchMatchType.WordMatch:
-                  return <span key={tagData.key} className="text-[#fff7b9]">{tagData.source}</span>
+                  return <span key={tagData.key} className="text-[#fff7b9] font-bold">{tagData.source}</span>
 
                 case Enum.SearchMatchType.AnyMatch:
-                  return <span key={tagData.key} className="text-[#8effdb]">{tagData.source}</span>
+                  return <span key={tagData.key} className="text-[#8effdb] font-bold">{tagData.source}</span>
 
                 case Enum.SearchMatchType.Normal:
                   return <span key={tagData.key}>{tagData.source}</span>
@@ -297,12 +297,14 @@ const SearchBar = ({
       
       return (
         <div className={className.historyList.self}>
-          <div className={className.historyList.inner.self}>
-            { 
-              searchResults.length > 0
-                ? searchResults.map(renderSearchResult)
-                : <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
-            }
+          <div className="px-3 py-2">
+            <div className={className.historyList.inner.self}>
+              { 
+                searchResults.length > 0
+                  ? searchResults.map(renderSearchResult)
+                  : <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
+              }
+            </div>
           </div>
         </div>
       );
