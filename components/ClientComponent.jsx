@@ -8,7 +8,6 @@ import ButtonGroup from "./Buttons/ButtonGroup";
 import ImageButton from "./Buttons/ImageButton";
 import Dropdown from "./Buttons/Dropdown";
 import Quantifier from "./Buttons/Quantifier";
-import Textbox from "./Textbox";
 import SearchBar from "./Searchbar";
 // import Form from "./Form";
 
@@ -22,45 +21,51 @@ const ClientComponent = ({ children }) => {
     <div className="p-5">
 
       
-        <Quantifier
-        className={{self: "inline-flex"}}
-        increment={1}
-        defaultValue={0}
-        upperLimit={100000}
-        lowerLimit={-100000}
-        />
+      <Quantifier
+      className={{self: "inline-flex"}}
+      increment={1}
+      defaultValue={0}
+      upperLimit={100000}
+      lowerLimit={-100000}
+      />
 
+      <div className="h-[10px] my-5 w-full bg-black"></div>
+
+      <div className="flex gap-2">
         <Dropdown
-        mode="select"
-        hideMenuOnBlur={true}
-        toggleOnHover={false}
-        toggleOnClick={true}
-        defaultValue="def"
+        placeholder="Category"
         rightIconUnselected="/icons/arrow_down_icon.svg"
-        rightIconSelected="/icons/trash_icon.svg"
-        className={{
-          list: {
-            self: "overflow-y-scroll w-[200%]"
-          },  
-          menuButton: {
-            __selected: {
-              self: "rounded-b-none"
-            }
-          }
-        }}
+        rightIconSelected="/icons/arrow_up_icon.svg"
+        leftIconUnselected="/icons/search_icon.svg"
+        leftIconSelected="/icons/search_icon.svg"
         itemData={{
-          "one": { value: "uno", text: "Item One" },
-          "two": { value: "dos", text: "Item Two" },
-          "three": { value: "tres", text: "Item Three" },
-          "four": { value: "quatro", text: "Item Four" },
-          "five": { value: "sinco", text: "Item Five" },
-        }}>
-          <Dropdown.Item id="one">Item One</Dropdown.Item>
-          <Dropdown.Item id="two">Item Two</Dropdown.Item>
-          <Dropdown.Item id="three">Item Three</Dropdown.Item>
-          <Dropdown.Item id="four">Item Four</Dropdown.Item>
-          <Dropdown.Item id="five">Item Five</Dropdown.Item>
+          "packs": { value: 0, text: "Packs" },
+          "creatures": { value: 0, text: "Creatures" },
+          "chests": { value: 0, text: "Chests" },
+          "plants": { value: 0, text: "Plants" },
+          "all": { value: 0, text: "All" },
+        }}
+        className={{
+          menuButton: {
+            self: "min-w-[10rem] justify-center gap-1"
+          },
+        }}
+        >
+          <Dropdown.Item id="all">All</Dropdown.Item>
+          <Dropdown.Item id="packs">Packs</Dropdown.Item>
+          <Dropdown.Item id="creatures">Creatures</Dropdown.Item>
+          <Dropdown.Item id="chests">Chests</Dropdown.Item>
+          <Dropdown.Item id="plants">Plants</Dropdown.Item>
         </Dropdown>
+        
+        <SearchBar
+        displayHistorySize={50}
+        displayResultsSize={50}
+        className={{ self: "xl:w-[25rem] lg:w-[20rem] sm:w-[18rem] w-[13rem]" }}
+        />
+      </div>
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
 
       <div className="w-[30%] mx-auto">
         <SearchBar 
@@ -70,6 +75,8 @@ const ClientComponent = ({ children }) => {
         // searchResultIcon="/icons/search_icon.svg"
         />
       </div>
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
 
       <Text className={{ self: "inline" }}>Wand Drops: </Text>
       <Quantifier
@@ -82,32 +89,6 @@ const ClientComponent = ({ children }) => {
 
       <div className="h-[10px] my-5 w-full bg-black"></div>
 
-{/* 
-      <SearchBar
-      placeholder="Search here or die"
-      leftIcon="/icons/search_icon.svg"
-      rightIcon="/icons/upload_icon.svg"
-      historySize={10}
-      className={{
-        self: "w-[300px]",
-      }}
-      /> */}
-
-      <div className="h-[10px] my-5 w-full bg-black"></div>
-
-      {/* <SearchBar
-      placeholder=""
-      leftIcon=""
-      rightIcon=""
-      onSearch={{}}
-      historyDomain={{}}
-      historySize={4}
-      /> */}
-
-      {/* <Textbox
-      placeholder="hello!"
-      /> */}
-
       <Text className={{ self: "inline" }}>Please select a number: </Text>
       <Quantifier
       className={{self: "inline-flex"}}
@@ -116,6 +97,8 @@ const ClientComponent = ({ children }) => {
       upperLimit={100000}
       lowerLimit={-100000}
       />
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
 
       <ButtonGroup
       mode="checkbox"
@@ -158,6 +141,8 @@ const ClientComponent = ({ children }) => {
 
       </ButtonGroup>
 
+      <div className="h-[10px] my-5 w-full bg-black"></div>
+
       <Text>Hello, world! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem, consequuntur.</Text>
       
       <Button
@@ -179,6 +164,8 @@ const ClientComponent = ({ children }) => {
       <Text>Some paragraph test</Text>
 
       <Button href="https://www.youtube.com">YouTube</Button>
+
+      <div className="h-[10px] my-5 w-full bg-black"></div>
 
       <Dropdown
       mode="select"

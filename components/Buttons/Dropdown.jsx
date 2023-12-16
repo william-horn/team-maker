@@ -102,17 +102,28 @@ const Dropdown = function({
     self: "dropdown relative w-fit",
 
     list: {
-      self: "absolute hidden flex-col w-full bg-button-primary list rounded-b overflow-hidden max-h-28 z-[9999]",
+      self: "absolute hidden w-full bg-button-primary list rounded-b z-[9999] p-1",
+
+      inner: {
+        self: "flex-col bg-transparent overflow-y-hidden z-[9999]"
+      },
 
       buttons: {
-        self: "w-full rounded-none relative bg-transparent justify-center", 
+        self: "w-full relative bg-transparent justify-center", 
         __selected: {
           self: "bg-button-hover-primary"
         }
       },
     },
 
-    menuButton: {},
+    menuButton: {
+      inner: {
+        self: "w-full"
+      },
+      __selected: {
+        self: "rounded-b-none"
+      }
+    },
 
     __selected: {
       list: {
@@ -174,9 +185,11 @@ const Dropdown = function({
         state={{ _isSelected: _menuOpen }}>
           {_itemSelected.text}
         </Button>
-        <div 
-        className={className.list.self}>
-          {children}
+        <div className={className.list.self}>
+          <div 
+          className={className.list.inner.self}>
+            {children}
+          </div>
         </div>
       </div>
     </DropdownProvider>

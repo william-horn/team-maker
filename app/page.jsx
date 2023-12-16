@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import Text from '@/components/Typography/Text'
-import Button from '@/components/Buttons/Button'
+
+
 
 /*
   This is the home page component, meaning it should remain a server-side component. Therefore,
@@ -8,13 +8,14 @@ import Button from '@/components/Buttons/Button'
   between the user and the button, and nest the button in said client component.
 */
 // import Button from '@/components/Buttons/Button'
-import ClientComponent from '@/components/ClientComponent'
+// import ClientComponent from '@/components/ClientComponent'
+import SingleComponent from '@/components/SingleComponent'
 
 export default function Home() {
 
   return (
     <main>
-      <ClientComponent/>
+      <SingleComponent/>
     </main>
   )
 }

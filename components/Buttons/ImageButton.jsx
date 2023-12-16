@@ -4,7 +4,7 @@ import { useState } from "react";
 import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
 import emptyFunc from "@/util/emptyFunc";
-import Button from "./Button";
+import { StatefulButton } from "./Buttons";
 
 export default function ImageButton({
   src,
@@ -32,11 +32,10 @@ export default function ImageButton({
   className = mergeClass(
     className,
     importedClassName,
-    { _isHovered: hovered }
   );
 
   return (
-    <Button
+    <StatefulButton
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
     className={className}
@@ -46,6 +45,6 @@ export default function ImageButton({
       src={className.icon.src || (hovered && hoverImage) || src}
       className={className.icon}
       />
-    </Button>
+    </StatefulButton>
   )
 }
