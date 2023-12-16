@@ -69,7 +69,7 @@ const renderButtonContent = (leftIcon, rightIcon, className, children) => <>
 // ----------------------------------- //
 // -------- BUTTON CONTROLLER -------- //
 // ----------------------------------- //
-const getButtonController = (buttonProps) => {
+const useButtonController = (buttonProps) => {
   const buttonGroupContext = useButtonGroupContext();
 
   if (buttonGroupContext) {
@@ -262,7 +262,7 @@ export const StatelessButton = function({
   // value,
   ...rest
 }) {
-  const buttonController = getButtonController({ 
+  const buttonController = useButtonController({ 
     importedClassName,
     importedState,
     ...rest 
@@ -316,7 +316,7 @@ export const StatefulButton = function({
     setSelected(isSelected);
   }
 
-  const buttonController = getButtonController({
+  const buttonController = useButtonController({
     importedState: { __selected: selected },
     onClick: processClick,
     ...rest
