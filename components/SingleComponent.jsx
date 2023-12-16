@@ -17,10 +17,13 @@ const SingleComponent = function({
     src="/icons/close_icon.svg"
     /> */}
 
-  <ButtonGroup something="idk lol" defaultSelect={["one", "two"]}>
+  <ButtonGroup something="idk lol" defaultSelect={["one"]} onClick={() => {console.log("group")}}>
     <StatefulButton id="one">Stateful</StatefulButton>
     <StatelessButton id="two">Stateless</StatelessButton>
   </ButtonGroup>
+
+  <StatefulButton>Testing</StatefulButton>
+  <StatelessButton>Testing Stateless</StatelessButton>
       
     </div>
   );

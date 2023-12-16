@@ -69,7 +69,7 @@ const renderButtonContent = (leftIcon, rightIcon, className, children) => <>
 // ----------------------------------- //
 // -------- BUTTON CONTROLLER -------- //
 // ----------------------------------- //
-const useButtonController = (buttonProps) => {
+const useButtonController = (buttonProps, callbacks={}) => {
   const buttonGroupContext = useButtonGroupContext();
 
   if (buttonGroupContext) {
@@ -186,7 +186,13 @@ const useButtonController = (buttonProps) => {
     }
 
     const fireOnClick = (...args) => {
-      if (onClick(...args)) group_onClick(...args);
+      if (
+        callbacks.__overrideClick 
+          ? callbacks.__overrideClick(onClick, ...args) 
+          : onClick(...args)
+      ) {
+        group_onClick(...args);
+      }
     }
   
     buttonProps.onClick = () => {
@@ -255,6 +261,7 @@ export const StatelessButton = function({
   children,
   className: importedClassName={},
   state: importedState={},
+  // onClick=console.log,
   // onClick=emptyFunc,
   // onSelect: func,
   // onUnselect: func,
@@ -297,7 +304,7 @@ export const StatelessButton = function({
 export const StatefulButton = function({
   children,
   className: importedClassName={},
-  onClick=console.log,
+  // onClick=console.log,
   defaultSelect=false,
   // state: importedState={},
 
@@ -310,18 +317,24 @@ export const StatefulButton = function({
 }) {
   const [selected, setSelected] = useState(defaultSelect);
 
-  const processClick = (buttonData) => {
-    const isSelected = !selected;
-    onClick("button data: ", buttonData, "real: ", isSelected);
-    setSelected(isSelected);
-  }
-
   const buttonController = useButtonController({
     importedState: { __selected: selected },
-    onClick: processClick,
     ...rest
+  }, {
+
+    /*
+      * note: this will fire instead of the 'onClick' passed in props.
+      * override callbacks passes the original 'onClick', and the computed button data
+      * from the controller.
+    */
+    __overrideClick: (onClick, buttonData) => {
+      const isSelected = !selected;
+      buttonData.state.__locallySelected = isSelected;
+
+      setSelected(isSelected);
+      return onClick(buttonData);
+    }
   });
-  // const buttonData = { selected, ...rest };
 
   const finalStyles = mergeClass(
     className, 
@@ -333,12 +346,6 @@ export const StatefulButton = function({
     <button 
     className={finalStyles.self}
     onClick={buttonController.onClick}>
-      {/* {renderButtonContent(
-        (selected && leftIconSelected) || leftIcon, 
-        (selected && rightIconSelected) || rightIcon, 
-        finalStyles, 
-        children
-      )} */}
       {renderButtonContent(
         buttonController.activeLeftIcon, 
         buttonController.activeRightIcon, 
