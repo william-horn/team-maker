@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import DropdownSelectionProvider from "@/providers/DropdownSelectionProvider";
 import mergeClass from "@/util/mergeClass";
 import emptyFunc from "@/util/emptyFunc";
@@ -12,8 +12,7 @@ const DropdownSelection = function({
   toggleOnHover=false,
   toggleOnClick=true,
   placeholder="Select an Option",
-  defaultValue,
-  defaultSelect,
+  defaultData={},
   // rightIconSelected,
   // leftIconSelected,
   // rightIconUnselected,
@@ -23,26 +22,40 @@ const DropdownSelection = function({
   ...rest
 }) {
 
-  // initialize state hooks
-  const [selectedId, setSelectedId] = useState(defaultSelect);
-  const [menuOpen, setMenuOpen] = useState(false);
+  /*
+    TODO:
 
-  const selectedItemData = useRef({});
+    Find better way to set default selected menu item. The entire component should
+    ideally render twice - once to load in all the data, and then again to 
+    update the main component with the default data.
+
+    Tried using 'useLayoutEffect()' to wait for data to load in before causing a re-paint,
+    but the effect was the same since we still have no default content to render in the
+    meantime.
+  */
+
+  // initialize state hooks
+  const [selectedId, setSelectedId] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  // const [firstRender, setFirstRender] = useState(false);
+
+  const selectedItemData = useRef(defaultData);
   const registeredIds = useRef({});
   const dropdownContainer = useRef(null);
 
   // all component styles
   let className = {
-    self: "w-[200px] bg-button-primary rounded relative",
+    self: "w-[200px] bg-button-primary rounded relative hover:bg-button-hover-primary",
 
     dropButton: {
-      self: "bg-transparent w-full justify-center",
+      self: "w-full justify-center",
 
       inner: {
         self: "w-full"
       },
+
       __selected: {
-        self: "bg-transparent hover:bg-button-primary"
+        self: "rounded-b-none bg-button-primary hover:bg-button-hover-primary"
       }
     },
 
@@ -54,7 +67,7 @@ const DropdownSelection = function({
     },
 
     outerList: {
-      self: "absolute hidden w-full list-container p-2 min-h-[10rem] bg-button-primary z-[9999]"
+      self: "absolute hidden w-full list-container p-2 min-h-[10rem] bg-button-primary z-[9999] rounded-b"
     },
 
     innerList: {
@@ -94,12 +107,15 @@ const DropdownSelection = function({
     window.addEventListener("mousedown", onDropdownBlur);
     return () => window.removeEventListener("mousedown", onDropdownBlur);
   }, []);
-
-  useEffect(() => {
-    console.log("data: ", selectedItemData.current);
-    console.log("total: ", registeredIds.current);
-  });
   // <<
+
+  console.log("menu open: ", menuOpen);
+
+  // useEffect(() => {
+  //   console.log("selected: ", selectedId);
+  //   console.log("registered: ", registeredIds.current);
+  //   console.log("active data: ", selectedItemData.current);
+  // });
 
   return (
     <DropdownSelectionProvider
@@ -123,12 +139,10 @@ const DropdownSelection = function({
         onClick={onMenuClick}
         onMouseEnter={toggleOnHover ? showDropdown : emptyFunc}
         state={{__selected: menuOpen}}
-        leftIcon="/icons/search_icon.svg"
-        rightIcon="/icons/search_icon.svg"
         className={className.dropButton}
         {...rest}
         >
-          Select
+          { selectedItemData.current.text || placeholder }
         </StatelessButton>
 
         <div className={className.outerList.self}>

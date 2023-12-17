@@ -20,40 +20,55 @@ const SingleComponent = function({
 
 
       <DropdownSelection
+      placeholder='First 1'
+      defaultData={{
+        id: "one",
+        text: "First",
+        value: 100
+      }}
+      toggleOnHover
       className={{
-        menuItems: {
-          self: "text-lg",
+        dropButton: {
           leftIcon: {
-            src: "/icons/star_icon.svg",
+            src: "/icons/search_icon.svg"
+          },
+          rightIcon: {
+            src: "fill"
+          }
+        },
+        menuItems: {
+          self: "",
+          leftIcon: {
+            // src: "/icons/star_icon.svg",
           },
           __dropdownSelected: {
             leftIcon: {
-              src: "/icons/star_fill_icon.svg"
+              // src: "/icons/star_fill_icon.svg"
             }
           }
         }
       }}
       >
-        <StatelessButton id="one" text="First" leftIcon="/icons/gem_icon.svg" rightIconHovered="/icons/profile_icon.svg">First</StatelessButton>
-        <StatelessButton id="two" text="Two">Two</StatelessButton>
-        <StatelessButton id="three" text="three">three</StatelessButton>
-        <StatefulButton id="four" text="four" rightIconHovered="/icons/profile_icon.svg">four</StatefulButton>
+        <StatelessButton id="one" text="First" value={100} rightIconHovered="/icons/profile_icon.svg">First</StatelessButton>
+        <StatelessButton id="two" text="Two" value={200}>Two</StatelessButton>
+        <StatelessButton id="three" text="three" value={300}>three</StatelessButton>
+        <StatefulButton id="four" text="four" value={400}>four</StatefulButton>
       </DropdownSelection>
-
-      <DropdownSelection>
+{/* 
+      <DropdownSelection defaultSelect="one">
         <StatelessButton id="one" text="First">First</StatelessButton>
         <StatefulButton id="two" text="Second">Second</StatefulButton>
       </DropdownSelection>
 
-      <DropdownSelection>
+      <DropdownSelection defaultSelect="one"> 
         <StatelessButton id="one" text="First">First</StatelessButton>
         <StatefulButton id="two" text="Second">Second</StatefulButton>
       </DropdownSelection>
 
-      <DropdownSelection>
+      <DropdownSelection defaultSelect="one">
         <StatelessButton id="one" text="First">First</StatelessButton>
         <StatefulButton id="two" text="Second">Second</StatefulButton>
-      </DropdownSelection>
+      </DropdownSelection> */}
 
       {/* <DropdownUrl>
 

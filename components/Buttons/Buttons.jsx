@@ -139,6 +139,8 @@ const useButtonController = (buttonProps) => {
 
     if (!buttonProps.id) {
       throw Error("DropdownSelection members must be given an 'id' prop");
+    } else if (!buttonProps.text) {
+      throw Error("DropdownSelection members must have a 'text' prop to display selected content");
     }
 
     buttonProps.importedState = {
@@ -159,15 +161,14 @@ const useButtonController = (buttonProps) => {
     );
 
     if (buttonProps.importedState.__dropdownSelected) {
-      selectedItemData.current[buttonProps.id] = buttonData;
-    } else {
-      delete selectedItemData.current[buttonProps.id];
+      selectedItemData.current = buttonData;
     }
 
     registeredIds.current[buttonProps.id] = buttonData;
 
     buttonProps.onClick = () => {
       if (!buttonProps.importedState.__dropdownSelected) {
+        selectedItemData.current = buttonData;
         group_setSelectedId(buttonProps.id);
         group_setMenuOpen(false);
       }
@@ -373,6 +374,7 @@ const useButtonController = (buttonProps) => {
       state: importedState,
       ...buttonData,
       inGroup: false,
+      inDropdown: false,
     });
   }
 

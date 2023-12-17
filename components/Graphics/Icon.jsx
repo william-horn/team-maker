@@ -45,6 +45,7 @@ const Icon = ({
     self: "relative overflow-hidden inline-block align-middle min-w-[1.25rem] min-h-[1.25rem] w-5 h-5",
 
     image: {
+      // fillWhenEmpty: false,
       self: "invert"
     }
   };
@@ -54,6 +55,14 @@ const Icon = ({
     importedClassName
   );
 
+  // ! clean this up later
+  src = typeof className.src !== "undefined" ? className.src : src;
+
+  if (src === "fill") {
+    fillWhenEmpty = true;
+    src = false;
+  }
+
   const renderIcon = (src) => (
     <span 
     className={className.self}>
@@ -62,7 +71,7 @@ const Icon = ({
           ? <Image
             className={className.image.self}
             fill
-            src={className.src || src}
+            src={src}
             sizes={
               utility
                 ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
@@ -76,8 +85,7 @@ const Icon = ({
   );
 
   return (
-    (fillWhenEmpty && renderIcon(src)) 
-      || (src ? renderIcon(src) : <></>)
+    fillWhenEmpty ? renderIcon(src) : (src ? renderIcon(src) : <></>)
   );
 }
 
