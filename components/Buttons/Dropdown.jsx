@@ -1,84 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Button from "./Button";
-import DropdownProvider from "@/providers/DropdownProvider";
-import { useDropdownContext } from "@/providers/DropdownProvider";
+import DropdownSelectionProvider from "@/providers/DropdownSelectionProvider";
 import mergeClass from "@/util/mergeClass";
 import emptyFunc from "@/util/emptyFunc";
+import { StatelessButton } from "./Buttons";
 
-const DropdownItem = function({
-  children,
-  id,
-  href,
-  className: importedClassName,
-  ...rest
-}) {
-  const {
-    _menuOpen: group_menuOpen,
-    _setMenuOpen: group_setMenuOpen,
-    _itemSelected: group_itemSelected,
-    _setItemSelected: group_setItemSelected,
-    itemData: group_itemData,
-    mode: group_mode,
-    className: group_className,
-  } = useDropdownContext();
-
-  const itemData = group_itemData[id];
-
-  if (!itemData) {
-    throw Error("Item data does not exist for id \"" + id + "\"");
-  } else if (href && group_mode !== "weblink") {
-    throw Error("href can only be used in DropdownItem components if Dropdown mode is set to \"weblink\"");
-  }
-
-  const isSelected = group_itemSelected.id === id;
-  const className = mergeClass(group_className.list.buttons, importedClassName);
-
-  const onItemSelected = () => {
-    if (!isSelected) {
-      group_setItemSelected(itemData);
-      group_setMenuOpen(false);
-    }
-  }
-
-  const renderButtonItem = () => {
-    switch (group_mode) {
-      case "select":
-        return (
-          <Button 
-          onClick={onItemSelected}
-          state={{ _isSelected: isSelected }}
-          className={className}
-          {...rest}>
-            {children}
-          </Button>
-        );
-
-      case "weblink":
-        return (
-          <Button 
-          className={className}
-          href={href}
-          {...rest}>
-            {children}
-          </Button>
-        );
-    }
-  }
-
-  return renderButtonItem();
-}
-
-
-
-
-
-
-
-const Dropdown = function({
-  mode="select",
-  itemData={},
+const DropdownSelection = function({
   children,
   hideMenuOnBlur=true,
   toggleOnHover=false,
@@ -86,53 +14,55 @@ const Dropdown = function({
   placeholder="Select an Option",
   defaultValue,
   defaultSelect,
-  rightIconSelected,
-  leftIconSelected,
-  rightIconUnselected,
-  leftIconUnselected,
-  className: importedClassName={}
+  // rightIconSelected,
+  // leftIconSelected,
+  // rightIconUnselected,
+  // leftIconUnselected,
+  state={},
+  className: importedClassName={},
+  ...rest
 }) {
-  // mutate itemData object to include id within metadata object
-  for (let key in itemData) itemData[key].id = key;
 
   // initialize state hooks
-  const [_itemSelected, _setItemSelected] = useState(
-    itemData[defaultSelect] 
-      || { id: "default", value: defaultValue, text: placeholder }
-  );
-  const [_menuOpen, _setMenuOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(defaultSelect);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const selectedItemData = useRef({});
+  const registeredIds = useRef({});
   const dropdownContainer = useRef(null);
 
   // all component styles
   let className = {
-    self: "dropdown relative w-fit",
+    self: "w-[200px] bg-button-primary rounded relative",
 
-    list: {
-      self: "absolute hidden w-full bg-button-primary list rounded-b z-[9999] p-1",
+    dropButton: {
+      self: "bg-transparent w-full justify-center",
 
-      inner: {
-        self: "flex-col bg-transparent overflow-y-hidden z-[9999]"
-      },
-
-      buttons: {
-        self: "w-full relative bg-transparent justify-center", 
-        __selected: {
-          self: "bg-button-hover-primary"
-        }
-      },
-    },
-
-    menuButton: {
       inner: {
         self: "w-full"
       },
       __selected: {
-        self: "rounded-b-none"
+        self: "bg-transparent hover:bg-button-primary"
       }
     },
 
+    menuItems: {
+      self: "w-full bg-transparent justify-center",
+      __dropdownSelected: {
+        self: "bg-button-hover-primary hover:bg-button-hover-primary"
+      }
+    },
+
+    outerList: {
+      self: "absolute hidden w-full list-container p-2 min-h-[10rem] bg-button-primary z-[9999]"
+    },
+
+    innerList: {
+      self: "flex-col overflow-y-scroll w-full flex"
+    },
+
     __selected: {
-      list: {
+      outerList: {
         self: "flex"
       }
     }
@@ -141,17 +71,17 @@ const Dropdown = function({
   className = mergeClass(
     className,
     importedClassName,
-    { _isSelected: _menuOpen }
+    { __selected: menuOpen }
   );
 
   const onMenuClick = () => {
     if (toggleOnClick) {
-      _setMenuOpen(!_menuOpen);
+      setMenuOpen(!menuOpen);
     }
   }
 
-  const showDropdown = () => _setMenuOpen(true);
-  const hideDropdown = () => _setMenuOpen(false);
+  const showDropdown = () => setMenuOpen(true);
+  const hideDropdown = () => setMenuOpen(false);
 
   // >> This logic is required for hiding the dropdown when focus is lost since "onBlur" fires before click events
   const onDropdownBlur = (event) => {
@@ -164,44 +94,51 @@ const Dropdown = function({
     window.addEventListener("mousedown", onDropdownBlur);
     return () => window.removeEventListener("mousedown", onDropdownBlur);
   }, []);
+
+  useEffect(() => {
+    console.log("data: ", selectedItemData.current);
+    console.log("total: ", registeredIds.current);
+  });
   // <<
 
   return (
-    <DropdownProvider
+    <DropdownSelectionProvider
     value={{
-      _itemSelected,
-      _setItemSelected,
-      _menuOpen,
-      _setMenuOpen,
+      selectedId,
+      setSelectedId,
+      menuOpen,
+      setMenuOpen,
       className,
-      itemData,
-      mode,
+      selectedItemData,
+      registeredIds,
+      state,
+      ...rest
     }}>
       <div 
       ref={dropdownContainer}
-      className={className.self} 
+      className={className.self}
       onMouseLeave={toggleOnHover ? hideDropdown : emptyFunc}>
-        <Button 
-        onClick={onMenuClick} 
-        // onBlur={hideMenuOnBlur ? hideDropdown : emptyFunc}
+        <StatelessButton
+        ignoreContext
+        onClick={onMenuClick}
         onMouseEnter={toggleOnHover ? showDropdown : emptyFunc}
-        rightIcon={_menuOpen ? rightIconSelected : rightIconUnselected}
-        leftIcon={_menuOpen ? leftIconSelected : leftIconUnselected}
-        className={className.menuButton}
-        state={{ _isSelected: _menuOpen }}>
-          {_itemSelected.text}
-        </Button>
-        <div className={className.list.self}>
-          <div 
-          className={className.list.inner.self}>
+        state={{__selected: menuOpen}}
+        leftIcon="/icons/search_icon.svg"
+        rightIcon="/icons/search_icon.svg"
+        className={className.dropButton}
+        {...rest}
+        >
+          Select
+        </StatelessButton>
+
+        <div className={className.outerList.self}>
+          <div className={className.innerList.self}>
             {children}
           </div>
         </div>
       </div>
-    </DropdownProvider>
+    </DropdownSelectionProvider>
   );
 }
 
-Dropdown.Item = DropdownItem;
-
-export default Dropdown;
+export default DropdownSelection;

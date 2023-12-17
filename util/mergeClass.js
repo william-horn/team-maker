@@ -24,12 +24,19 @@ const mergeClass = (base, imported, state={}) => {
       } else if (key === "self") {
         baseDir[key] = twMerge(base_val, imported_val);
         
+      } else {
+
+        baseDir[key] = imported_val;
       }
     }
   }
 
   // merge base styles with imported styles
   recursiveMerge(final, imported);
+
+  if (state.__dropdownSelected) {
+    recursiveMerge(final, final.__dropdownSelected);
+  } 
 
   if (state.__groupSelected) {
     recursiveMerge(final, final.__groupSelected);

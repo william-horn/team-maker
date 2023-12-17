@@ -90,10 +90,10 @@ const useButtonController = (buttonProps) => {
     button group context and dropdown selection context. Look into later.
   */
 
-  buttonProps = buttonGroupContext 
+  buttonProps = (buttonGroupContext && !buttonProps.ignoreContext)
     // merge remaining button group props
     ? {...buttonGroupContext.rest, ...buttonProps}
-    : dropdownSelectionContext
+    : (dropdownSelectionContext && !buttonProps.ignoreContext)
 
       // merge remaining dropdown selection menu props
       ? {...dropdownSelectionContext.rest, ...buttonProps}
@@ -112,14 +112,14 @@ const useButtonController = (buttonProps) => {
     rightIconHovered,
     leftIconHovered,
 
+    ignoreContext,
     ...restButtonProps
   } = buttonProps;
 
   // ============================================ //
   // ------------ DROPDOWN SELECTION ------------ // 
   // ============================================ //
-  if (dropdownSelectionContext) {
-    console.log("in dropdown");
+  if (dropdownSelectionContext && !ignoreContext) {
 
     const {
       menuOpen: group_menuOpen,
@@ -129,6 +129,7 @@ const useButtonController = (buttonProps) => {
       className: group_className,
       registeredIds,
       selectedItemData,
+      state: group_state,
     } = dropdownSelectionContext;
 
     const {
@@ -141,7 +142,9 @@ const useButtonController = (buttonProps) => {
     }
 
     buttonProps.importedState = {
-      __dropdownSelected: group_selectedId === buttonProps.id
+      __dropdownSelected: group_selectedId === buttonProps.id,
+      ...group_state,
+      ...importedState
     }
 
     const buttonData = {
@@ -150,10 +153,9 @@ const useButtonController = (buttonProps) => {
       state: buttonProps.importedState
     }
 
-    // ! LEFT OFF HERE!
     buttonProps.importedClassName = mergeClass(
       group_className.menuItems,
-      importedClassName
+      importedClassName,
     );
 
     if (buttonProps.importedState.__dropdownSelected) {
@@ -167,6 +169,7 @@ const useButtonController = (buttonProps) => {
     buttonProps.onClick = () => {
       if (!buttonProps.importedState.__dropdownSelected) {
         group_setSelectedId(buttonProps.id);
+        group_setMenuOpen(false);
       }
     }
 
@@ -182,7 +185,7 @@ const useButtonController = (buttonProps) => {
   // ============================================== //
   // ---------------- BUTTON GROUP ---------------- // 
   // ============================================== //
-  } else if (buttonGroupContext) {
+  } else if (buttonGroupContext && !ignoreContext) {
 
     // extract all shared functionality from group button provider
     const {
