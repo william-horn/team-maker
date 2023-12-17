@@ -339,19 +339,19 @@ const useButtonController = (buttonProps) => {
   } else {
 
     // define defaults that are exclusive to button when not in button group
-    buttonProps = {
-      onClick: emptyFunc,
-      onSelect: emptyFunc,
-      onUnselect: emptyFunc,
-      ...buttonProps
-    }
+    // buttonProps = {
+    //   onClick: emptyFunc,
+    //   onSelect: emptyFunc,
+    //   onUnselect: emptyFunc,
+    //   ...buttonProps
+    // }
 
     // extract button data from props, ignoring all destructured variables
     //* note: this is optional. this only removes data that would be included in the buttonData object.
     const {
-      onSelect,
-      onClick,
-      onUnselect,
+      onSelect=emptyFunc,
+      onClick=emptyFunc,
+      onUnselect=emptyFunc,
 
       ...buttonData
     } = restButtonProps;
@@ -495,9 +495,9 @@ export const StatefulButton = function({
     className={importedClassName}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={processClick}
     state={{__hovered: hovered, __selected: selected}}
-    {...rest}>
+    {...rest}
+    onClick={processClick}>
       {children}
     </StatelessButton>
   )
@@ -575,14 +575,13 @@ export const StatefulLinkButton = function({
 
   return (
     <StatelessLinkButton
-    onClick={processClick}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
     href={href}
     className={importedClassName}
     state={{__hovered: hovered, __selected: selected}}
     {...rest}
-    >
+    onClick={processClick}>
       {children}
     </StatelessLinkButton>
   )
