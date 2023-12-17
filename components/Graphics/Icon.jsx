@@ -5,6 +5,7 @@ const Icon = ({
   src, 
   alt, 
   utility=false,
+  fillWhenEmpty=false,
   className: importedClassName={},
   // preset,
   // ...rest
@@ -53,11 +54,12 @@ const Icon = ({
     importedClassName
   );
 
-  return (
-    src
-      ? <span 
-          className={className.self}>
-            <Image
+  const renderIcon = (src) => (
+    <span 
+    className={className.self}>
+      {
+        src
+          ? <Image
             className={className.image.self}
             fill
             src={className.src || src}
@@ -66,11 +68,17 @@ const Icon = ({
                 ? "(min-width: 1024px) 192px, (min-width: 640px) 96px, 48px"
                 : "(min-width: 1024px) 512px, (min-width: 640px) 256px, 128px"
             }
-            alt={alt || "icon alongside text"}
+            alt={alt || "icon"}
             />
-          </span>
-        : <></>
-  )
+          : <></>
+      }
+    </span>
+  );
+
+  return (
+    (fillWhenEmpty && renderIcon(src)) 
+      || (src ? renderIcon(src) : <></>)
+  );
 }
 
 export default Icon

@@ -37,9 +37,9 @@ const className = {
     }
   },
 
-  // __selected: {
-  //   self: "bg-green-500 hover:bg-green-600"
-  // }
+  __selected: {
+    self: "bg-green-500 hover:bg-green-600"
+  }
 }
 
 // ----------------------------- //
@@ -72,6 +72,13 @@ const renderButtonContent = (leftIcon, rightIcon, className, children) => <>
 // ----------------------------------- //
 const useButtonController = (buttonProps, callbacks={}) => {
   const buttonGroupContext = useButtonGroupContext();
+
+  /*
+    todo:
+
+    * re-position declaration of buttonProps to pull out common props 
+    * between group mode and normal mode
+  */
 
   if (buttonGroupContext) {
 
@@ -234,6 +241,11 @@ const useButtonController = (buttonProps, callbacks={}) => {
   
       updateActiveIds(buttonData.id, selected);
     }
+
+    {
+      const { id, value, ...restProps } = remainingButtonData;
+      buttonProps.restArgs = restProps;
+    }
   } else {
 
     // define defaults that are exclusive to button when not in button group
@@ -261,6 +273,14 @@ const useButtonController = (buttonProps, callbacks={}) => {
         leftIconHovered,
         ...buttonData
       } = buttonProps;
+
+      const {
+        id,
+        value,
+        ...restProps
+      } = buttonData;
+
+      buttonProps.restArgs = restProps;
 
       buttonProps.onClick = () => callbacks.__overrideClick(onClick, {
         state: buttonProps.importedState,
@@ -324,7 +344,8 @@ export const StatelessButton = function({
   return (
     <button 
     className={finalStyles.self}
-    onClick={buttonController.onClick}>
+    onClick={buttonController.onClick}
+    {...buttonController.restArgs}>
       {renderButtonContent(
         buttonController.activeLeftIcon,
         buttonController.activeRightIcon,
@@ -361,6 +382,7 @@ export const StatefulButton = function({
   const [hovered, setHovered] = useState(false);
 
   const buttonController = useButtonController({
+    importedClassName,
     importedState: { 
       __selected: selected, 
       __hovered: hovered,
@@ -394,7 +416,8 @@ export const StatefulButton = function({
     className={finalStyles.self}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={buttonController.onClick}>
+    onClick={buttonController.onClick}
+    {...buttonController.restArgs}>
       {renderButtonContent(
         buttonController.activeLeftIcon, 
         buttonController.activeRightIcon, 
@@ -435,7 +458,8 @@ export const StatelessLinkButton = function({
     <Link 
     className={finalStyles.self} 
     href={href} 
-    onClick={buttonController.onClick}>
+    onClick={buttonController.onClick}
+    {...buttonController.restArgs}>
       {renderButtonContent(
         buttonController.activeLeftIcon, 
         buttonController.activeRightIcon, 
@@ -484,7 +508,8 @@ export const StatefulLinkButton = function({
     className={finalStyles.self}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={buttonController.onClick}>
+    onClick={buttonController.onClick}
+    {...buttonController.restArgs}>
       {renderButtonContent(
         buttonController.activeLeftIcon, 
         buttonController.activeRightIcon, 

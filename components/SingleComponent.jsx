@@ -5,22 +5,24 @@ import React from 'react';
 import { StatelessButton, StatelessLinkButton, StatefulButton, StatefulLinkButton } from './Buttons/Buttons';
 import ButtonGroup from './Buttons/ButtonGroup';
 import { usePathname } from 'next/navigation';
+import Icon from './Graphics/Icon';
 import ImageButton from './Buttons/ImageButton';
 
 const SingleComponent = function({
   
 }) {
   const urlPathname = usePathname();
-  console.log("pathname: ", urlPathname);
+
 
   return (
     <div className="p-5">
 
-    {/* <ImageButton
+    <ImageButton
+    srcHovered="/icons/favorite_icon.svg"
     src="/icons/close_icon.svg"
-    /> */}
+    />
 
-    <ButtonGroup
+    {/* <ButtonGroup
     defaultSelect={["two"]}
     selectionLimit={1}
     unselectLastChoice
@@ -68,6 +70,8 @@ const SingleComponent = function({
     </ButtonGroup>
 
     <ButtonGroup
+    leftIcon="/icons/star_icon.svg"
+    leftIconSelected="/icons/star_fill_icon.svg"
     className={{
       buttons: {
         __selected: {
@@ -79,7 +83,7 @@ const SingleComponent = function({
       <StatefulLinkButton id="home" href="/home">Home</StatefulLinkButton>
       <StatefulLinkButton id="about" href="/about">About</StatefulLinkButton>
       <StatefulLinkButton id="learn" href="/learn">Learn</StatefulLinkButton>
-    </ButtonGroup>
+    </ButtonGroup> */}
       
     </div>
   );
