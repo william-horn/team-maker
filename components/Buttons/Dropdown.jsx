@@ -67,11 +67,11 @@ const DropdownSelection = function({
     },
 
     outerList: {
-      self: "absolute hidden w-full list-container p-2 min-h-[10rem] bg-button-primary z-[9999] rounded-b"
+      self: "absolute hidden w-full list-container p-2 min-h-[5rem] bg-button-primary z-[9999] rounded-b"
     },
 
     innerList: {
-      self: "flex-col overflow-y-scroll w-full flex"
+      self: "flex-col w-full flex"
     },
 
     __selected: {

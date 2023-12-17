@@ -42,7 +42,7 @@ const Icon = ({
   // );
 
   let className = {
-    self: "relative overflow-hidden inline-block align-middle min-w-[1.25rem] min-h-[1.25rem] w-5 h-5",
+    self: "relative overflow-hidden inline-block align-middle min-w-[1.25rem] min-h-[1.25rem] w-5 h-5 select-none",
 
     image: {
       // fillWhenEmpty: false,
@@ -55,7 +55,6 @@ const Icon = ({
     importedClassName
   );
 
-  // ! clean this up later
   src = typeof className.src !== "undefined" ? className.src : src;
 
   if (src === "fill") {

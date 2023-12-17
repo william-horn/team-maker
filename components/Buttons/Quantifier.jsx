@@ -1,6 +1,6 @@
 
-import { useState, useRef, useEffect } from "react";
-import ImageButton from "./ImageButton";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { StatelessImageButton } from "./ImageButton";
 import Text from "../Typography/Text";
 import mergeClass from "@/util/mergeClass";
 import emptyFunc from "@/util/emptyFunc";
@@ -16,6 +16,8 @@ const Quantifier = function({
 }) {
 
   const [_numberVal, _setNumberVal] = useState(defaultValue);
+  // const [textWidth, setTextWidth] = useState(null);
+  const numberRef = useRef(null);
 
   /*
     TODO: 
@@ -49,21 +51,33 @@ const Quantifier = function({
     importedClassName
   );
 
+  // useLayoutEffect(() => {
+  //   const size = numberRef.current.clientWidth;
+  //   const mult = Math.floor(Math.log10(Math.max(Math.abs(_numberVal), 1))) + 1;
+  //   console.log(mult);
+    
+  //   setTextWidth(size + mult*5);
+  // }, [_numberVal]);
+
   return (
     <div className={className.self}>
-      <ImageButton
+      <StatelessImageButton
       onClick={() => addValue(increment)}
       className={className.addButton}
       src="/icons/plus_icon.svg"
       />
 
       <Text 
-      // style={{width: `${textSize}rem`}}
+      // style={{
+      //   width: `${textWidth}px`, 
+      //   minWidth: "fit-content"
+      // }}
+      ref={numberRef}
       className={className.text}>
         {_numberVal}
       </Text>
 
-      <ImageButton
+      <StatelessImageButton
       onClick={() => addValue(-increment)}
       className={className.minusButton}
       src="/icons/minus_icon.svg"

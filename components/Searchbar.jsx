@@ -4,9 +4,8 @@
 import { twMerge } from "tailwind-merge";
 import Icon from './Graphics/Icon';
 import stringIsEmpty from '@/util/stringIsEmpty';
-import Button from './Buttons/Button';
 import removeExtraWhitespace from '@/util/removeExtraWhitespace';
-import { useLocalStorageRequest, useLocalStorageState } from '@/hooks/useLocalStorageRequest';
+import { useLocalStorageState } from '@/hooks/useLocalStorageRequest';
 import { filterSearchResults } from "@/util/filterSearchResults";
 import Enum from '../enum';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,7 +13,8 @@ import { useState, useRef, useEffect } from 'react';
 import mergeClass from '@/util/mergeClass';
 import emptyFunc from "@/util/emptyFunc";
 import Text from "./Typography/Text";
-import ImageButton from './Buttons/ImageButton';
+import { StatelessButton, StatefulButton } from "./Buttons/Buttons";
+import { StatefulImageButton, StatelessImageButton } from './Buttons/ImageButton';
 
 const SearchBar = ({
   className: importedClassName={},
@@ -194,7 +194,7 @@ const SearchBar = ({
       <div key={key} className="flex items-center">
         {
           resultData.type === Enum.SearchResultType.History.value
-            ? <ImageButton
+            ? <StatefulImageButton
               onClick={() => {
                 updateSearchHistory(prev => {
                   let finalResults = prev[historyDomain];
@@ -208,16 +208,16 @@ const SearchBar = ({
                 });
               }}
               className={className.historyList.inner.resultButton.iconButton}
-              hoverImage="/icons/trash_icon.svg"
+              srcHovered="/icons/trash_icon.svg"
               src="/icons/history_icon.svg"
               />
-            : <ImageButton
+            : <StatelessImageButton
               onClick={() => onSearchResultQuery(resultData.source)}
               className={className.historyList.inner.resultButton.iconButton}
               src="/icons/search_icon.svg"
               />
         }
-        <Button 
+        <StatelessButton 
         key={key}
         onClick={() => onSearchResultQuery(resultData.source)}
         className={
@@ -245,7 +245,7 @@ const SearchBar = ({
               }
             })
           }
-        </Button>
+        </StatelessButton>
       </div>
     );
   };
