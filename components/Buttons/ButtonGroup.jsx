@@ -74,9 +74,9 @@ const ButtonGroup = function({
   }
 
   useEffect(() => {
-    console.log("active: ", activeIds);
-    console.log("data: ", groupButtonData.current);
-    console.log("registered: ", registeredIds.current);
+    // console.log("active: ", activeIds);
+    // console.log("data: ", groupButtonData.current);
+    // console.log("registered: ", registeredIds.current);
 
     const invalidId = defaultSelect.find(id => !registeredIds.current[id]);
 

@@ -70,8 +70,26 @@ const renderButtonContent = (leftIcon, rightIcon, className, children) => <>
 // ----------------------------------- //
 // -------- BUTTON CONTROLLER -------- //
 // ----------------------------------- //
-const useButtonController = (buttonProps, callbacks={}) => {
+const useButtonController = (buttonProps) => {
   const buttonGroupContext = useButtonGroupContext();
+
+  buttonProps = buttonGroupContext 
+    ? {...buttonGroupContext.rest, ...buttonProps}
+    : buttonProps;
+
+  const {
+    importedClassName,
+    importedState,
+
+    leftIcon,
+    rightIcon,
+    rightIconSelected,
+    leftIconSelected,
+    rightIconHovered,
+    leftIconHovered,
+
+    ...restButtonProps
+  } = buttonProps;
 
   /*
     todo:
@@ -79,6 +97,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
     * re-position declaration of buttonProps to pull out common props 
     * between group mode and normal mode
   */
+
 
   if (buttonGroupContext) {
 
@@ -97,20 +116,9 @@ const useButtonController = (buttonProps, callbacks={}) => {
       className: group_className,
       state: group_state,
       registeredIds,
-      rest: group_args,
     } = buttonGroupContext;
 
-    /*
-      combine left over props from button group provider, with current props 
-      directly from button component
-    */
-    buttonProps = {...group_args, ...buttonProps};
-
     const {
-      // defaults already defined - base props
-      importedClassName,
-      importedState,
-
       // this default is unique to button being used as button group member, so define it here
       onClick=() => true,
 
@@ -118,19 +126,12 @@ const useButtonController = (buttonProps, callbacks={}) => {
       onSelect=() => true,
       onUnselect=() => true,
 
-      // defining these to pull them out of button data object
-      //* warning: this solution won't scale up well, but it's fine for now
-      leftIcon,
-      rightIcon,
-      leftIconSelected,
-      rightIconSelected,
-      rightIconHovered,
-      leftIconHovered,
-
       // id,
       // value
       ...remainingButtonData
-    } = buttonProps;
+    } = restButtonProps;
+
+    // console.log("click callbacks: ", onClick, " | ", onSelect, " | ", onUnselect);
 
     /*
       this is the main state object for the button. state will cascade starting from 
@@ -199,13 +200,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
     }
 
     const fireOnClick = (...args) => {
-      if (
-        callbacks.__overrideClick 
-          ? callbacks.__overrideClick(onClick, ...args) 
-          : onClick(...args)
-      ) {
-        group_onClick(...args);
-      }
+      if (onClick(...args)) group_onClick(...args);
     }
   
     buttonProps.onClick = () => {
@@ -232,6 +227,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
 
       buttonProps.importedState.__groupSelected = selected;
       fireOnClick(buttonData);
+      // console.log("selection: ", onSelect, onUnselect);
   
       if (selected) {
         fireOnSelect(buttonData);
@@ -242,70 +238,67 @@ const useButtonController = (buttonProps, callbacks={}) => {
       updateActiveIds(buttonData.id, selected);
     }
 
-    {
-      const { id, value, ...restProps } = remainingButtonData;
-      buttonProps.restArgs = restProps;
-    }
+    /*
+      extract remaining final props from buttonProps to be passed
+      as element attributes back to the component.
+    */
+    const { 
+      id, 
+      value, 
+      ...restProps 
+    } = remainingButtonData;
+
+    buttonProps.restArgs = restProps;
+
   } else {
 
     // define defaults that are exclusive to button when not in button group
     buttonProps = {
       onClick: emptyFunc,
+      onSelect: emptyFunc,
+      onUnselect: emptyFunc,
       ...buttonProps
     }
 
-    // switch out the 'onClick' callback with a custom one if provided.
-    //* note: custom callback should still call the original 'onClick' somewhere
-    if (callbacks.__overrideClick) {
+    // extract button data from props, ignoring all destructured variables
+    //* note: this is optional. this only removes data that would be included in the buttonData object.
+    const {
+      onSelect,
+      onClick,
+      onUnselect,
 
-      // extract button data from props, ignoring all destructured variables
-      //* note: this may not scale up very well. the chaos as more props are added is O(n)
-      //* suggestion: figure out a way to construct 'buttonData' as an object somewhere else
-      const {
-        importedClassName,
-        onClick,
-        importedState,
-        leftIcon,
-        rightIcon,
-        rightIconSelected,
-        leftIconSelected,
-        rightIconHovered,
-        leftIconHovered,
-        ...buttonData
-      } = buttonProps;
+      ...buttonData
+    } = restButtonProps;
 
-      const {
-        id,
-        value,
-        ...restProps
-      } = buttonData;
+    //* note: this is less-optional, as it affects what data will be visible in the attributes
+    const {
+      id,
+      value,
+      ...restProps
+    } = buttonData;
 
-      buttonProps.restArgs = restProps;
+    buttonProps.restArgs = restProps;
 
-      buttonProps.onClick = () => callbacks.__overrideClick(onClick, {
-        state: buttonProps.importedState,
-        ...buttonData,
-        inGroup: false,
-      })
-    }
+    /*
+      if button was passed some state, then create some button data to
+      return back to the caller
+    */
+   
+    buttonProps.onClick = () => onClick({
+      state: importedState,
+      ...buttonData,
+      inGroup: false,
+    });
   }
 
-  const {
-    importedState,
-    leftIconSelected,
-    rightIconSelected,
-    leftIcon,
-    rightIcon,
-    leftIconHovered,
-    rightIconHovered,
-  } = buttonProps;
+  const state = buttonProps.importedState;
 
-  buttonProps.activeLeftIcon = ((importedState.__selected || importedState.__groupSelected) && leftIconSelected) 
-    || (importedState.__hovered && leftIconHovered)
+  buttonProps.activeLeftIcon = ((state.__selected || state.__groupSelected) && leftIconSelected) 
+    || (state.__hovered && leftIconHovered)
     || leftIcon;
 
-  buttonProps.activeRightIcon = ((importedState.__selected || importedState.__groupSelected) && rightIconSelected) 
-    || (importedState.__hovered && rightIconHovered) 
+  buttonProps.activeRightIcon = ((state.__selected || state.__groupSelected) && rightIconSelected) 
+    || (state.__hovered && rightIconHovered) 
     || rightIcon;
 
   return buttonProps;
@@ -361,72 +354,68 @@ export const StatelessButton = function({
 
   Button component using all default styles but does not use any 
   react hooks.
+
+  * note: every STATEFUL component using a STATELESS component as a 
+  * template should have some sort of 'processBlah()' callback declared 
+  * inside the body of the component.
+  
+  This is so you can handle the state switching logic, and fire your own callbacks
+  depending on what state the component is in. This will also allow you to differentiate 
+  between a button inside a button group, and a button by itself (using buttonData.inGroup) 
 */
 export const StatefulButton = function({
   children,
-  className: importedClassName={},
-  // onClick=console.log,
+
+  // onClick=emptyFunc,
+  // onSelect=emptyFunc,
+  // onUnselect=emptyFunc,
+
+  className: importedClassName,
   defaultSelect=false,
-  // state: importedState={},
-
-  // leftIcon,
-  // rightIcon,
-  // leftIconSelected,
-  // rightIconSelected,
-  // leftIconHovered
-  // rightIconHovered
-
   ...rest
 }) {
   const [selected, setSelected] = useState(defaultSelect);
   const [hovered, setHovered] = useState(false);
 
-  const buttonController = useButtonController({
-    importedClassName,
-    importedState: { 
-      __selected: selected, 
-      __hovered: hovered,
-    },
-    ...rest
-  }, {
+  const processClick = (buttonData) => {
+    const isSelected = !selected;
+    const { onClick, onSelect, onUnselect } = rest;
 
-    /*
-      * note: this will fire instead of the 'onClick' passed in props.
-      * override callbacks passes the original 'onClick', and the computed button data
-      * from the controller.
-    */
-    __overrideClick: (onClick, buttonData) => {
-      const isSelected = !selected;
-
+    if (!buttonData.inGroup) {
       buttonData.state.__selected = isSelected;
 
-      setSelected(isSelected);
-      return onClick(buttonData);
+      if (isSelected) {
+        if (onSelect) onSelect(buttonData);
+      } else {
+        if (onUnselect) onUnselect(buttonData);
+      }
     }
-  });
 
-  const finalStyles = mergeClass(
-    className, 
-    buttonController.importedClassName,
-    buttonController.importedState,
-  );
+    /*
+      * ideally, 'setSelected(isSelected)' should go inside the 'inGroup' if statement above,
+      * since we really don't need to update the local state when in a button group.
+      * however, in some cases, you may want to use both states. so it can be left here 
+      * until that need is demanded.
+    */
+    setSelected(isSelected);
+
+    if (onClick) return onClick(buttonData);
+    return true;
+  }
   
   return (
-    <button 
-    className={finalStyles.self}
+    <StatelessButton
+    className={importedClassName}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={buttonController.onClick}
-    {...buttonController.restArgs}>
-      {renderButtonContent(
-        buttonController.activeLeftIcon, 
-        buttonController.activeRightIcon, 
-        finalStyles, 
-        children
-      )}
-    </button>
+    onClick={processClick}
+    state={{__hovered: hovered, __selected: selected}}
+    {...rest}>
+      {children}
+    </StatelessButton>
   )
 };
+
 
 /*
   ? Stateless Link Button Component
@@ -476,8 +465,8 @@ export const StatelessLinkButton = function({
 */
 export const StatefulLinkButton = function({
   children,
-  className: importedClassName={},
-  state: importedState={},
+  className: importedClassName,
+  // state: importedState={},
   href,
 
   ...rest
@@ -487,35 +476,27 @@ export const StatefulLinkButton = function({
 
   const [hovered, setHovered] = useState(false);
 
-  const buttonController = useButtonController({
-    importedClassName,
-    importedState: { 
-      __selected: selected, 
-      __hovered: hovered,
-    },
-    ...rest
-  });
+  const processClick = (buttonData) => {
+    const { onClick } = rest;
 
-  const finalStyles = mergeClass(
-    className, 
-    buttonController.importedClassName,
-    buttonController.importedState,
-  );
-  
+    // defer click callback to original handler
+    if (onClick) return onClick(buttonData);
+
+    // return true so callback triggers groupClick callback
+    return true;
+  }
+
   return (
-    <Link 
-    href={href}
-    className={finalStyles.self}
+    <StatelessLinkButton
+    onClick={processClick}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={buttonController.onClick}
-    {...buttonController.restArgs}>
-      {renderButtonContent(
-        buttonController.activeLeftIcon, 
-        buttonController.activeRightIcon, 
-        finalStyles, 
-        children
-      )}
-    </Link>
+    href={href}
+    className={importedClassName}
+    state={{__hovered: hovered, __selected: selected}}
+    {...rest}
+    >
+      {children}
+    </StatelessLinkButton>
   )
 };
