@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className + " theme-dark bg-page"}>
         <SingleComponent/>
-        <StatefulLinkButton href="/test-page">Test</StatefulLinkButton>
+        {/* <StatefulLinkButton href="/test-page">Test</StatefulLinkButton> */}
         {children}
       </body>
     </html>

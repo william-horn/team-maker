@@ -37,9 +37,9 @@ const className = {
     }
   },
 
-  __selected: {
-    self: "bg-green-500 hover:bg-green-600"
-  }
+  // __selected: {
+  //   self: "bg-green-500 hover:bg-green-600"
+  // }
 }
 
 // ----------------------------- //
@@ -117,6 +117,8 @@ const useButtonController = (buttonProps, callbacks={}) => {
       rightIcon,
       leftIconSelected,
       rightIconSelected,
+      rightIconHovered,
+      leftIconHovered,
 
       // id,
       // value
@@ -129,12 +131,14 @@ const useButtonController = (buttonProps, callbacks={}) => {
       state prop passed directly in the button.
     */
     buttonProps.importedState = {
-      ...group_state,
-      ...importedState,
-
       //! move this to first position if you want to manually over-write state by passing state props
       //! this was placed here so stateful buttons would behave expectedly in button groups
-      __selected: findActiveId(buttonProps.id).found,
+      //? pretty sure the only draw-back to this is duplicating the button id in the button group
+      //? activeId list when __selected is first.
+      __groupSelected: findActiveId(buttonProps.id).found,
+
+      ...group_state,
+      ...importedState,
     }
 
     // button data holds all remaining button attributes, along with the main state object
@@ -160,7 +164,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
       update the button group's button data object for storing
       information about all active buttons
     */
-    if (buttonProps.importedState.__selected) {
+    if (buttonProps.importedState.__groupSelected) {
       groupButtonData.current[buttonProps.id] = buttonData;
     } else {
       delete groupButtonData.current[buttonProps.id];
@@ -198,7 +202,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
     }
   
     buttonProps.onClick = () => {
-      const selected = !buttonProps.importedState.__selected;
+      const selected = !buttonProps.importedState.__groupSelected;
   
       if (selectionLimit > -1 && activeIds.length >= selectionLimit && selected) {
         if (unselectLastChoice) {
@@ -206,10 +210,10 @@ const useButtonController = (buttonProps, callbacks={}) => {
   
           if (unselectedButtonId !== buttonProps.id) {
             const unselectedButtonData = groupButtonData.current[unselectedButtonId];
-            unselectedButtonData.state.__selected = false;
+            unselectedButtonData.state.__groupSelected = false;
             
             fireOnUnselect(unselectedButtonData);
-            updateActiveIds(unselectedButtonId, unselectedButtonData.state.__selected);
+            updateActiveIds(unselectedButtonId, unselectedButtonData.state.__groupSelected);
           }
   
         } else {
@@ -218,7 +222,8 @@ const useButtonController = (buttonProps, callbacks={}) => {
           return;
         }
       }
-  
+
+      buttonProps.importedState.__groupSelected = selected;
       fireOnClick(buttonData);
   
       if (selected) {
@@ -227,7 +232,6 @@ const useButtonController = (buttonProps, callbacks={}) => {
         fireOnUnselect(buttonData);
       }
   
-      buttonProps.importedState.__selected = selected;
       updateActiveIds(buttonData.id, selected);
     }
   } else {
@@ -253,6 +257,8 @@ const useButtonController = (buttonProps, callbacks={}) => {
         rightIcon,
         rightIconSelected,
         leftIconSelected,
+        rightIconHovered,
+        leftIconHovered,
         ...buttonData
       } = buttonProps;
 
@@ -274,11 +280,11 @@ const useButtonController = (buttonProps, callbacks={}) => {
     rightIconHovered,
   } = buttonProps;
 
-  buttonProps.activeLeftIcon = (importedState.__selected && leftIconSelected) 
+  buttonProps.activeLeftIcon = ((importedState.__selected || importedState.__groupSelected) && leftIconSelected) 
     || (importedState.__hovered && leftIconHovered)
     || leftIcon;
 
-  buttonProps.activeRightIcon = (importedState.__selected && rightIconSelected) 
+  buttonProps.activeRightIcon = ((importedState.__selected || importedState.__groupSelected) && rightIconSelected) 
     || (importedState.__hovered && rightIconHovered) 
     || rightIcon;
 
@@ -357,7 +363,6 @@ export const StatefulButton = function({
   const buttonController = useButtonController({
     importedState: { 
       __selected: selected, 
-      __locallySelected: selected,
       __hovered: hovered,
     },
     ...rest
@@ -371,13 +376,7 @@ export const StatefulButton = function({
     __overrideClick: (onClick, buttonData) => {
       const isSelected = !selected;
 
-      // update locallySelected to current state
-      buttonData.state.__locallySelected = isSelected;
-
-      // if button is in a group, don't update the selected state
-      if (!buttonData.inGroup) {
-        buttonData.state.__selected = isSelected;
-      }
+      buttonData.state.__selected = isSelected;
 
       setSelected(isSelected);
       return onClick(buttonData);
@@ -462,10 +461,10 @@ export const StatefulLinkButton = function({
   const urlPathname = usePathname();
   const selected = urlPathname === href;
 
-  // const [selected, setSelected] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   const buttonController = useButtonController({
+    importedClassName,
     importedState: { 
       __selected: selected, 
       __hovered: hovered,

@@ -31,7 +31,7 @@ const ButtonGroup = function({
 
     buttons: {
       self: "",
-      __selected: {
+      __groupSelected: {
         self: "bg-blue-500 hover:bg-blue-400"
       }
     },
