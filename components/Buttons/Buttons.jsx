@@ -3,7 +3,7 @@
 /*
   File imports
 */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
@@ -133,17 +133,18 @@ const useButtonController = (buttonProps, callbacks={}) => {
 
       //! move this to first position if you want to manually over-write state by passing state props
       //! this was placed here so stateful buttons would behave expectedly in button groups
-      __selected: findActiveId(remainingButtonData.id).found,
+      __selected: findActiveId(buttonProps.id).found,
     }
 
     // button data holds all remaining button attributes, along with the main state object
     const buttonData = {
       ...remainingButtonData,
+      inGroup: true,
       state: buttonProps.importedState
     }
 
     // button must have an 'id' prop if used inside a button group
-    if (!buttonData.id) {
+    if (!buttonProps.id) {
       throw Error("ButtonGroup components must be given an 'id' prop");
     }
 
@@ -159,16 +160,16 @@ const useButtonController = (buttonProps, callbacks={}) => {
       information about all active buttons
     */
     if (buttonProps.importedState.__selected) {
-      groupButtonData.current[buttonData.id] = buttonData;
+      groupButtonData.current[buttonProps.id] = buttonData;
     } else {
-      delete groupButtonData.current[buttonData.id];
+      delete groupButtonData.current[buttonProps.id];
     }
 
     /*
       add this button to the set of registeredIds in the button group provider,
       so we can keep button ids in sync
     */
-    registeredIds.current[buttonData.id] = buttonData;
+    registeredIds.current[buttonProps.id] = buttonData;
 
     /*
       short-hand functions for firing button group callbacks and
@@ -196,14 +197,13 @@ const useButtonController = (buttonProps, callbacks={}) => {
     }
   
     buttonProps.onClick = () => {
-      buttonData.state.__selected = !buttonData.state.__selected;
-      const selected = buttonData.state.__selected;
+      const selected = !buttonProps.importedState.__selected;
   
       if (selectionLimit > -1 && activeIds.length >= selectionLimit && selected) {
         if (unselectLastChoice) {
           const unselectedButtonId = activeIds[activeIds.length - 1];
   
-          if (unselectedButtonId !== buttonData.id) {
+          if (unselectedButtonId !== buttonProps.id) {
             const unselectedButtonData = groupButtonData.current[unselectedButtonId];
             unselectedButtonData.state.__selected = false;
             
@@ -212,7 +212,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
           }
   
         } else {
-          
+
           onSelectionLimitReached(buttonData);
           return;
         }
@@ -226,6 +226,7 @@ const useButtonController = (buttonProps, callbacks={}) => {
         fireOnUnselect(buttonData);
       }
   
+      buttonProps.importedState.__selected = selected;
       updateActiveIds(buttonData.id, selected);
     }
   } else {
@@ -234,6 +235,31 @@ const useButtonController = (buttonProps, callbacks={}) => {
     buttonProps = {
       onClick: emptyFunc,
       ...buttonProps
+    }
+
+    // switch out the 'onClick' callback with a custom one if provided.
+    //* note: custom callback should still call the original 'onClick' somewhere
+    if (callbacks.__overrideClick) {
+
+      // extract button data from props, ignoring all destructured variables
+      //* note: this may not scale up very well. the chaos as more props are added is O(n)
+      //* suggestion: figure out a way to construct 'buttonData' as an object somewhere else
+      const {
+        importedClassName,
+        onClick,
+        importedState,
+        leftIcon,
+        rightIcon,
+        rightIconSelected,
+        leftIconSelected,
+        ...buttonData
+      } = buttonProps;
+
+      buttonProps.onClick = () => callbacks.__overrideClick(onClick, {
+        state: buttonProps.importedState,
+        ...buttonData,
+        inGroup: false,
+      })
     }
   }
 
@@ -318,7 +344,7 @@ export const StatefulButton = function({
   const [selected, setSelected] = useState(defaultSelect);
 
   const buttonController = useButtonController({
-    importedState: { __selected: selected },
+    importedState: { __selected: selected, __locallySelected: selected },
     ...rest
   }, {
 
@@ -329,7 +355,14 @@ export const StatefulButton = function({
     */
     __overrideClick: (onClick, buttonData) => {
       const isSelected = !selected;
+
+      // update locallySelected to current state
       buttonData.state.__locallySelected = isSelected;
+
+      // if button is in a group, don't update the selected state
+      if (!buttonData.inGroup) {
+        buttonData.state.__selected = isSelected;
+      }
 
       setSelected(isSelected);
       return onClick(buttonData);
