@@ -35,13 +35,13 @@ const SingleComponent = function({
       </StatefulButton>
     </ButtonGroup> */}
 
-    <ButtonGroup onClick={() => console.log("GROUP CLICK LOL")}>
+    {/* <ButtonGroup onClick={() => console.log("GROUP CLICK LOL")}>
       <StatefulLinkButton id="1" href="/">Howdy Partner</StatefulLinkButton>
-      <StatefulLinkButton id="2" href="/test-page">Howdy Friend</StatefulLinkButton>
-    </ButtonGroup>
+      <StatefulLinkButton id="2" href="/test-page" onClick={() => {}}>Howdy Friend</StatefulLinkButton>
+    </ButtonGroup> */}
 
 
-    <StatefulButton>Test</StatefulButton>
+    <StatefulButton onClick={d => console.log(d)}>Test</StatefulButton>
 
     {/* <ButtonGroup>
       <StatefulButton id="one" rightIcon="/icons/search_icon.svg" rightIconSelected="/icons/star_icon.svg" rightIconHovered="/icons/star_fill_icon.svg">
@@ -75,7 +75,7 @@ const SingleComponent = function({
 
 
 
-    {/* <ButtonGroup
+    <ButtonGroup
     defaultSelect={["two"]}
     selectionLimit={1}
     unselectLastChoice
@@ -136,7 +136,7 @@ const SingleComponent = function({
       <StatefulLinkButton id="home" href="/home">Home</StatefulLinkButton>
       <StatefulLinkButton id="about" href="/about">About</StatefulLinkButton>
       <StatefulLinkButton id="learn" href="/learn">Learn</StatefulLinkButton>
-    </ButtonGroup> */}
+    </ButtonGroup> 
       
     </div>
   );
