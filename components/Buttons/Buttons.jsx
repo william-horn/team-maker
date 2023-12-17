@@ -1,3 +1,12 @@
+/*
+  @author: William J. Horn
+  @date: 12/15/2023 - [ongoing]
+
+  @description:
+    Buttons.jsx is a resource I developed to give me some handy dandy buttons. They're designed
+    to be responsive, work in groups/dropdown menus, support icons, and much more.
+*/
+
 "use client";
 
 /*
@@ -10,10 +19,11 @@ import Link from "next/link";
 import emptyFunc from "@/util/emptyFunc";
 import { usePathname } from "next/navigation";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
+import { useDropdownSelectionContext } from "@/providers/DropdownSelectionProvider";
 
-// ---------------------------- //
+// ============================ //
 // ----- COMPONENT STYLES ----- //
-// ---------------------------- //
+// ============================ //
 const className = {
   // the outer-most element of the button, or "master element"
   self: "bg-button-primary text-primary inline-flex items-center align-middle rounded transition-all w-fit text-sm px-1 hover:bg-button-hover-primary",
@@ -42,9 +52,9 @@ const className = {
   }
 }
 
-// ----------------------------- //
+// ============================= //
 // ----- UTILITY FUNCTIONS ----- //
-// ----------------------------- //
+// ============================= //
 const renderIcon = (icon, iconClass) => {
   if (icon) {
     return (
@@ -72,11 +82,25 @@ const renderButtonContent = (leftIcon, rightIcon, className, children) => <>
 // ----------------------------------- //
 const useButtonController = (buttonProps) => {
   const buttonGroupContext = useButtonGroupContext();
+  const dropdownSelectionContext = useDropdownSelectionContext();
+
+  // TODO:
+  /*
+    Find way to generalize this function a bit more in the future. Lots of similarities between
+    button group context and dropdown selection context. Look into later.
+  */
 
   buttonProps = buttonGroupContext 
+    // merge remaining button group props
     ? {...buttonGroupContext.rest, ...buttonProps}
-    : buttonProps;
+    : dropdownSelectionContext
 
+      // merge remaining dropdown selection menu props
+      ? {...dropdownSelectionContext.rest, ...buttonProps}
+      : buttonProps;
+
+
+  // pull out common props
   const {
     importedClassName,
     importedState,
@@ -91,15 +115,74 @@ const useButtonController = (buttonProps) => {
     ...restButtonProps
   } = buttonProps;
 
-  /*
-    todo:
+  // ============================================ //
+  // ------------ DROPDOWN SELECTION ------------ // 
+  // ============================================ //
+  if (dropdownSelectionContext) {
+    console.log("in dropdown");
 
-    * re-position declaration of buttonProps to pull out common props 
-    * between group mode and normal mode
-  */
+    const {
+      menuOpen: group_menuOpen,
+      setMenuOpen: group_setMenuOpen,
+      selectedId: group_selectedId,
+      setSelectedId: group_setSelectedId,
+      className: group_className,
+      registeredIds,
+      selectedItemData,
+    } = dropdownSelectionContext;
+
+    const {
+      onClick=() => true,
+      ...restButtonData
+    } = restButtonProps;
+
+    if (!buttonProps.id) {
+      throw Error("DropdownSelection members must be given an 'id' prop");
+    }
+
+    buttonProps.importedState = {
+      __dropdownSelected: group_selectedId === buttonProps.id
+    }
+
+    const buttonData = {
+      ...restButtonData,
+      inDropdown: true,
+      state: buttonProps.importedState
+    }
+
+    // ! LEFT OFF HERE!
+    buttonProps.importedClassName = mergeClass(
+      group_className.menuItems,
+      importedClassName
+    );
+
+    if (buttonProps.importedState.__dropdownSelected) {
+      selectedItemData.current[buttonProps.id] = buttonData;
+    } else {
+      delete selectedItemData.current[buttonProps.id];
+    }
+
+    registeredIds.current[buttonProps.id] = buttonData;
+
+    buttonProps.onClick = () => {
+      if (!buttonProps.importedState.__dropdownSelected) {
+        group_setSelectedId(buttonProps.id);
+      }
+    }
+
+    const { 
+      id, 
+      value, 
+      ...restProps 
+    } = restButtonData;
+
+    buttonProps.restArgs = restProps;
 
 
-  if (buttonGroupContext) {
+  // ============================================== //
+  // ---------------- BUTTON GROUP ---------------- // 
+  // ============================================== //
+  } else if (buttonGroupContext) {
 
     // extract all shared functionality from group button provider
     const {
@@ -120,6 +203,7 @@ const useButtonController = (buttonProps) => {
 
     const {
       // this default is unique to button being used as button group member, so define it here
+      // ! i don't think we need this anymore due to 'processClick' being used
       onClick=() => true,
 
       // extended props when in button group
@@ -128,10 +212,13 @@ const useButtonController = (buttonProps) => {
 
       // id,
       // value
-      ...remainingButtonData
+      ...restButtonData
     } = restButtonProps;
 
-    // console.log("click callbacks: ", onClick, " | ", onSelect, " | ", onUnselect);
+    // button must have an 'id' prop if used inside a button group
+    if (!buttonProps.id) {
+      throw Error("ButtonGroup components must be given an 'id' prop");
+    }
 
     /*
       this is the main state object for the button. state will cascade starting from 
@@ -151,14 +238,9 @@ const useButtonController = (buttonProps) => {
 
     // button data holds all remaining button attributes, along with the main state object
     const buttonData = {
-      ...remainingButtonData,
+      ...restButtonData,
       inGroup: true,
       state: buttonProps.importedState
-    }
-
-    // button must have an 'id' prop if used inside a button group
-    if (!buttonProps.id) {
-      throw Error("ButtonGroup components must be given an 'id' prop");
     }
 
     // merge classes defined in button group provider with classes
@@ -246,7 +328,7 @@ const useButtonController = (buttonProps) => {
       id, 
       value, 
       ...restProps 
-    } = remainingButtonData;
+    } = restButtonData;
 
     buttonProps.restArgs = restProps;
 
