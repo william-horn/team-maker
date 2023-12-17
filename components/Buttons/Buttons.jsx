@@ -8,6 +8,7 @@ import mergeClass from "@/util/mergeClass";
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
 import emptyFunc from "@/util/emptyFunc";
+import { usePathname } from "next/navigation";
 import { useButtonGroupContext } from "@/providers/ButtonGroupProvider";
 
 // ---------------------------- //
@@ -268,11 +269,18 @@ const useButtonController = (buttonProps, callbacks={}) => {
     leftIconSelected,
     rightIconSelected,
     leftIcon,
-    rightIcon
+    rightIcon,
+    leftIconHovered,
+    rightIconHovered,
   } = buttonProps;
 
-  buttonProps.activeLeftIcon = (importedState.__selected && leftIconSelected) || leftIcon;
-  buttonProps.activeRightIcon = (importedState.__selected && rightIconSelected) || rightIcon;
+  buttonProps.activeLeftIcon = (importedState.__selected && leftIconSelected) 
+    || (importedState.__hovered && leftIconHovered)
+    || leftIcon;
+
+  buttonProps.activeRightIcon = (importedState.__selected && rightIconSelected) 
+    || (importedState.__hovered && rightIconHovered) 
+    || rightIcon;
 
   return buttonProps;
 }
@@ -338,13 +346,20 @@ export const StatefulButton = function({
   // rightIcon,
   // leftIconSelected,
   // rightIconSelected,
+  // leftIconHovered
+  // rightIconHovered
 
   ...rest
 }) {
   const [selected, setSelected] = useState(defaultSelect);
+  const [hovered, setHovered] = useState(false);
 
   const buttonController = useButtonController({
-    importedState: { __selected: selected, __locallySelected: selected },
+    importedState: { 
+      __selected: selected, 
+      __locallySelected: selected,
+      __hovered: hovered,
+    },
     ...rest
   }, {
 
@@ -378,6 +393,8 @@ export const StatefulButton = function({
   return (
     <button 
     className={finalStyles.self}
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
     onClick={buttonController.onClick}>
       {renderButtonContent(
         buttonController.activeLeftIcon, 
@@ -395,31 +412,34 @@ export const StatefulButton = function({
   Button with all default styles but redirects user instead
   of serving some dynamic functionality.
 */
-export const LinkButton = function({
+export const StatelessLinkButton = function({
   children,
   className: importedClassName={},
   state: importedState={},
-
-  leftIcon,
-  rightIcon,
-  leftIconSelected,
-  rightIconSelected,
   href,
 
   ...rest
 }) {
+  const buttonController = useButtonController({
+    importedClassName,
+    importedState,
+    ...rest
+  });
 
   const finalStyles = mergeClass(
     className, 
-    importedClassName,
-    importedState
+    buttonController.importedClassName,
+    buttonController.importedState
   );
   
   return (
-    <Link className={finalStyles.self} href={href} {...rest}>
+    <Link 
+    className={finalStyles.self} 
+    href={href} 
+    onClick={buttonController.onClick}>
       {renderButtonContent(
-        (importedState.selected && leftIconSelected) || leftIcon, 
-        (importedState.selected && rightIconSelected) || rightIcon, 
+        buttonController.activeLeftIcon, 
+        buttonController.activeRightIcon, 
         finalStyles, 
         children
       )}
@@ -427,3 +447,51 @@ export const LinkButton = function({
   )
 };
 
+
+/*
+  ? Stateful Link Button Component
+*/
+export const StatefulLinkButton = function({
+  children,
+  className: importedClassName={},
+  state: importedState={},
+  href,
+
+  ...rest
+}) {
+  const urlPathname = usePathname();
+  const selected = urlPathname === href;
+
+  // const [selected, setSelected] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const buttonController = useButtonController({
+    importedState: { 
+      __selected: selected, 
+      __hovered: hovered,
+    },
+    ...rest
+  });
+
+  const finalStyles = mergeClass(
+    className, 
+    buttonController.importedClassName,
+    buttonController.importedState,
+  );
+  
+  return (
+    <Link 
+    href={href}
+    className={finalStyles.self}
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
+    onClick={buttonController.onClick}>
+      {renderButtonContent(
+        buttonController.activeLeftIcon, 
+        buttonController.activeRightIcon, 
+        finalStyles, 
+        children
+      )}
+    </Link>
+  )
+};

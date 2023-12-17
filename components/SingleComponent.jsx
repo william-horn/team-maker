@@ -2,7 +2,7 @@
 "use client";
 
 import React from 'react';
-import { StatelessButton, LinkButton, StatefulButton } from './Buttons/Buttons';
+import { StatelessButton, StatelessLinkButton, StatefulButton, StatefulLinkButton } from './Buttons/Buttons';
 import ButtonGroup from './Buttons/ButtonGroup';
 import ImageButton from './Buttons/ImageButton';
 
@@ -16,27 +16,36 @@ const SingleComponent = function({
     {/* <ImageButton
     src="/icons/close_icon.svg"
     /> */}
+    <StatefulButton 
+    onClick={data => console.log(data)}
+    rightIconHovered="/icons/history_icon.svg"
+    rightIconSelected="/icons/label_icon.svg"
+    rightIcon="/icons/search_icon.svg">
+      Hover Test
+    </StatefulButton>
 
-  <ButtonGroup 
-  something="idk lol" 
-  defaultSelect={["one"]} 
-  selectionLimit={1}
-  // unselectLastChoice
-  onSelectionLimitReached={(bd) => console.log("limit reached: ", bd)}
-  onClick={() => {console.log("group")}}>
-    <StatefulButton id="one">Stateful</StatefulButton>
-    <StatelessButton id="two">Stateless</StatelessButton>
-    <StatefulButton id="three">Third</StatefulButton>
-  </ButtonGroup>
+    <StatelessLinkButton 
+    href="/test-page" 
+    rightIcon="/icons/profile_icon.svg"
+    rightIconHovered="/icons/star_fill_icon.svg"
+    state={{__hovered: true}}
+    onClick={data=>console.log("link data: ", data)}>
+      Link test
+    </StatelessLinkButton>
 
-  <ButtonGroup>
-    <StatelessButton id="one">First</StatelessButton>
-    <StatelessButton id="two">Second</StatelessButton>
-    <StatelessButton id="three">Third</StatelessButton>
-  </ButtonGroup>
+    <StatelessButton 
+    state={{__selected: true}}
+    onClick={data => console.log("stateless: ", data)}>
+      Stateless
+    </StatelessButton>
 
-  <StatefulButton id="lol" value="sure" leftIcon="" onClick={stuff => console.log("stuff: ", stuff)}>Testing</StatefulButton>
-  <StatelessButton>Testing Stateless</StatelessButton>
+    <StatefulLinkButton 
+    rightIconHovered="/icons/search_icon.svg"
+    rightIconSelected="/icons/search_icon.svg"
+    onClick={data=> console.log("stateful link: ", data)}
+    href="/test-page">
+      Stateful Link
+    </StatefulLinkButton>
       
     </div>
   );

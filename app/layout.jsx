@@ -1,6 +1,8 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Wireframe from '@/components/Wireframe'
+import SingleComponent from '@/components/SingleComponent'
+import { StatefulLinkButton } from '@/components/Buttons/Buttons'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,6 +19,8 @@ export default function RootLayout({ children }) {
         <title>My Custom Components</title>
       </head>
       <body className={inter.className + " theme-dark bg-page"}>
+        <SingleComponent/>
+        <StatefulLinkButton href="/test-page">Test</StatefulLinkButton>
         {children}
       </body>
     </html>
