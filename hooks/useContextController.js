@@ -181,6 +181,7 @@ const groupContexts = {
           return {
             inDropdown: true,
             value: this.value,
+            text: this.text,
             state: this.__getState(),
             controller: this,
             ...this.eventData
@@ -204,9 +205,7 @@ const groupContexts = {
 
         __updateActiveData() {
           if (this.__getState().__dropdownSelected) {
-            this.__provider.activeData.current[this.id] = this.__getEventData();
-          } else {
-            delete this.__provider.activeData.current[this.id];
+            this.__provider.activeData.current.active = this.__getEventData();
           }
         },
 

@@ -15,9 +15,9 @@ const SingleComponent = function({
   return (
     <div className="p-5">
 
-<ButtonGroup>
+{/* <ButtonGroup>
   <StatefulButton onClick={d => console.log(d)} eventData={{x: 1}} id="two">Stateful</StatefulButton>
-</ButtonGroup>
+</ButtonGroup> */}
 {/* 
       ButtonGroup onClick={d => console.log("group: ", d)}>
         <StatelessButton id="one" value="100">Testing</StatelessButton>

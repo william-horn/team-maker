@@ -114,11 +114,11 @@ const DropdownSelection = function({
   }, []);
   // <<
 
-  // useEffect(() => {
-  //   console.log("selected: ", selectedId);
-  //   console.log("registered: ", registeredIds.current);
-  //   console.log("active data: ", selectedItemData.current);
-  // });
+  useEffect(() => {
+    console.log("selected: ", selectedId);
+    console.log("registered: ", registeredIds.current);
+    console.log("active data: ", activeData.current);
+  });
 
   return (
     <Providers.DropdownSelection
