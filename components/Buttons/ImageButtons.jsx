@@ -58,24 +58,28 @@ export const StatelessImageButton = function({
 
 export const StatefulImageButton = function({
   children,
-  defaultSelect=false,
-  onClick=emptyFunc,
+  defaultSelected=false,
+  onClick: importedOnClick,
   ...rest
 }) {
   const [hovered, setHovered] = useState(false);
-  const [selected, setSelected] = useState(defaultSelect);
+  const [selected, setSelected] = useState(defaultSelected);
 
-  const processClick = () => {
+  const onClick = (eventData) => {
     const isSelected = !selected;
     setSelected(isSelected);
-    onClick(isSelected);
+
+    eventData.controller.__updateState({ __locallySelected: isSelected });
+    if (importedOnClick) return importedOnClick(eventData);
+
+    return true;
   }
 
   return (
     <StatelessImageButton
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
-    onClick={processClick}
+    onClick={onClick}
     state={{__hovered: hovered, __selected: selected}}
     {...rest}
     />

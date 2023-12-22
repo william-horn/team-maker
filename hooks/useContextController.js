@@ -16,6 +16,7 @@ const groupContexts = {
   // contexts that can't be combined with each other
   mutuallyExclusive: {
     [enum_FirstProvider.value]: {
+      provider: enum_FirstProvider,
       useContext: () => useComponentContext(enum_FirstProvider),
       methods: {
         __getEventData() {
@@ -53,6 +54,7 @@ const groupContexts = {
       * // ================================ // *
     */
     [enum_ButtonGroup.value]: {
+      provider: enum_ButtonGroup,
       useContext: () => useComponentContext(enum_ButtonGroup),
       methods: {
         __getEventData() {
@@ -175,6 +177,7 @@ const groupContexts = {
       * // ================================ // *
     */
     [enum_DropdownSelection.value]: {
+      provider: enum_DropdownSelection,
       useContext: () => useComponentContext(enum_DropdownSelection),
       methods: {
         __getEventData() {
@@ -265,7 +268,7 @@ export const useCurrentContext = (props={}) => {
 
     __props: props,       // contains all ORIGINAL props merged with provider context
     __provider: {},       // contains provider context
-    __contextMethods: {},
+    // __contextMethods: {},
     __handlers: {         // contains handler functions for context methods (several may exist for nested contexts)
       /*  
         onClick: [
@@ -429,7 +432,8 @@ export const useCurrentContext = (props={}) => {
       finalContext.__props = {...context.rest, ...props};
       finalContext.__provider = context;
       finalContext.__hasContext = true;
-      finalContext.__contextMethods = contextData.methods;
+      finalContext.__contextData = contextData;
+      // finalContext.__contextMethods = contextData.methods;
 
       // copy method names over to finalContext, and let those functions be called on 'finalContext'
       // for (let methodName in contextData.methods) {

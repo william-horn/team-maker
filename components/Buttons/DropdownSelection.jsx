@@ -59,7 +59,7 @@ const DropdownSelection = function({
         self: "w-full"
       },
 
-      __selected: {
+      __dropdownSelected: {
         self: "rounded-b-none bg-button-primary hover:bg-button-hover-primary"
       }
     },
@@ -79,7 +79,7 @@ const DropdownSelection = function({
       self: "flex-col w-full flex"
     },
 
-    __selected: {
+    __dropdownSelected: {
       outerList: {
         self: "flex"
       }
@@ -89,7 +89,7 @@ const DropdownSelection = function({
   className = mergeClass(
     className,
     importedClassName,
-    { __selected: menuOpen }
+    { __dropdownSelected: menuOpen }
   );
 
   const onMenuClick = () => {
@@ -141,7 +141,7 @@ const DropdownSelection = function({
         ignoreContext
         onClick={onMenuClick}
         onMouseEnter={toggleOnHover ? showDropdown : emptyFunc}
-        state={{__selected: menuOpen}}
+        state={{__dropdownSelected: menuOpen}}
         className={className.dropButton}
         {...rest}
         >
