@@ -56,13 +56,12 @@ const groupContexts = {
       useContext: () => useComponentContext(enum_ButtonGroup),
       methods: {
         __getEventData() {
-          const eventData = this.eventData || {};
-
           return {
             inGroup: true,
-            state: this.__getState(),
             value: this.value,
-            ...eventData
+            state: this.__getState(),
+            controller: this,
+            ...this.eventData
           }
         },
 
@@ -79,9 +78,6 @@ const groupContexts = {
             ...this.__provider.importedState,
             ...this.__props.importedState,
             // __groupSelected: this.__provider.findActiveId(this.id).found,
-          });
-          this.__updateState({
-            __selected: this.__getState().__groupSelected,
           });
         },
 
@@ -181,12 +177,34 @@ const groupContexts = {
     [enum_DropdownSelection.value]: {
       useContext: () => useComponentContext(enum_DropdownSelection),
       methods: {
+        __collapseClassName() {
+          this.importedClassName = mergeClass(
+            this.__provider.className.menuItems,
+            this.importedClassName
+          );
+        },
+
+        __setStateInitial() {
+          this.__setState({
+            __dropdownSelected: this.__provider.selectedId === this.id,
+            ...this.__provider.importedState,
+            ...this.__props.importedState,
+          });
+        },
+
+        __updateActiveData() {
+          if (this.__getState().__dropdownSelected) {
+            this.__provider.activeData.current[this.id] = this.__getEventData();
+          } else {
+            delete this.__provider.activeData.current[this.id];
+          }
+        },
+
         onClick() {
-          
           if (!this.__getState().__dropdownSelected) {
-            selectedItemData.current = buttonData;
-            group_setSelectedId(buttonProps.id);
-            group_setMenuOpen(false);
+            // selectedItemData.current = buttonData;
+            // group_setSelectedId(buttonProps.id);
+            // group_setMenuOpen(false);
           }
         }
       }
@@ -218,6 +236,7 @@ export const useCurrentContext = (props={}) => {
 
   const finalContext = {
     ...props,             // contains all UPDATED props
+    eventData: props.eventData || {},
 
     __props: props,       // contains all ORIGINAL props merged with provider context
     __provider: {},       // contains provider context
@@ -238,12 +257,14 @@ export const useCurrentContext = (props={}) => {
       can be re-defined inside context 'method' fields.
     */
     __getEventData() {
-      const eventData = this.eventData || {};
+      // const eventData = this.eventData || {};
 
       return {
         status: "no context",
+        value: this.value,
         state: this.__getState(),
-        ...eventData
+        controller: this,
+        ...this.eventData
       }
     },
 
@@ -256,10 +277,11 @@ export const useCurrentContext = (props={}) => {
     },
 
     __updateState(updatedState) {
-      this.__setState({
-        ...this.__getState(), 
-        ...updatedState
-      });
+      for (let key in updatedState) {
+        this.importedState[key] = updatedState[key];
+      }
+
+      this.importedState.__selected = this.__isSelected();
     },
 
     __setStateInitial() {
@@ -306,9 +328,10 @@ export const useCurrentContext = (props={}) => {
     // todo: generalize selected states to make this cleaner
     __isSelected() {
       const state = this.__getState();
-      return state.__selected 
-        || state.__groupSelected
-        || state.__locallySelected;
+      return state.__groupSelected
+        || state.__locallySelected
+        || state.__dropdownSelected
+        || false;
     },
 
     __getRestProps() {
@@ -428,6 +451,11 @@ export const useContextController = (props) => {
 
   // set the initial default state with or without context
   currentContext.__setStateInitial();
+
+  // once initial state is selected, set the "any" state selected prop
+  currentContext.__updateState({
+    __selected: currentContext.__isSelected()
+  });
 
   // merge provider class names with direct component class names
   currentContext.__collapseClassName();

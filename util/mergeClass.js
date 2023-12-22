@@ -34,6 +34,10 @@ const mergeClass = (base, imported, state={}) => {
   // merge base styles with imported styles
   recursiveMerge(final, imported);
 
+  if (state.__selected) {
+    recursiveMerge(final, final.__selected);
+  }
+
   if (state.__dropdownSelected) {
     recursiveMerge(final, final.__dropdownSelected);
   } 
@@ -41,9 +45,9 @@ const mergeClass = (base, imported, state={}) => {
   if (state.__groupSelected) {
     recursiveMerge(final, final.__groupSelected);
   }
-  
-  if (state.__selected) {
-    recursiveMerge(final, final.__selected);
+
+  if (state.__locallySelected) {
+    recursiveMerge(final, final.__locallySelected);
   }
 
   return final;

@@ -33,7 +33,7 @@ const className = {
     }
   },
 
-  __selected: {
+  __locallySelected: {
     self: "bg-green-500 hover:bg-green-600"
   }
 }
@@ -153,7 +153,7 @@ export const StatefulButton = function({
     const isSelected = !selected;
     setSelected(isSelected);
 
-    eventData.state.__selected = selected;
+    eventData.controller.__updateState({ __locallySelected: isSelected });
     if (importedOnClick) return importedOnClick(eventData);
 
     return true;
@@ -165,7 +165,7 @@ export const StatefulButton = function({
     onMouseLeave={() => setHovered(false)}
     onClick={onClick}
     state={{ 
-      __selected: selected, 
+      __locallySelected: selected, 
       __hovered: hovered 
     }}
     {...rest}
@@ -228,7 +228,7 @@ export const StatefulLink = function({
     onMouseLeave={() => setHovered(false)}
     onClick={onClick}
     state={{ 
-      __selected: selected, 
+      __locallySelected: selected, 
       __hovered: hovered 
     }}
     {...rest}

@@ -15,7 +15,11 @@ const SingleComponent = function({
   return (
     <div className="p-5">
 
-      <ButtonGroup onClick={d => console.log("group: ", d)}>
+<ButtonGroup>
+  <StatefulButton onClick={d => console.log(d)} eventData={{x: 1}} id="two">Stateful</StatefulButton>
+</ButtonGroup>
+
+      {/* <ButtonGroup onClick={d => console.log("group: ", d)}>
         <StatelessButton id="one" value="100">Testing</StatelessButton>
         <StatefulButton id="two">Stateful</StatefulButton>
         <StatelessLink id="three" href="/test-page">Some Link</StatelessLink>
@@ -28,7 +32,7 @@ const SingleComponent = function({
         <StatelessButton id="two">Option 2</StatelessButton>
         <StatelessButton id="three">Option 3</StatelessButton>
         <StatelessButton id="four">Option 4</StatelessButton>
-      </DropdownSelection>
+      </DropdownSelection> */}
 
 
 
