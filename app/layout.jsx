@@ -1,8 +1,6 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Wireframe from '@/components/Wireframe'
-import SingleComponent from '@/components/SingleComponent'
-import { StatefulLinkButton } from '@/components/Buttons/Buttons'
 
 const inter = Inter({ subsets: ['latin'] })
 

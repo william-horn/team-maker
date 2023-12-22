@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from 'react';
-import emptyFunc from '@/util/emptyFunc';
+import emptyFunc from '@/util/defaultFunctions';
 
 export const useLocalStorageRequest = (key, value) => {
   if (typeof window === "undefined") return [emptyFunc, emptyFunc];

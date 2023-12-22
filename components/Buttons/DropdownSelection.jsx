@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import DropdownSelectionProvider from "@/providers/DropdownSelectionProvider";
+import Providers from "@/providers/Providers";
 import mergeClass from "@/util/mergeClass";
-import emptyFunc from "@/util/emptyFunc";
+import emptyFunc from "@/util/defaultFunctions";
 import { StatelessButton } from "./Buttons";
 
 const DropdownSelection = function({
@@ -32,6 +32,11 @@ const DropdownSelection = function({
     Tried using 'useLayoutEffect()' to wait for data to load in before causing a re-paint,
     but the effect was the same since we still have no default content to render in the
     meantime.
+
+    * possible solution?:
+
+    Just pass whatever the default id is from the provider, down to all the sub-components. 
+    If the id matches then have the sub-component update the provider.
   */
 
   // initialize state hooks
@@ -39,13 +44,13 @@ const DropdownSelection = function({
   const [menuOpen, setMenuOpen] = useState(false);
   // const [firstRender, setFirstRender] = useState(false);
 
-  const selectedItemData = useRef(defaultData);
+  const activeData = useRef({active: defaultData});
   const registeredIds = useRef({});
   const dropdownContainer = useRef(null);
 
   // all component styles
   let className = {
-    self: "w-[200px] bg-button-primary rounded relative hover:bg-button-hover-primary",
+    self: "w-fit bg-button-primary rounded relative hover:bg-button-hover-primary",
 
     dropButton: {
       self: "w-full justify-center",
@@ -109,8 +114,6 @@ const DropdownSelection = function({
   }, []);
   // <<
 
-  console.log("menu open: ", menuOpen);
-
   // useEffect(() => {
   //   console.log("selected: ", selectedId);
   //   console.log("registered: ", registeredIds.current);
@@ -118,14 +121,14 @@ const DropdownSelection = function({
   // });
 
   return (
-    <DropdownSelectionProvider
+    <Providers.DropdownSelection
     value={{
       selectedId,
       setSelectedId,
       menuOpen,
       setMenuOpen,
       className,
-      selectedItemData,
+      activeData,
       registeredIds,
       state,
       ...rest
@@ -142,7 +145,7 @@ const DropdownSelection = function({
         className={className.dropButton}
         {...rest}
         >
-          { selectedItemData.current.text || placeholder }
+          { activeData.current.active.text || placeholder }
         </StatelessButton>
 
         <div className={className.outerList.self}>
@@ -151,7 +154,7 @@ const DropdownSelection = function({
           </div>
         </div>
       </div>
-    </DropdownSelectionProvider>
+    </Providers.DropdownSelection>
   );
 }
 

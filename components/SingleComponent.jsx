@@ -1,17 +1,11 @@
 
 "use client";
 
-import React from 'react';
-import { StatelessButton, StatelessLinkButton, StatefulButton, StatefulLinkButton } from './Buttons/Buttons';
-import ButtonGroup from './Buttons/ButtonGroup';
-import { usePathname } from 'next/navigation';
-import Icon from './Graphics/Icon';
-import { StatelessImageButton, StatefulImageButton } from './Buttons/ImageButton';
-import DropdownSelection from './Buttons/Dropdown';
-import Text from './Typography/Text';
-import Quantifier from './Buttons/Quantifier';
-import Heading from './Typography/Heading';
-import SearchBar from './Searchbar';
+import { StatefulButton, StatelessButton, StatelessLink } from "./Buttons/Buttons";
+import SearchBar from "./Searchbar";
+import Quantifier from "./Buttons/Quantifier";
+import ButtonGroup from "./Buttons/ButtonGroup";
+import DropdownSelection from "./Buttons/DropdownSelection";
 
 const SingleComponent = function({
   
@@ -20,11 +14,23 @@ const SingleComponent = function({
 
   return (
     <div className="p-5">
-      <Heading>Header</Heading>
-      <SearchBar
-      displayHistorySize={50}
-      displayResultsSize={50}
-      />
+
+      <ButtonGroup onClick={d => console.log("group: ", d)}>
+        <StatelessButton id="one" value="100">Testing</StatelessButton>
+        <StatefulButton id="two">Stateful</StatefulButton>
+        <StatelessLink id="three" href="/test-page">Some Link</StatelessLink>
+      </ButtonGroup>
+
+      <Quantifier/>
+
+      <DropdownSelection>
+        <StatelessButton id="one">Option 1</StatelessButton>
+        <StatelessButton id="two">Option 2</StatelessButton>
+        <StatelessButton id="three">Option 3</StatelessButton>
+        <StatelessButton id="four">Option 4</StatelessButton>
+      </DropdownSelection>
+
+
 
     </div>
   );

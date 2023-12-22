@@ -4,7 +4,7 @@
 import React from 'react';
 import { StatelessButton, LinkButton, StatefulButton } from './Buttons/Buttons';
 import ButtonGroup from './Buttons/ButtonGroup';
-import ImageButton from './Buttons/ImageButton';
+import ImageButton from './Buttons/ImageButtons';
 
 const SingleComponent = function({
   

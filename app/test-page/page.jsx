@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import SingleComponent from '@/components/SingleComponent'
-import SingleComponentTwo from '@/components/SingleComponent2'
 
 export default function TestPage() {
 
   return (
     <main>
-      <SingleComponentTwo/>
+      <h1>Test page</h1>
+      <SingleComponent/>
     </main>
   )
 }

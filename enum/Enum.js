@@ -4,6 +4,10 @@
 const enumCollectionPrototype = {
   _test() {
     return 'Enum Collection';
+  },
+
+  getEnumItems() {
+    return Object.values(this.enumItems);
   }
 }
 

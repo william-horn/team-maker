@@ -11,10 +11,10 @@ import Enum from '../enum';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useEffect } from 'react';
 import mergeClass from '@/util/mergeClass';
-import emptyFunc from "@/util/emptyFunc";
+import emptyFunc from "@/util/defaultFunctions";
 import Text from "./Typography/Text";
 import { StatelessButton, StatefulButton } from "./Buttons/Buttons";
-import { StatefulImageButton, StatelessImageButton } from './Buttons/ImageButton';
+import { StatefulImageButton, StatelessImageButton } from './Buttons/ImageButtons';
 
 const SearchBar = ({
   className: importedClassName={},
@@ -25,7 +25,7 @@ const SearchBar = ({
   historyDomain=Enum.StorageKeys.SearchHistoryDomain.Primary.value,
 
   historySize=100,
-  displayResultsSize=3,
+  displayResultsSize=10,
   displayHistorySize=3,
 
   // historyResultIcon,
@@ -94,7 +94,20 @@ const SearchBar = ({
 
   // When the search bar is focused
   const onSearchFocus = () => {
-    setSearchState(Enum.SearchState.Focused.value);
+    setSearchState(Enum.SearchState.Typing.value);
+  }
+
+  const removeFromHistory = (resultStr) => {
+    updateSearchHistory(prev => {
+      let finalResults = prev[historyDomain];
+      
+      finalResults.splice(
+        finalResults.indexOf(resultStr), 
+        1
+      );
+
+      return {...prev, [historyDomain]: finalResults }
+    });
   }
 
   const filterSearch = (searchQuery) => {
@@ -160,7 +173,7 @@ const SearchBar = ({
         self: "overflow-y-auto overflow-x-clip max-h-[200px]",
         resultButton: {
           //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
-          self: "w-full text-left text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover hover:underline",
+          self: "w-full text-left justify-start text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover hover:underline",
           iconButton: {
             self: "hover:bg-transparent h-fit",
             inner: {
@@ -183,7 +196,7 @@ const SearchBar = ({
   className = mergeClass(
     className,
     importedClassName,
-    { _isSelected: searchState !== Enum.SearchState.Idle.value }
+    { __selected: searchState !== Enum.SearchState.Idle.value }
   );
 
   // Render out a single search result
@@ -192,42 +205,35 @@ const SearchBar = ({
     
     return (
       <div key={key} className="flex items-center">
+
         {
+          // Render interactive result icon for result history
           resultData.type === Enum.SearchResultType.History.value
             ? <StatefulImageButton
-              onClick={() => {
-                updateSearchHistory(prev => {
-                  let finalResults = prev[historyDomain];
-                  
-                  finalResults.splice(
-                    finalResults.indexOf(resultData.source), 
-                    1
-                  );
-      
-                  return {...prev, [historyDomain]: finalResults }
-                });
-              }}
+              onClick={() => removeFromHistory(resultData.source)}
               className={className.historyList.inner.resultButton.iconButton}
               srcHovered="/icons/trash_icon.svg"
               src="/icons/history_icon.svg"
               />
+
+            // Render stateless icon for other search results
             : <StatelessImageButton
               onClick={() => onSearchResultQuery(resultData.source)}
               className={className.historyList.inner.resultButton.iconButton}
               src="/icons/search_icon.svg"
               />
         }
+
+        {/* Render search result button */}
         <StatelessButton 
         key={key}
         onClick={() => onSearchResultQuery(resultData.source)}
-        className={
-          mergeClass(
-            className.historyList.inner.resultButton, 
-            resultData.type === Enum.SearchResultType.History.value 
-              ? className.historyList.inner.historyResult
-              : className.historyList.inner.databaseResult
-          )
-        }>
+        className={mergeClass(
+          className.historyList.inner.resultButton, 
+          resultData.type === Enum.SearchResultType.History.value 
+            ? className.historyList.inner.historyResult
+            : className.historyList.inner.databaseResult
+        )}>
           {
             resultData.tags.map(tagData => {
               switch (tagData.type) {
@@ -255,22 +261,29 @@ const SearchBar = ({
     // pull from search result arrays
     const historyLogs = (getSearchHistory(historyDomain) || []);
     const otherLogs = [
-      "testing",
-      "this is some test seed data",
-      "where do i find the nearest mall",
-      "malistare's boots of wissom",
-      "moolinda woo's robe of song",
-      "dragonspyre's cap of mourning",
-      "stormkeeper's staff",
-      "where do i find stats page?",
-      "is this a new website",
-      "who created this website?",
-      "can i hack on this game",
-      "where might i find the final boss?",
-      "boss fights",
-      "pack drops",
-      "minion drops",
-      "what minions drop aeon gear?"
+      "Able Ranger's Wayfinder (Level 110+)",
+      "Allfather's Gungnir (Level 130+)",
+      "Baron's Staff of Command",
+      "Blade of the Silent Knight (Level 10+)",
+      "Blazing Naginata (Level 100+)",
+      "Bonebreaker Rod of Cold",
+      "Celestian Neon Axe (Level 120+)",
+      "Cobbler Elf Hammer (Level 110+)",
+      "Crimson Pandamonium Jian (Any Level)",
+      "Darkwraith's Scythe of Penance (Level 40+)",
+      "Deathmetal Skull (Level 50+)",
+      "Desert Lodestar Staff (Level 30+)",
+      "Dragoon's Rapier (Level 30+)",
+      "Ebony Pandamonium Jian (Level 110+)",
+      "Ebony Pandamonium Jian (Level 70+)",
+      "Dragonbite Bow (Level 110+)",
+      "Eye of the Soothsayer (Level 90+)",
+      "Fire Serpent's Obsidian Fang (Level 70+)",
+      "Enchanter's New Horizon Wand",
+      "Engineer's Hexacorder",
+      "Evoker's Stalwart Stave",
+      "Frosty Stare Tiki Torch (Level 50+)",
+      "Glinting Dragon Lance (Level 60+)",
     ]; 
 
     // convert search result arrays to arrays of result data
