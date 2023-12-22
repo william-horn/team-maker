@@ -18,21 +18,21 @@ const SingleComponent = function({
 <ButtonGroup>
   <StatefulButton onClick={d => console.log(d)} eventData={{x: 1}} id="two">Stateful</StatefulButton>
 </ButtonGroup>
-
-      {/* <ButtonGroup onClick={d => console.log("group: ", d)}>
+{/* 
+      ButtonGroup onClick={d => console.log("group: ", d)}>
         <StatelessButton id="one" value="100">Testing</StatelessButton>
         <StatefulButton id="two">Stateful</StatefulButton>
         <StatelessLink id="three" href="/test-page">Some Link</StatelessLink>
       </ButtonGroup>
 
-      <Quantifier/>
+      <Quantifier/> */}
 
       <DropdownSelection>
-        <StatelessButton id="one">Option 1</StatelessButton>
-        <StatelessButton id="two">Option 2</StatelessButton>
-        <StatelessButton id="three">Option 3</StatelessButton>
-        <StatelessButton id="four">Option 4</StatelessButton>
-      </DropdownSelection> */}
+        <StatelessButton id="one" text="Option One" onClick={d => console.log("dropdown: ", d)}>Option 1</StatelessButton>
+        <StatelessButton id="two" text="Option Two">Option 2</StatelessButton>
+        <StatelessButton id="three" text="Option Three">Option 3</StatelessButton>
+        <StatelessButton id="four" text="Option Four">Option 4</StatelessButton>
+      </DropdownSelection> 
 
 
 

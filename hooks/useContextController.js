@@ -177,6 +177,16 @@ const groupContexts = {
     [enum_DropdownSelection.value]: {
       useContext: () => useComponentContext(enum_DropdownSelection),
       methods: {
+        __getEventData() {
+          return {
+            inDropdown: true,
+            value: this.value,
+            state: this.__getState(),
+            controller: this,
+            ...this.eventData
+          }
+        },
+
         __collapseClassName() {
           this.importedClassName = mergeClass(
             this.__provider.className.menuItems,
@@ -201,7 +211,23 @@ const groupContexts = {
         },
 
         onClick() {
+          const dropdownGroup = this.__provider;
+
+          const {
+            activeData,
+            setSelectedId,
+            setMenuOpen,
+          } = dropdownGroup;
+
+          const {
+            onClick=truthyFunc,
+          } = this.__props;
+
           if (!this.__getState().__dropdownSelected) {
+            activeData.current.active = this.__getEventData();
+            setSelectedId(this.id);
+            setMenuOpen(false);
+            onClick(this.__getEventData());
             // selectedItemData.current = buttonData;
             // group_setSelectedId(buttonProps.id);
             // group_setMenuOpen(false);
