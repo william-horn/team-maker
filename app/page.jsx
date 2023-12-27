@@ -12,6 +12,8 @@ import Image from 'next/image'
 import SingleComponent from '@/components/SingleComponent'
 
 export default function Home() {
+  console.log("PROCESS ENV: ", process.env);
+  console.log("MY KEY: ", process.env.WILLS_KEY);
 
   return (
     <main>

@@ -17,8 +17,6 @@ export default function RootLayout({ children }) {
         <title>My Custom Components</title>
       </head>
       <body className={inter.className + " theme-dark bg-page"}>
-        {/* <SingleComponent/> */}
-        {/* <StatefulLinkButton href="/test-page">Test</StatefulLinkButton> */}
         {children}
       </body>
     </html>
