@@ -13,7 +13,7 @@ import SingleComponent from '@/components/SingleComponent'
 
 export default function Home() {
   console.log("PROCESS ENV: ", process.env);
-  console.log("MY KEY: ", process.env.MY_TEST_VAR);
+  console.log("MY KEY: ", process.env.NEXT_PUBLIC_WILLS_KEY);
 
   return (
     <main>
