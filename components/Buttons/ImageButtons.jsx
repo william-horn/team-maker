@@ -1,9 +1,9 @@
 
 
 import { useState } from "react";
-import mergeClass from "@/util/mergeClass";
+import mergeClass from "@/lib/utils/mergeClass";
 import Icon from "../Graphics/Icon";
-import emptyFunc from "@/util/defaultFunctions";
+import emptyFunc from "@/lib/utils/defaultFunctions";
 import { StatelessButton } from "./Buttons";
 
 let className = {

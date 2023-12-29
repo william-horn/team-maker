@@ -1,9 +1,9 @@
 "use client";
 
-import mergeClass from "@/util/mergeClass";
+import mergeClass from "@/lib/utils/mergeClass";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import Providers from "@/providers/Providers";
-import emptyFunc from "@/util/defaultFunctions";
+import emptyFunc from "@/lib/utils/defaultFunctions";
 
 const ButtonGroup = function({ 
   children,
@@ -31,7 +31,7 @@ const ButtonGroup = function({
     buttons: {
       self: "",
       __groupSelected: {
-        self: "bg-green-500 hover:bg-green-400"
+        self: "bg-blue-500 hover:bg-blue-400"
       }
     },
   }

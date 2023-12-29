@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Button from "./Button";
 import DropdownProvider from "@/providers/DropdownProvider";
 import { useDropdownContext } from "@/providers/DropdownProvider";
-import mergeClass from "@/util/mergeClass";
+import mergeClass from "@/lib/utils/mergeClass";
 import emptyFunc from "@/util/emptyFunc";
 
 const DropdownItem = function({

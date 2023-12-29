@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useContextController } from "@/hooks/useContextController";
 import Link from "next/link";
 import Icon from "../Graphics/Icon";
-import mergeClass from "@/util/mergeClass";
+import mergeClass from "@/lib/utils/mergeClass";
 
 // ============================ //
 // ----- COMPONENT STYLES ----- //

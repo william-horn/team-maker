@@ -4,21 +4,74 @@
 
 @layer base {
 
-  /* :root {
+  .theme-default {
+    --google-font-1: 'Titan One', sans-serif;
+    --google-font-2: 'Paytone One', sans-serif;
 
-  } */
+    --bg-color-landing-page: #0c0c0c;
 
+    /* General BACKGROUND COLOR */
+    --bg-color-primary: #0c0c0c;
+    --bg-color-primary-inset: #020202;
+    --bg-color-secondary: #020202;
+    --bg-color-secondary-inset: #020202;
+
+    /* SCROLLBAR */
+    --bg-color-scroll-bar: #505059;
+    --bg-color-scroll-bar-hover: #505059;
+
+    /* General BUTTONS */
+    --bg-color-button-primary: #404049;
+    --bg-color-button-primary-hover: #505059;
+
+    /* HEADING config */
+    --text-color-heading: white;
+    --text-color-heading-muted: gray;
+    --text-color-sub-heading: white;
+    --text-color-sub-heading-muted: gray;
+
+    /* General TEXT */
+    --text-color-primary: #e3e3e3;
+    --text-color-hyperlink: #d58eff;
+    --text-color-muted: #959595;
+    --text-color-error: red;
+
+    /* SEARCH BAR config */
+    --bg-color-search-bar: #404049;
+    --bg-color-search-bar-dropdown: #404049;
+    --bg-color-search-bar-result: #404049;
+    --bg-color-hover-search-bar-result: #33333b;
+
+    --text-color-search-bar-result: white;
+    --text-color-search-bar-input: #d9d8df;
+    --text-color-search-history-result: #dbdbdb;
+    --text-color-search-bar-result-match-word: #fff7b9;
+    --text-color-search-bar-result-match-first: #d58eff;
+    --text-color-search-bar-result-match-any: #a7ff73;
+  }
+
+  /* Wireframe */
+  .wireframe * {
+    outline: 1px solid red !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p {
+    color: var(--text-color-primary);
+  }
+
+  /* Input config */
   input {
     all: unset;
   }
 
-  .wireframe * {
-    outline: 1px solid red !important;
-  } 
+  input::placeholder {
+    color: var(--text-color-muted);
+  }
 
-    /* width */
+  /* width */
   ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
 
   /* Track */
@@ -29,37 +82,13 @@
   
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #5f677e; 
+    background: var(--bg-color-scroll-bar); 
     border-radius: 10px;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #5f677e; 
-  }
-
-  .theme-dark {
-    --color-logo: orange;
-
-    --bg-color-page: #2a2a32;
-
-    --bg-color-search-bar: #404049;
-    --bg-color-search-bar-list: #404049;
-    --bg-color-search-bar-result: #404049;
-    --bg-color-hover-search-bar-result: #33333b;
-
-    --text-color-search-bar-result: white;
-    --text-color-search-bar-input: #d9d8df;
-    --text-color-search-history-result: #dbdbdb;
-
-    --button-color-primary: #404049;
-    --button-color-secondary: blue;
-    --button-hover-color-primary: #505059;
-
-    --text-color-primary: white;
-    --text-color-secondary: orange;
-    --text-color-muted: gray;
-    --text-color-error: red;
+    background: var(--bg-color-scroll-bar-hover); 
   }
 }
 

@@ -18,7 +18,7 @@
 /*
   File imports
 */
-import mergeClass from "@/util/mergeClass";
+import mergeClass from "@/lib/utils/mergeClass";
 import Icon from "../Graphics/Icon";
 import Link from "next/link";
 import emptyFunc from "@/util/emptyFunc";

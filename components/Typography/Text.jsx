@@ -1,23 +1,19 @@
-
-import mergeClass from "@/util/mergeClass";
+import { twMerge } from "tailwind-merge";
 import React from "react";
 
 const Text = React.forwardRef(function({ 
   children, 
-  className: importedClassName={},
+  className: importedClassName="",
   ...rest
 }, ref) {
-
-  const className = mergeClass({
-    self: "custom-text leading-6 text-white align-middle text-sm block"
-  }, importedClassName);
-
-  // todo: adapt line height to text size
 
   return (
     <p 
     ref={ref}
-    className={className.self}
+    className={twMerge(
+      "general-text leading-6 text-primary align-middle text-sm block",
+      importedClassName
+    )}
     {...rest}>
       {children}
     </p>

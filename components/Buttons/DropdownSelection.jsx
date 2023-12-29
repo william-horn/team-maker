@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Providers from "@/providers/Providers";
-import mergeClass from "@/util/mergeClass";
-import emptyFunc from "@/util/defaultFunctions";
+import mergeClass from "@/lib/utils/mergeClass";
+import emptyFunc from "@/lib/utils/defaultFunctions";
 import { StatelessButton } from "./Buttons";
 
 const DropdownSelection = function({
@@ -12,6 +12,7 @@ const DropdownSelection = function({
   toggleOnHover=false,
   toggleOnClick=true,
   placeholder="Select an Option",
+  onClick=emptyFunc,
   defaultData={},
   // rightIconSelected,
   // leftIconSelected,
@@ -66,13 +67,13 @@ const DropdownSelection = function({
 
     menuItems: {
       self: "w-full bg-transparent justify-center",
-      __dropdownSelected: {
+      __dropdownItemSelected: {
         self: "bg-button-hover-primary hover:bg-button-hover-primary"
       }
     },
 
     outerList: {
-      self: "absolute hidden w-full list-container p-2 min-h-[5rem] bg-button-primary z-[9999] rounded-b"
+      self: "absolute hidden w-full list-container p-2 bg-button-primary z-[9999] rounded-b"
     },
 
     innerList: {
@@ -129,6 +130,7 @@ const DropdownSelection = function({
       setMenuOpen,
       className,
       activeData,
+      onClick,
       registeredIds,
       state,
       ...rest

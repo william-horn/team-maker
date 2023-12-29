@@ -2,8 +2,8 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { StatelessImageButton } from "./ImageButtons";
 import Text from "../Typography/Text";
-import mergeClass from "@/util/mergeClass";
-import emptyFunc from "@/util/defaultFunctions";
+import mergeClass from "@/lib/utils/mergeClass";
+import emptyFunc from "@/lib/utils/defaultFunctions";
 
 const Quantifier = function({
   children,

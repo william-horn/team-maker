@@ -3,15 +3,15 @@
 
 import { twMerge } from "tailwind-merge";
 import Icon from './Graphics/Icon';
-import stringIsEmpty from '@/util/stringIsEmpty';
-import removeExtraWhitespace from '@/util/removeExtraWhitespace';
+import stringIsEmpty from '@/lib/utils/stringIsEmpty';
+import removeExtraWhitespace from '@/lib/utils/removeExtraWhitespace';
 import { useLocalStorageState } from '@/hooks/useLocalStorageRequest';
-import { filterSearchResults } from "@/util/filterSearchResults";
+import { filterSearchResults } from "@/lib/utils/filterSearchResults";
 import Enum from '../enum';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useEffect } from 'react';
-import mergeClass from '@/util/mergeClass';
-import emptyFunc from "@/util/defaultFunctions";
+import mergeClass from '@/lib/utils/mergeClass';
+import emptyFunc from "@/lib/utils/defaultFunctions";
 import Text from "./Typography/Text";
 import { StatelessButton, StatefulButton } from "./Buttons/Buttons";
 import { StatefulImageButton, StatelessImageButton } from './Buttons/ImageButtons';
