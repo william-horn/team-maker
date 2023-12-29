@@ -10,6 +10,16 @@ const _Fetching = function({
   
 }) {
 
+
+  const fetchData = async() => {
+    const res = await fetch("/api/foobar");
+    const data = await res.json();
+
+    console.log("client-side data: ", data);
+  }
+
+  fetchData();
+
   return (
     <div>
       <h1>Fetching</h1>

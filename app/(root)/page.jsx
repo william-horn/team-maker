@@ -20,6 +20,7 @@ const Home = function({
   
 }) {
 
+
   const fetchData = async() => {
     await connectMongoDB();
 
