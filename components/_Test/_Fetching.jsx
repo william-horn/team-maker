@@ -9,7 +9,8 @@ import DropdownSelection from "../Buttons/DropdownSelection";
 const _Fetching = function({
   
 }) {
-
+  console.log("from client: ", process.env.NEXT_PUBLIC_MYKEY);
+  console.log("rest: ", process.env);
 
   const fetchData = async() => {
     const res = await fetch("/api/foobar");
