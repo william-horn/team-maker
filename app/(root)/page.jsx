@@ -11,14 +11,27 @@ import Page from '@/components/Page';
 import Content from '@/components/Content';
 import Heading from '@/components/Typography/Heading';
 import _Components from '@/components/_Test/_Components';
+import _Fetching from '@/components/_Test/_Fetching';
+
+import connectMongoDB from '@/lib/db/mongodb-connect';
+import Foobar from '@/models/foobars';
 
 const Home = function({
   
 }) {
 
+  const fetchData = async() => {
+    await connectMongoDB();
+
+    const res = await Foobar.find();
+    console.log("Got data: ", res);
+  }
+
+  fetchData();
+
   return (
     <Page className="bg-primary">
-      <_Components/>
+      <_Fetching/>
     </Page>
   )
 }
