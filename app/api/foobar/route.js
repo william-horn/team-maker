@@ -16,7 +16,7 @@ export async function GET(req) {
     }, { status: 200 });
 
   } catch(error) {
-    console.log("Server error: ", err);
+    console.log("Server error: ", error);
 
     return NextResponse.json({
       message: "Server error: " + error,
