@@ -1,5 +1,6 @@
 
-import '../globals.css'
+import '../globals.css';
+import 'dotenv/config';
 import Wireframe from '@/components/Wireframe'
 
 const RootLayout = function({ children }) {
