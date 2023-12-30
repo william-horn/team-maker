@@ -9,23 +9,49 @@
     - options to customize display of search results
     - smart built-in data fetching for displaying database search queries
 
+  * No known bugs
+  * Early version
 */
 
-import { twMerge } from "tailwind-merge";
+/*
+  In-house components
+*/
 import Icon from './Graphics/Icon';
-import stringIsEmpty from '@/lib/utils/stringIsEmpty';
-import removeExtraWhitespace from '@/lib/utils/removeExtraWhitespace';
-import { useLocalStorageState } from '@/hooks/useLocalStorageRequest';
-import { filterSearchResults } from "@/lib/utils/filterSearchResults";
-import Enum from '../enum';
-import { v4 as uuidv4 } from 'uuid';
-import { useState, useRef, useEffect } from 'react';
-import mergeClass from '@/lib/utils/mergeClass';
-import emptyFunc from "@/lib/utils/defaultFunctions";
 import Text from "./Typography/Text";
-import { StatelessButton, StatefulButton } from "./Buttons/Buttons";
+import { StatelessButton } from "./Buttons/Buttons";
 import { StatefulImageButton, StatelessImageButton } from './Buttons/ImageButtons';
 
+/* 
+  In-house utils
+*/
+import stringIsEmpty from '@/lib/utils/stringIsEmpty';
+import removeExtraWhitespace from '@/lib/utils/removeExtraWhitespace';
+import { filterSearchResults } from "@/lib/utils/filterSearchResults";
+import mergeClass from '@/lib/utils/mergeClass';
+import emptyFunc from "@/lib/utils/defaultFunctions";
+
+/*
+  React hooks/custom hooks
+*/
+import { useLocalStorageState } from '@/hooks/useLocalStorageRequest';
+import { useState, useRef, useEffect } from 'react';
+
+/*
+  Internal libraries
+*/
+import Enum from '../enum';
+
+/*
+  External libraries
+*/
+import { v4 as uuidv4 } from 'uuid';
+
+
+/*
+* --------------------
+* SEARCH BAR COMPONENT
+* --------------------
+*/
 const SearchBar = ({
   className: importedClassName={},
   placeholder="Search...", 
@@ -34,12 +60,14 @@ const SearchBar = ({
   onTyping=emptyFunc,
   fetchResults,
 
-  // initialCache=[],
+  initialCache=[],
+  initialHistory=[],
 
   historyDomain=Enum.StorageKeys.SearchHistoryDomain.Primary.value,
   cacheDomain=Enum.StorageKeys.SearchCacheDomain.Primary.value,
 
-  historySize=100,
+  cacheLimit=2500,
+  historyLimit=100,
   displayHistorySize=3,
   displayResultsSize=10,
   fetchBatchLoad=displayResultsSize,
@@ -52,7 +80,7 @@ const SearchBar = ({
 }) => {
   // Get search history getters/setters for local storage
   const [getSearchHistory, updateSearchHistory] = useLocalStorageState(
-    Enum.StorageKeys.SearchHistory.value, { [historyDomain]: [] }
+    Enum.StorageKeys.SearchHistory.value, { [historyDomain]: initialHistory }
   );
 
   // Create search state for when the search bar is interacted with
@@ -60,7 +88,7 @@ const SearchBar = ({
   const [searchInput, setSearchInput] = useState("");
   const [lastSearchInput, setLastSearchInput] = useState("");
   const [getSearchCache, setSearchCache] = useLocalStorageState(
-    Enum.StorageKeys.SearchCache.value, { [cacheDomain]: [] }
+    Enum.StorageKeys.SearchCache.value, { [cacheDomain]: initialCache }
   );
 
   const remainingResults = useRef({ 
@@ -105,9 +133,10 @@ const SearchBar = ({
     }
   }
 
+  // Determines if current search input is 'dead' or not (if there are no database matches left)
   const isDeadSearchRoot = (searchInput) => {
     const deadRoot = remainingResults.current.deadSearchRoot;
-    return deadRoot && searchInput.match(deadRoot);
+    return fetchResults ? deadRoot && searchInput.match(deadRoot) : true;
   }
 
   // Window events for detecting when using is unfocusing the search bar
@@ -152,10 +181,15 @@ const SearchBar = ({
         * note:
         Alternatively, we can use 'remaining.amount' as the fetchBatchLoad, if we only
         ever want to fetch what is needed. This, however, will result in more fetch calls.
+
+        fetchResults():
+          @param: fetchBatchLoad - the limit of documents to fetch
+          @param: remaining.exclude - the array of already-cached search results to ignore in the db query
+          @param: searchInput - the search query string
       */
       fetchResults(fetchBatchLoad, remaining.exclude, searchInput)
         .then(data => {
-          console.log('forgotten fetch: ', new Date());
+          console.log('search fetch: ', new Date());
           remainingResults.current.isLoading = false;
           remainingResults.current.exclude = [];
 
@@ -185,11 +219,16 @@ const SearchBar = ({
             search cache to prevent re-fetching.
           */
           setSearchCache(prev => {
-            const cache = prev[cacheDomain];
+            let cache = prev[cacheDomain];
 
             // add the results to the existing cache array
             for (let i = 0; i < fetchedResults.length; i++) {
               cache.push(fetchedResults[i]);
+            }
+
+            // obey data cache limit
+            if (cache.length > cacheLimit) {
+              cache = cache.slice(cache.length - cacheLimit, cache.length);
             }
 
             return {...prev, [cacheDomain]: cache };
@@ -242,8 +281,8 @@ const SearchBar = ({
       }
 
       // Clip search results to history size limit
-      if (finalResults.length > historySize) {
-        finalResults = finalResults.slice(0, historySize);
+      if (finalResults.length > historyLimit) {
+        finalResults = finalResults.slice(0, historyLimit);
       }
       
       return {...prev, [historyDomain]: finalResults };
@@ -272,22 +311,33 @@ const SearchBar = ({
     // pull from search result arrays
     const historyLogs = (getSearchHistory(historyDomain) || []);
 
+    /*
+      * IMPORTANT OPTIMIZATION NOTE:
+
+      It is more expensive to sort the filter results BEFORE slicing the array, since
+      the array could be fairly large. 
+      
+      Optimally, it would be nice to sort everything
+      first to present the user with the most relevant results, but if performance becomes
+      and issue it's not a big deal for slice() and sort() to switch places.
+    */
+
     // convert search result arrays to arrays of result data
     const historyResults = filterSearchResults(
       historyLogs, 
       searchInput,
       Enum.SearchResultType.History.value
     )
-    .slice(0, displayHistorySize)
-    .sort((a, b) => b.priority - a.priority);
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, displayHistorySize);
 
     const searchCacheResults = filterSearchResults(
       getSearchCache(cacheDomain),
       searchInput,
       Enum.SearchResultType.Database.value
     )
-    .slice(0, displayResultsSize)
-    .sort((a, b) => b.priority - a.priority);
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, displayResultsSize);
 
     // compile all result data arrays down to one, and sort by search match type
     const allResults = [

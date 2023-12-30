@@ -18,8 +18,10 @@ const _DatabaseSearchBar = function({
   return (
     <div>
       <SearchBar
+      displayResultsSize={2}
       displayHistorySize={0}
-      fetchBatchLoad={30}
+      fetchBatchLoad={2}
+      cacheLimit={25}
       fetchResults={getAllFooExcept}
       />
     </div>
