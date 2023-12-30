@@ -11,9 +11,38 @@
 // import connectMongoDB from "@/lib/db/mongodb-connect";
 
 import FoobarAPI, { Foobar } from "./api";
+import { escapeRegex } from "@/lib/utils/escapeRegex";
 
 export async function getAll(args={}) {
   const data = await FoobarAPI.getAll(args);
   return data;
+}
+
+function callToJSON(dataArray) {
+  for (let i = 0; i < dataArray.length; i++) {
+    const v = dataArray[i];
+    dataArray[i] = v.toJSON();
+    dataArray[i]._id = v._id.toJSON();
+  }
+
+  return dataArray;
+}
+
+export async function getAllExcept(limit, exclude, queryStr) {
+  if (exclude.length === 0) {
+    exclude = [{ name: '' }];
+  } else {
+    exclude = exclude.map(v => ({ name: v }));
+  }
+
+  const data = await Foobar.find({
+    $nor: exclude,
+    $and: [ { name: {"$regex": escapeRegex(queryStr), "$options": "i"}} ]
+  })
+  .limit(limit);
+
+  // await new Promise(r => setTimeout(r, 2000));
+
+  return callToJSON(data);
 }
 

@@ -45,6 +45,9 @@ module.exports = {
         "search-bar-result": "var(--text-color-search-bar-result)",
         "search-bar-input": "var(--text-color-search-bar-input)",
         "search-history-result": "var(--text-color-search-history-result)",
+        "search-bar-result-match-word": "var(--text-color-search-bar-result-match-word)",
+        "search-bar-result-match-first": "var(--text-color-search-bar-result-match-first)",
+        "search-bar-result-match-any": "var(--text-color-search-bar-result-match-any)"
       },
     },
   },

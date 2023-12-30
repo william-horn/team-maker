@@ -5,6 +5,8 @@
 import { StatefulButton, StatelessButton } from "../Buttons/Buttons";
 import ButtonGroup from "../Buttons/ButtonGroup";
 import DropdownSelection from "../Buttons/DropdownSelection";
+import SearchBar from "../Searchbar";
+import _DatabaseSearchBar from "./_DatabaseSearchBar";
 
 const _Components = function({
 
@@ -12,12 +14,7 @@ const _Components = function({
 
   return (
     <div>
-      <DropdownSelection>
-        <StatelessButton id="one">Testing 1</StatelessButton>
-        <StatelessButton id="two">Testing 2</StatelessButton>
-        <StatelessButton id="three">Testing 3</StatelessButton>
-        <StatelessButton id="four">Testing 4</StatelessButton>
-      </DropdownSelection>
+      <_DatabaseSearchBar/>
     </div>
   );
 }

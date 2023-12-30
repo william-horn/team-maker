@@ -21,12 +21,17 @@ const SearchBar = ({
   placeholder="Search...", 
 
   onSearch=search => console.log('searched for: ', search),
+  onTyping=emptyFunc,
+  fetchResults,
+
+  // initialCache=[],
 
   historyDomain=Enum.StorageKeys.SearchHistoryDomain.Primary.value,
+  cacheDomain=Enum.StorageKeys.SearchCacheDomain.Primary.value,
 
   historySize=100,
-  displayResultsSize=10,
   displayHistorySize=3,
+  displayResultsSize=10,
 
   // historyResultIcon,
   // searchResultIcon,
@@ -42,6 +47,18 @@ const SearchBar = ({
   // Create search state for when the search bar is interacted with
   const [searchState, setSearchState] = useState(Enum.SearchState.Idle.value);
   const [searchInput, setSearchInput] = useState("");
+  const [lastSearchInput, setLastSearchInput] = useState("");
+  const [getSearchCache, setSearchCache] = useLocalStorageState(
+    Enum.StorageKeys.SearchCache.value, { [cacheDomain]: [] }
+  );
+
+  const remainingResults = useRef({ 
+    amount: 0,
+    exclude: [],
+    isLoading: false,
+    deadSearchRoot: null,
+  });
+
   const searchBarRef = useRef(null);
   const searchFieldRef = useRef(null);
 
@@ -77,6 +94,11 @@ const SearchBar = ({
     }
   }
 
+  const isDeadSearchRoot = (searchInput) => {
+    const deadRoot = remainingResults.current.deadSearchRoot;
+    return deadRoot && searchInput.match(deadRoot);
+  }
+
   // Window events for detecting when using is unfocusing the search bar
   // TODO: add support for arrow-key focus on search results
   // todo: centralize this logic in the top level component, and pass a callback to handle this instead of making a new event listener
@@ -91,6 +113,66 @@ const SearchBar = ({
       // window.removeEventListener('blur', removeSearchResultFocus);
     }
   }, []);
+
+  /*  
+    Handle auto-fetching of new search results as the user is typing.
+
+    Possible future updates:
+      - only auto-fetch between small time intervals of user typing
+  */
+  useEffect(() => {
+    // console.log('current cache: ', searchCache);
+    const remaining = remainingResults.current;
+
+    if (fetchResults && !remaining.isLoading && remaining.amount > 0 && !isDeadSearchRoot(searchInput)) {
+      remainingResults.current.isLoading = true;
+
+      // console.log(`Preparing fetch for [${remaining.amount}] items`);
+      // console.log('with exclude: ', remainingResults.current.exclude);
+      fetchResults(remaining.amount*3, remaining.exclude, searchInput)
+        .then(data => {
+          remainingResults.current.isLoading = false;
+          remainingResults.current.exclude = [];
+
+          /*
+            From the returned fetch results, format the data into an array of names
+            to be stored in cache and displayed in the search bar.
+          */
+          const fetchedResults = data.map(d => d.name);
+          // console.log('fetched names: ', names, '| remaining after fetch: ', remainingResults.current.amount);
+
+          /*
+            If the amount of returned results is less than what we requested, then
+            proceeding search queries should be ignored. I'm calling this a 'dead search root',
+            or 'dead root'. The dead root will equal the search value from which the results
+            stopped flowing in.
+          */
+          remainingResults.current.amount = Math.max(remaining.amount - fetchedResults.length, 0);
+          
+          if (remainingResults.current.amount > 0) {
+            // console.log('setting dead search root to: ', searchInput);
+            remainingResults.current.deadSearchRoot = searchInput;
+            // console.log('DEAD ROOT: ', remainingResults.current.deadSearchRoot);
+          }
+
+          /*
+            When fetch has returned the search results from the database, update the internal
+            search cache to prevent re-fetching.
+          */
+          setSearchCache(prev => {
+            const cache = prev[cacheDomain];
+
+            // add the results to the existing cache array
+            for (let i = 0; i < fetchedResults.length; i++) {
+              cache.push(fetchedResults[i]);
+            }
+
+            return {...prev, [cacheDomain]: cache };
+          });
+        });
+    }
+  });
+
 
   // When the search bar is focused
   const onSearchFocus = () => {
@@ -160,44 +242,67 @@ const SearchBar = ({
     }
   }
 
-  let className = {
-    self: "relative rounded bg-search-bar",
+  //* EXPENSIVE function
+  const getSearchResults = (searchInput) => {
+    // pull from search result arrays
+    const historyLogs = (getSearchHistory(historyDomain) || []);
 
-    searchTextbox: {
-      self: "w-full h-full mx-2 text-search-bar-result"
-    },
+    // convert search result arrays to arrays of result data
+    const historyResults = filterSearchResults(
+      historyLogs, 
+      searchInput,
+      Enum.SearchResultType.History.value
+    )
+    .slice(0, displayHistorySize)
+    .sort((a, b) => b.priority - a.priority);
 
-    historyList: {
-      self: "absolute w-full rounded-b-md top-full z-[1000] bg-search-bar",
-      inner: {
-        self: "overflow-y-auto overflow-x-clip max-h-[200px]",
-        resultButton: {
-          //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
-          self: "w-full text-left justify-start text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover hover:underline",
-          iconButton: {
-            self: "hover:bg-transparent h-fit",
-            inner: {
-              self: "hover:bg-button-hover-primary hover:rounded"
-            }
-          }
-        },
-        historyResult: {
-          self: "italic text-search-history-result"
-        },
-        databaseResult: {},
-      }
-    },
+    const searchCacheResults = filterSearchResults(
+      getSearchCache(cacheDomain),
+      searchInput,
+      Enum.SearchResultType.Database.value
+    )
+    .slice(0, displayResultsSize)
+    .sort((a, b) => b.priority - a.priority);
 
-    __selected: {
-      self: "rounded-b-none"
+    // compile all result data arrays down to one, and sort by search match type
+    const allResults = [
+      ...historyResults,
+      ...searchCacheResults
+    ]
+    // .slice(0, displayResultsSize)
+    // .sort((a, b) => b.priority - a.priority);
+
+
+    /*
+      This job is to only worry about updating the search result request size data. All logic
+      for handling the fetch and re-render is in the useEffect at the top level of the component.
+    */
+    const remainingSearchResultRequestSize = Math.max(displayResultsSize - searchCacheResults.length, 0);
+    remainingResults.current.amount = remainingSearchResultRequestSize;
+
+    if (searchCacheResults.length > 0) {
+      remainingResults.current.exclude = searchCacheResults.map(data => data.source);
+    } else {
+      remainingResults.current.exclude = [];
     }
+
+    // console.log('Remaining...', remainingSearchResultRequestSize);
+
+    return allResults;
   }
 
-  className = mergeClass(
-    className,
-    importedClassName,
-    { __selected: searchState !== Enum.SearchState.Idle.value }
-  );
+  const onSearchTyping = () => {
+    const currentSearchInput = searchFieldRef.current.value;
+
+    if (!isDeadSearchRoot(currentSearchInput)) {
+      remainingResults.current.deadSearchRoot = null;
+    }
+
+    setLastSearchInput(searchInput);
+    setSearchState(Enum.SearchState.Typing.value);
+    setSearchInput(currentSearchInput);
+    onTyping(currentSearchInput);
+  }
 
   // Render out a single search result
   const renderSearchResult = (resultData) => {
@@ -238,13 +343,13 @@ const SearchBar = ({
             resultData.tags.map(tagData => {
               switch (tagData.type) {
                 case Enum.SearchMatchType.FirstMatch:
-                  return <span key={tagData.key} className="text-[#d58eff] font-bold">{tagData.source}</span>
+                  return <span key={tagData.key} className="font-bold text-search-bar-result-match-first">{tagData.source}</span>
 
                 case Enum.SearchMatchType.WordMatch:
-                  return <span key={tagData.key} className="text-[#fff7b9] font-bold">{tagData.source}</span>
+                  return <span key={tagData.key} className="font-bold text-search-bar-result-match-word">{tagData.source}</span>
 
                 case Enum.SearchMatchType.AnyMatch:
-                  return <span key={tagData.key} className="text-[#a7ff73] font-bold">{tagData.source}</span>
+                  return <span key={tagData.key} className="font-bold text-search-bar-result-match-any">{tagData.source}</span>
 
                 case Enum.SearchMatchType.Normal:
                   return <span key={tagData.key}>{tagData.source}</span>
@@ -256,61 +361,6 @@ const SearchBar = ({
     );
   };
 
-  //* EXPENSIVE function
-  const getSearchResults = (searchInput) => {
-    // pull from search result arrays
-    const historyLogs = (getSearchHistory(historyDomain) || []);
-    const otherLogs = [
-      "Able Ranger's Wayfinder (Level 110+)",
-      "Allfather's Gungnir (Level 130+)",
-      "Baron's Staff of Command",
-      "Blade of the Silent Knight (Level 10+)",
-      "Blazing Naginata (Level 100+)",
-      "Bonebreaker Rod of Cold",
-      "Celestian Neon Axe (Level 120+)",
-      "Cobbler Elf Hammer (Level 110+)",
-      "Crimson Pandamonium Jian (Any Level)",
-      "Darkwraith's Scythe of Penance (Level 40+)",
-      "Deathmetal Skull (Level 50+)",
-      "Desert Lodestar Staff (Level 30+)",
-      "Dragoon's Rapier (Level 30+)",
-      "Ebony Pandamonium Jian (Level 110+)",
-      "Ebony Pandamonium Jian (Level 70+)",
-      "Dragonbite Bow (Level 110+)",
-      "Eye of the Soothsayer (Level 90+)",
-      "Fire Serpent's Obsidian Fang (Level 70+)",
-      "Enchanter's New Horizon Wand",
-      "Engineer's Hexacorder",
-      "Evoker's Stalwart Stave",
-      "Frosty Stare Tiki Torch (Level 50+)",
-      "Glinting Dragon Lance (Level 60+)",
-    ]; 
-
-    // convert search result arrays to arrays of result data
-    const historyResults = filterSearchResults(
-      historyLogs, 
-      searchInput,
-      Enum.SearchResultType.History.value
-    )
-    .slice(0, displayHistorySize)
-    .sort((a, b) => b.priority - a.priority);
-
-    const otherResults = filterSearchResults(
-      otherLogs,
-      searchInput,
-      Enum.SearchResultType.Database.value
-    ).sort((a, b) => b.priority - a.priority);
-
-    // compile all result data arrays down to one, and sort by search match type
-    const allResults = [
-      ...historyResults,
-      ...otherResults
-    ]
-    .slice(0, displayResultsSize)
-    // .sort((a, b) => b.priority - a.priority);
-
-    return allResults;
-  }
 
   // The drop-down search results when the search bar is focused
   const renderSearchResults = () => {
@@ -326,6 +376,14 @@ const SearchBar = ({
                   ? searchResults.map(renderSearchResult)
                   : <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
               }
+              {
+                !isDeadSearchRoot(searchInput) && remainingResults.current.amount > 0
+                  ? <div className="flex items-center gap-1">
+                      <Text className={{ self: "italic pt-2 text-xs" }}>Loading results...</Text>
+                      <Icon src="/icons/loading_icon.svg" className={{ self: 'animate-spin w-4 h-4 min-w-fit min-h-fit' }}/>
+                    </div>
+                  : <></>
+              }
             </div>
           </div>
         </div>
@@ -335,10 +393,44 @@ const SearchBar = ({
     return <></>;
   }
 
-  const onSearchTyping = () => {
-    setSearchState(Enum.SearchState.Typing.value);
-    setSearchInput(searchFieldRef.current.value);
+  let className = {
+    self: "relative rounded bg-search-bar",
+
+    searchTextbox: {
+      self: "w-full h-full mx-2 text-search-bar-result"
+    },
+
+    historyList: {
+      self: "absolute w-full rounded-b-md top-full z-[1000] bg-search-bar",
+      inner: {
+        self: "overflow-y-auto overflow-x-clip max-h-[200px]",
+        resultButton: {
+          //text-search-bar-result bg-search-bar-result hover:bg-search-bar-result-hover
+          self: "w-full text-left justify-start text-search-bar-result bg-search-bar-result font-medium transition-colors duration-200 rounded hover:bg-search-bar-result-hover hover:underline",
+          iconButton: {
+            self: "hover:bg-transparent h-fit",
+            inner: {
+              self: "hover:bg-button-hover-primary hover:rounded"
+            }
+          }
+        },
+        historyResult: {
+          self: "italic text-search-history-result"
+        },
+        databaseResult: {},
+      }
+    },
+
+    __selected: {
+      self: "rounded-b-none"
+    }
   }
+
+  className = mergeClass(
+    className,
+    importedClassName,
+    { __selected: searchState !== Enum.SearchState.Idle.value }
+  );
 
   return (
     <div

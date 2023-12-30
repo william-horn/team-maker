@@ -11,9 +11,17 @@ const StorageKeys = new EnumCollection({
     info: 'locally saved search queries'
   }),
 
+  SearchCache: new EnumItem({
+    value: 'search-cache',
+    info: 'locally saved searches from a database'
+  }),
+
+  SearchCacheDomain: new EnumCollection({
+    Primary: new EnumItem({ value: 'primary' }),
+  }),
+
   SearchHistoryDomain: new EnumCollection({
     Primary: new EnumItem({ value: 'primary' }),
-    Secondary: new EnumItem({ value: 'secondary' }),
   }),
 }, {
   valuePrefix: 'raven:'

@@ -51,18 +51,47 @@ const Home = function({
     components cannot.
   */
   const getData = async () => {
-    const data = await FoobarAPI.getAll({});
-    console.log("from model api: ", data);
+    // const data = await FoobarAPI.getAll({});
+    // console.log("from model api: ", data);
 
-    const data2 = await customFetch();
-    console.log("from custom fetch: ", data2);
+    // const data2 = await customFetch();
+    // console.log("from custom fetch: ", data2);
 
     /*
       ? note: must manually connect to mongodb if using in-line query
     */
     await connectMongoDB();
-    const data3 = await Foobar.find();
-    console.log("from raw fetch: ", data3);
+
+    
+    // const data3 = await Foobar.find({
+    //   $nor: [
+    //     { name: 'Will' },
+    //     { name: 'Billy' }
+    //   ]
+    // }).select('name');
+
+    // const data3 = await Foobar.find();
+    // const asd = [];
+
+    // for (let k in data3) {
+    //   const v = data3[k];
+    //   asd[k] = {
+    //     name: `${v.name}-${Math.floor(Math.random()*99999)}`,
+    //     description: v.description
+    //   }
+    // }
+
+    // const res = await fetch('https://random-word-api.herokuapp.com/word?number=5000');
+    // const data = await res.json();
+
+    // const newDocs = [];
+    // for (let k in data) {
+    //   newDocs[k] = { name: data[k], description: "some random word" }
+    // }
+
+    // await Foobar.insertMany(newDocs);
+
+    // console.log("from raw fetch: ", data3);
   }
 
   getData();
@@ -78,7 +107,8 @@ const Home = function({
   */
   return (
     <Page className="bg-primary">
-      <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/>
+      <_Components/>
+      {/* <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/> */}
     </Page>
   )
 }
