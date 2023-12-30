@@ -32,6 +32,7 @@ const SearchBar = ({
   historySize=100,
   displayHistorySize=3,
   displayResultsSize=10,
+  fetchBatchLoad=displayResultsSize,
 
   // historyResultIcon,
   // searchResultIcon,
@@ -129,7 +130,12 @@ const SearchBar = ({
 
       // console.log(`Preparing fetch for [${remaining.amount}] items`);
       // console.log('with exclude: ', remainingResults.current.exclude);
-      fetchResults(remaining.amount*3, remaining.exclude, searchInput)
+      /*
+        * note:
+        Alternatively, we can use 'remaining.amount' as the fetchBatchLoad, if we only
+        ever want to fetch what is needed. This, however, will result in more fetch calls.
+      */
+      fetchResults(fetchBatchLoad, remaining.exclude, searchInput)
         .then(data => {
           remainingResults.current.isLoading = false;
           remainingResults.current.exclude = [];
@@ -366,6 +372,9 @@ const SearchBar = ({
   const renderSearchResults = () => {
     if ((searchState !== Enum.SearchState.Idle.value)) {
       const searchResults = getSearchResults(searchState === Enum.SearchState.Focused.value ? '' : searchInput);
+
+      const remainingResultsRequestSize = remainingResults.current.amount;
+      const isDeadRoot = isDeadSearchRoot(searchInput);
       
       return (
         <div className={className.historyList.self}>
@@ -374,15 +383,19 @@ const SearchBar = ({
               { 
                 searchResults.length > 0
                   ? searchResults.map(renderSearchResult)
-                  : <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
+                  : <></>
               }
               {
-                !isDeadSearchRoot(searchInput) && remainingResults.current.amount > 0
+                ((!isDeadRoot) && (remainingResultsRequestSize > 0))
                   ? <div className="flex items-center gap-1">
                       <Text className={{ self: "italic pt-2 text-xs" }}>Loading results...</Text>
                       <Icon src="/icons/loading_icon.svg" className={{ self: 'animate-spin w-4 h-4 min-w-fit min-h-fit' }}/>
                     </div>
-                  : <></>
+                  : (
+                      (isDeadRoot && searchResults.length === 0)
+                        ? <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
+                        : <></>
+                    )
               }
             </div>
           </div>

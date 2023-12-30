@@ -1,5 +1,6 @@
 "use server";
 
+import connectMongoDB from "@/lib/db/mongodb-connect";
 /*
   Inside files that export fetch functions for client-side use, such as this one, we
   must have 'use server' at the top of the document. These files must EXCLUSIVELY export
@@ -29,6 +30,8 @@ function callToJSON(dataArray) {
 }
 
 export async function getAllExcept(limit, exclude, queryStr) {
+  await connectMongoDB();
+
   if (exclude.length === 0) {
     exclude = [{ name: '' }];
   } else {
@@ -41,7 +44,8 @@ export async function getAllExcept(limit, exclude, queryStr) {
   })
   .limit(limit);
 
-  // await new Promise(r => setTimeout(r, 2000));
+  // simulated delay
+  await new Promise(r => setTimeout(r, 2000));
 
   return callToJSON(data);
 }

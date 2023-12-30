@@ -19,6 +19,7 @@ const _DatabaseSearchBar = function({
     <div>
       <SearchBar
       displayHistorySize={0}
+      fetchBatchLoad={30}
       fetchResults={getAllFooExcept}
       />
     </div>
