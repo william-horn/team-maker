@@ -13,26 +13,46 @@ import Heading from '@/components/Typography/Heading';
 import _Components from '@/components/_Test/_Components';
 import _Fetching from '@/components/_Test/_Fetching';
 
-import connectMongoDB from '@/lib/db/mongodb-connect';
-import Foobar from '@/models/foobars';
+import FoobarAPI, { Foobar } from '@/models/foobar/api';
+
+/*
+  I can declare custom fetch functions here, with the imported
+  database model if desired. Should only need to do this if
+  it doesn't make sense to create a specific API call inside
+  the model's API file.
+*/
+const customFetch = async () => {
+  /*
+    must declare 'use server' if the function is being passed to a client components
+    ? note: using 'use server' in a function now makes this a 'server action'
+    ? note: all 'server actions' must be async functions
+  */
+  "use server";
+
+  const data = await Foobar.find();
+
+  return data;
+}
 
 const Home = function({
   
 }) {
 
+  (async () => {
+    const data = await FoobarAPI.getAll();
+    console.log("from model api: ", data);
 
-  const fetchData = async() => {
-    await connectMongoDB();
+    const data2 = await customFetch();
+    console.log("from custom fetch: ", data2);
 
-    const res = await Foobar.find();
-    console.log("Got data: ", res);
-  }
+    const data3 = await Foobar.find();
+    console.log("from raw fetch: ", data3);
+  })();
 
-  fetchData();
 
   return (
     <Page className="bg-primary">
-      <_Fetching/>
+      <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/>
     </Page>
   )
 }

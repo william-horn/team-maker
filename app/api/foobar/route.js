@@ -2,7 +2,7 @@ import connectMongoDB from "@/lib/db/mongodb-connect";
 import { NextResponse } from "next/server";
 import { escapeRegex } from "@/lib/utils/escapeRegex";
 
-import Foobar from "@/models/foobars";
+import Foobar from "@/models/foobar/model";
 
 export async function GET(req) {
   try {
