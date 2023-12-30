@@ -63,7 +63,7 @@ const Home = function({
     console.log("from raw fetch: ", data3);
   }
 
-  // getData();
+  getData();
 
 
   return (
