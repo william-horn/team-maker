@@ -34,30 +34,22 @@ const customFetch = async () => {
   await connectMongoDB();
   const data = await Foobar.find();
 
-  console.log("will this have env?: ", process.env.MONGODB_URI);
-
   return data;
 }
 
 const Home = function({
   
 }) {
-
-  console.log("INITIALIZING SERVER-SIDE COMPONENT 2");
-
   const getData = async () => {
-    console.log("before foobar api getAll(): ");
     const data = await FoobarAPI.getAll();
     console.log("from model api: ", data);
 
-    console.log("before customFetch(): ");
     const data2 = await customFetch();
     console.log("from custom fetch: ", data2);
 
     /*
       ? note: must manually connect to mongodb if using in-line query
     */
-    console.log("before inline-fetch: ");
     await connectMongoDB();
     const data3 = await Foobar.find();
     console.log("from raw fetch: ", data3);
