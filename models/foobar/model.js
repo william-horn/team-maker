@@ -1,6 +1,5 @@
 
 import mongoose, { Schema } from "mongoose";
-import connectMongoDB from "@/lib/db/mongodb-connect";
 
 const foobarSchema = new Schema(
   {

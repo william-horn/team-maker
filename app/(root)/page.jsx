@@ -43,7 +43,9 @@ const Home = function({
   
 }) {
 
-  (async () => {
+  console.log("INITIALIZING SERVER-SIDE COMPONENT");
+
+  const getData = async () => {
     const data = await FoobarAPI.getAll();
     console.log("from model api: ", data);
 
@@ -56,7 +58,9 @@ const Home = function({
     await connectMongoDB();
     const data3 = await Foobar.find();
     console.log("from raw fetch: ", data3);
-  })();
+  }
+
+  getData();
 
 
   return (
