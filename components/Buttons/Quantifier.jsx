@@ -73,7 +73,7 @@ const Quantifier = function({
       //   minWidth: "fit-content"
       // }}
       ref={numberRef}
-      className={className.text}>
+      className={className.text.self}>
         {_numberVal}
       </Text>
 

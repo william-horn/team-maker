@@ -456,7 +456,7 @@ const SearchBar = ({
               {
                 ((!isDeadRoot) && (remainingResultsRequestSize > 0))
                 ? <div className="flex items-center gap-1">
-                    <Text className={{ self: "italic pt-2 text-xs" }}>Loading results...</Text>
+                    <Text>Loading results...</Text>
                     <Icon src="/icons/loading_icon.svg" className={{ self: 'animate-spin w-4 h-4 min-w-fit min-h-fit' }}/>
                   </div>
                 : <></>
@@ -477,7 +477,7 @@ const SearchBar = ({
               */}
               {
                 (isDeadRoot && searchResults.length === 0)
-                  ? <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
+                  ? <Text>No matches found for this search</Text>
                   : <></>
               }
             </div>
