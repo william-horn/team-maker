@@ -31,6 +31,8 @@ const customFetch = async () => {
 
   const data = await Foobar.find();
 
+  console.log("will this have env?: ", process.env.MONGODB_URI);
+
   return data;
 }
 
