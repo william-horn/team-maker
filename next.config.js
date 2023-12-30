@@ -8,7 +8,7 @@ const nextConfig = {
   
   // look into this later
   env: {
-    MONGODB_URI: "mongodb+srv://williamjosephhorn:6TcYIe5j7KBcltJn@cluster0.kiyzjms.mongodb.net/"
+    MONGODB_URI: "mongodb+srv://williamjosephhorn:6TcYIe5j7KBcltJn@cluster0.kiyzjms.mongodb.net/nextjs-14-template"
   }
 }
 

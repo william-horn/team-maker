@@ -70,6 +70,7 @@ const Home = function({
     //   ]
     // }).select('name');
 
+    // console.log('fetching...');
     // const data3 = await Foobar.find();
     // const asd = [];
 
@@ -81,7 +82,7 @@ const Home = function({
     //   }
     // }
 
-    // const res = await fetch('https://random-word-api.herokuapp.com/word?number=5000');
+    // const res = await fetch('https://random-word-api.herokuapp.com/word?number=10000');
     // const data = await res.json();
 
     // const newDocs = [];
