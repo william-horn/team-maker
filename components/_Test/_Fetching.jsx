@@ -21,17 +21,17 @@ const _Fetching = function({
     Instead, we have to use something like 'useEffect' to ensure the component renders before the API 
     call is made.
   */
-  const getData = async () => {
-    const data = await FoobarAPI.getAll();
-    console.log("on client with api: ", data);
+  // const getData = async () => {
+  //   const data = await FoobarAPI.getAll();
+  //   console.log("on client with api: ", data);
 
-    const data2 = await customFetch();
-    console.log("on client with custom fetch: ", data2);
-  }
+  //   const data2 = await customFetch();
+  //   console.log("on client with custom fetch: ", data2);
+  // }
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   return (
     <div>

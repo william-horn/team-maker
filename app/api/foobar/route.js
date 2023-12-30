@@ -7,6 +7,9 @@ import Foobar from "@/models/foobar/model";
 export async function GET(req) {
   try {
     // const params = req.nextUrl.get('');
+    console.log("RUNNING GET ROUTE");
+    
+    await connectMongoDB();
     const foobarData = await Foobar.find();
 
     console.log("Got foobar data: ", foobarData);
