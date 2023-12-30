@@ -16,12 +16,6 @@ import _Fetching from '@/components/_Test/_Fetching';
 import connectMongoDB from '@/lib/db/mongodb-connect';
 import FoobarAPI, { Foobar } from '@/models/foobar/api';
 
-export async function getStaticProps() {
-  console.log("Running static props...");
-  console.log("in static props: ", process.env.MONGODB_URI);
-  console.log("also in static props: ", process.env.WILLSVAR);
-  // ...
-}
 
 /*
   I can declare custom fetch functions here, with the imported
