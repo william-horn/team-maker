@@ -58,7 +58,6 @@ const Home = function({
 
   getData();
 
-
   return (
     <Page className="bg-primary">
       <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/>
