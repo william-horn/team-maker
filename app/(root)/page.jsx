@@ -30,6 +30,8 @@ const customFetch = async () => {
   */
   "use server";
 
+  // note: must manually connect to mongodb if using inline-query
+  await connectMongoDB();
   const data = await Foobar.find();
 
   console.log("will this have env?: ", process.env.MONGODB_URI);
