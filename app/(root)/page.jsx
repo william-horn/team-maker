@@ -71,7 +71,7 @@ const Home = function({
     // }).select('name');
 
     console.log('fetching...');
-    const data3 = await Foobar.find();
+    // const data3 = await Foobar.find();
     // const asd = [];
 
     // for (let k in data3) {
@@ -92,10 +92,10 @@ const Home = function({
 
     // await Foobar.insertMany(newDocs);
 
-    console.log("from raw fetch: ", data3[1]);
+    // console.log("from raw fetch: ", data3[1]);
   }
 
-  getData();
+  // getData();
 
   /*
     ? note:
