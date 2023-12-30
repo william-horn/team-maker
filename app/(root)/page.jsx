@@ -10,6 +10,7 @@ import Content from '@/components/Content';
 import Heading from '@/components/Typography/Heading';
 import _Components from '@/components/_Test/_Components';
 import _Fetching from '@/components/_Test/_Fetching';
+import Text from '@/components/Typography/Text';
 
 import connectMongoDB from '@/lib/db/mongodb-connect';
 import FoobarAPI, { Foobar } from '@/models/foobar/api';
@@ -108,7 +109,10 @@ const Home = function({
   */
   return (
     <Page className="bg-primary">
-      <_Components/>
+      <Content span="xs" className='mx-auto mt-10'>
+        <Heading textSize="3xl" className='my-3 text-center'>Search for a word!</Heading>
+        <_Components/>
+      </Content>
       {/* <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/> */}
     </Page>
   )

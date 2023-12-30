@@ -1,5 +1,15 @@
-
 "use client";
+
+/*
+  @author: William J. Horn
+
+  This is a custom search bar component for general use. It has many features, such as:
+    - built-in history cache
+    - color-coded search results, in order of relevance
+    - options to customize display of search results
+    - smart built-in data fetching for displaying database search queries
+
+*/
 
 import { twMerge } from "tailwind-merge";
 import Icon from './Graphics/Icon';
@@ -120,6 +130,14 @@ const SearchBar = ({
 
     Possible future updates:
       - only auto-fetch between small time intervals of user typing
+
+      - add memory for "dead roots", to ignore re-fetching when the user 
+        starts typing a dead-end query. 
+        
+          - for example: currently, if the user types in "zoo" with no matching 
+            results, it will remember "zoo" as a dead root only until the user
+            clears "zoo" from their search bar. Every subsequent search for 
+            "zoo" after that will result in another query attempt.
   */
   useEffect(() => {
     // console.log('current cache: ', searchCache);
@@ -137,6 +155,7 @@ const SearchBar = ({
       */
       fetchResults(fetchBatchLoad, remaining.exclude, searchInput)
         .then(data => {
+          console.log('forgotten fetch: ', new Date());
           remainingResults.current.isLoading = false;
           remainingResults.current.exclude = [];
 
@@ -380,22 +399,36 @@ const SearchBar = ({
         <div className={className.historyList.self}>
           <div className="px-3 py-2">
             <div className={className.historyList.inner.self}>
+              {/* 
+                If the search root is not dead, and we still have a remaining request size,
+                then display a loading message until the data comes back, if there is any.
+              */}
+              {
+                ((!isDeadRoot) && (remainingResultsRequestSize > 0))
+                ? <div className="flex items-center gap-1">
+                    <Text className={{ self: "italic pt-2 text-xs" }}>Loading results...</Text>
+                    <Icon src="/icons/loading_icon.svg" className={{ self: 'animate-spin w-4 h-4 min-w-fit min-h-fit' }}/>
+                  </div>
+                : <></>
+              }
+
+              {/* 
+                If there are currently any search results, display them
+              */}
               { 
                 searchResults.length > 0
                   ? searchResults.map(renderSearchResult)
                   : <></>
               }
+
+              {/*  
+                If the search root is dead and there are no search results to be displayed,
+                then display a 'no-results' message
+              */}
               {
-                ((!isDeadRoot) && (remainingResultsRequestSize > 0))
-                  ? <div className="flex items-center gap-1">
-                      <Text className={{ self: "italic pt-2 text-xs" }}>Loading results...</Text>
-                      <Icon src="/icons/loading_icon.svg" className={{ self: 'animate-spin w-4 h-4 min-w-fit min-h-fit' }}/>
-                    </div>
-                  : (
-                      (isDeadRoot && searchResults.length === 0)
-                        ? <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
-                        : <></>
-                    )
+                (isDeadRoot && searchResults.length === 0)
+                  ? <Text className={{ self: "italic pt-2 text-xs" }}>No matches found for this search</Text>
+                  : <></>
               }
             </div>
           </div>
