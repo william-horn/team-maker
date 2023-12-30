@@ -13,6 +13,7 @@ import Heading from '@/components/Typography/Heading';
 import _Components from '@/components/_Test/_Components';
 import _Fetching from '@/components/_Test/_Fetching';
 
+import connectMongoDB from '@/lib/db/mongodb-connect';
 import FoobarAPI, { Foobar } from '@/models/foobar/api';
 
 /*
@@ -47,6 +48,10 @@ const Home = function({
     const data2 = await customFetch();
     console.log("from custom fetch: ", data2);
 
+    /*
+      ? note: must manually connect to mongodb if using in-line query
+    */
+    await connectMongoDB();
     const data3 = await Foobar.find();
     console.log("from raw fetch: ", data3);
   })();
