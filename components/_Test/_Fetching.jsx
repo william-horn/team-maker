@@ -2,15 +2,18 @@
 "use client";
 
 
-import { StatefulButton, StatelessButton } from "../Buttons/Buttons";
+import { StatefulButton, StatelessButton, StatelessLink } from "../Buttons/Buttons";
+import Link from "next/link";
 import ButtonGroup from "../Buttons/ButtonGroup";
 import DropdownSelection from "../Buttons/DropdownSelection";
 import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const _Fetching = function({
   FoobarAPI,
   customFetch
 }) {
+  const router = useRouter();
 
   /*
     Fetching data client-side. Client has full access to model API, as long
@@ -22,7 +25,7 @@ const _Fetching = function({
     call is made.
   */
   const getData = async () => {
-    const data = await FoobarAPI.getAll();
+    const data = await FoobarAPI.getAll({});
     console.log("on client with api: ", data);
 
     const data2 = await customFetch();
@@ -33,11 +36,15 @@ const _Fetching = function({
     getData();
   }, []);
 
+  const onButtonClick = () => {
+    router.push(`/page-1/123?limit=3&select=description`);
+  }
+
   return (
     <div>
       <h1>Fetching</h1>
 
-
+      <StatelessButton onClick={onButtonClick}>Go to Page 1</StatelessButton>
     </div>
   );
 }

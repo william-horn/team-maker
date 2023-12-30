@@ -6,9 +6,8 @@ import Foobar from "@/models/foobar/model";
 
 export async function GET(req) {
   try {
-    // const params = req.nextUrl.get('');
-    console.log("RUNNING GET ROUTE: ", process.env.MONGODB_URI);
-
+    // get '?key=value' / '&key=value' syntax:
+    // const queryParams = req.nextUrl.get('');
     await connectMongoDB();
     const foobarData = await Foobar.find();
 

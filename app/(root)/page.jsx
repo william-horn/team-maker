@@ -1,7 +1,5 @@
 import Image from 'next/image'
 
-
-
 /*
   This is the home page component, meaning it should remain a server-side component. Therefore,
   for button-testing purposes, we must create a client component that handles the interactivity logic
@@ -41,8 +39,19 @@ const customFetch = async () => {
 const Home = function({
   
 }) {
+  /*
+    Example GET requests to the database
+
+    ? note: 
+    We can do initial queries in server components before rendering. However,
+    we cannot do this in client components. Client components must use 'useEffect' or
+    some way of fetching the data after an initial render.
+
+    Because of this, server-components can also be async functions, whereas client
+    components cannot.
+  */
   const getData = async () => {
-    const data = await FoobarAPI.getAll();
+    const data = await FoobarAPI.getAll({});
     console.log("from model api: ", data);
 
     const data2 = await customFetch();
@@ -58,6 +67,15 @@ const Home = function({
 
   getData();
 
+  /*
+    ? note:
+
+    In order to give client components access to fetch/query methods, we can pass such methods
+    down as props to the component. Alternatively, we could create a separate file with "use server"
+    at the top, export the functions, and import that file inside the client component.
+
+    * note: Only async functions can be exported in a 'use server' file.
+  */
   return (
     <Page className="bg-primary">
       <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/>
