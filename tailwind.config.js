@@ -41,6 +41,8 @@ module.exports = {
         "primary": "var(--text-color-primary)",
         "muted": "var(--text-color-muted)",
         "error": "var(--text-color-error)",
+        "hyperlink": "var(--text-color-hyperlink)",
+        "hyperlink-hover": "var(--text-color-hyperlink-hover)",
 
         // Search bar
         "search-bar-result": "var(--text-color-search-bar-result)",

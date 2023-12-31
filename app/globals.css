@@ -32,7 +32,10 @@
 
     /* General TEXT */
     --text-color-primary: #e3e3e3;
+
     --text-color-hyperlink: #d58eff;
+    --text-color-hyperlink-hover: #c874f9;
+    
     --text-color-muted: #959595;
     --text-color-error: red;
 
