@@ -136,7 +136,7 @@ const SearchBar = ({
   // Determines if current search input is 'dead' or not (if there are no database matches left)
   const isDeadSearchRoot = (searchInput) => {
     const deadRoot = remainingResults.current.deadSearchRoot;
-    return fetchResults ? deadRoot && searchInput.match(deadRoot) : true;
+    return fetchResults ? ((deadRoot !== null) && searchInput.match(deadRoot)) : true;
   }
 
   // Window events for detecting when using is unfocusing the search bar
