@@ -149,7 +149,7 @@ const Home = function({
             <ul>
               {
                 getMembers().map(member => {
-                  return <li className='flex justify-center'>
+                  return <li key={member} className='flex justify-center'>
                     <StatelessButton
                     onClick={
                       () => {
@@ -181,7 +181,7 @@ const Home = function({
             <ul>
               {
                 getSittingTeam().map(member => {
-                  return <li>{member}</li>
+                  return <li key={member}>{member}</li>
                 })
               }
             </ul>
@@ -194,7 +194,7 @@ const Home = function({
             <ul>
               {
                 getRandomTeam().map(member => {
-                  return <li>{member}</li>
+                  return <li key={member}>{member}</li>
                 })
               }
             </ul>
