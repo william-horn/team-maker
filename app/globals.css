@@ -57,14 +57,14 @@
   .wireframe * {
     outline: 1px solid red !important;
   }
-  
-  h1, h2, h3, h4, h5, h6, p {
-    color: var(--text-color-primary);
-  }
 
   /* Input config */
   input {
     all: unset;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p, label, input, li {
+    color: var(--text-color-primary);
   }
 
   input::placeholder {

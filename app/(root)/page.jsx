@@ -1,3 +1,5 @@
+"use client";
+
 import Image from 'next/image'
 
 /*
@@ -8,112 +10,197 @@ import Image from 'next/image'
 import Page from '@/components/Page';
 import Content from '@/components/Content';
 import Heading from '@/components/Typography/Heading';
-import _Components from '@/components/_Test/_Components';
-import _Fetching from '@/components/_Test/_Fetching';
 import Text from '@/components/Typography/Text';
 
 import connectMongoDB from '@/lib/db/mongodb-connect';
-import FoobarAPI, { Foobar } from '@/models/foobar/api';
+// import FoobarAPI, { Foobar } from '@/models/foobar/api';
+import { StatelessButton } from '@/components/Buttons/Buttons';
+import ButtonGroup from '@/components/Buttons/ButtonGroup';
+import InputField from './InputField';
+import { useLocalStorageRequest, useLocalStorageState } from '@/hooks/useLocalStorageRequest';
 
-
-/*
-  I can declare custom fetch functions here, with the imported
-  database model if desired. Should only need to do this if
-  it doesn't make sense to create a specific API call inside
-  the model's API file.
-*/
-const customFetch = async () => {
-  /*
-    must declare 'use server' if the function is being passed to a client components
-    ? note: using 'use server' in a function now makes this a 'server action'
-    ? note: all 'server actions' must be async functions
-  */
-  "use server";
-
-  // note: must manually connect to mongodb if using inline-query
-  await connectMongoDB();
-  const data = await Foobar.find();
-
-  return data;
-}
+import { useRef, useState } from 'react';
+import stringIsEmpty from '@/lib/utils/stringIsEmpty';
+import shuffle from '@/lib/utils/shuffleArray';
+import Enum from '@/enum';
 
 const Home = function({
   
 }) {
-  /*
-    Example GET requests to the database
+  const [getMembers, setMembers] = useLocalStorageState('members', []);
+  const [getRandomTeam, setRandomTeam] = useLocalStorageState('randomTeam', []);
 
-    ? note: 
-    We can do initial queries in server components before rendering. However,
-    we cannot do this in client components. Client components must use 'useEffect' or
-    some way of fetching the data after an initial render.
+  const [getSittingTeam, setSittingTeam] = useLocalStorageRequest('lastSitting', []);
+  const memberInput = useRef(null);
+  const teamSizeInput = useRef(null);
 
-    Because of this, server-components can also be async functions, whereas client
-    components cannot.
-  */
-  const getData = async () => {
-    // const data = await FoobarAPI.getAll({});
-    // console.log("from model api: ", data);
+  const addMember = () => {
+    const newMember = memberInput.current.value;
 
-    // const data2 = await customFetch();
-    // console.log("from custom fetch: ", data2);
+    if (stringIsEmpty(newMember)) {
+      return;
+    }
 
-    /*
-      ? note: must manually connect to mongodb if using in-line query
-    */
-    await connectMongoDB();
+    setMembers(prev => {
+      if (prev.find(v => v === newMember)) {
+        return prev;
+      } else {
+        prev.push(newMember);
+      }
+      return [...prev];
+    })
 
-    
-    // const data3 = await Foobar.find({
-    //   $nor: [
-    //     { name: 'Will' },
-    //     { name: 'Billy' }
-    //   ]
-    // }).select('name');
-
-    console.log('fetching...');
-    // const data3 = await Foobar.find();
-    // const asd = [];
-
-    // for (let k in data3) {
-    //   const v = data3[k];
-    //   asd[k] = {
-    //     name: `${v.name}-${Math.floor(Math.random()*99999)}`,
-    //     description: v.description
-    //   }
-    // }
-
-    // const res = await fetch('https://random-word-api.herokuapp.com/word?number=10000');
-    // const data = await res.json();
-
-    // const newDocs = [];
-    // for (let k in data) {
-    //   newDocs[k] = { name: data[k], description: "some random word" }
-    // }
-
-    // await Foobar.insertMany(newDocs);
-
-    // console.log("from raw fetch: ", data3[1]);
+    memberInput.current.blur();
   }
 
-  // getData();
+  const onEnter = event => {
+    if (event.Key === Enum.Keys.Enter.value) {
+      memberInput.current.value = '';
+    }
+  }
 
-  /*
-    ? note:
+  const generateTeam = () => {
+    const teamSize = teamSizeInput.current.value;
 
-    In order to give client components access to fetch/query methods, we can pass such methods
-    down as props to the component. Alternatively, we could create a separate file with "use server"
-    at the top, export the functions, and import that file inside the client component.
+    if (getMembers().length < teamSize*2) {
+      return;
+    }
 
-    * note: Only async functions can be exported in a 'use server' file.
-  */
+    const randTeam = shuffle(getMembers());
+
+    const diff = randTeam.length - teamSize*2
+    const active = randTeam.splice(diff);
+    const sitting = randTeam.splice(0, diff);
+
+    setSittingTeam(prev => {
+      return sitting;
+    });
+
+    setRandomTeam(prev => {
+      return active;
+    });
+
+    console.log(active);
+    console.log(sitting);
+  }
+  
   return (
     <Page className="bg-primary">
       <Content span="xs" className='mx-auto mt-10'>
-        <Heading textSize="3xl" className='my-3 text-center'>Search for a word!</Heading>
-        <_Components/>
+        <Heading textSize="3xl" className='my-3 text-center'>Team Maker</Heading>
+        <Content span="" className="flex flex-col items-center mx-auto mt-10 mb-5">
+          <div className='flex items-center justify-center'>
+            <Content className="flex justify-center m-2 w-fit">
+              <label className='mr-2'>Enter Members:</label>
+              <input 
+              onKeyUp={onEnter}
+              ref={memberInput}
+              type='text'
+              className='bg-[#060606] p-1 rounded mr-2 min-w-[50px]'
+              />
+            </Content>
+            <StatelessButton 
+              onClick={addMember}
+              className={{
+                self: ' whitespace-nowrap h-fit'
+              }}>
+              + Add Member
+            </StatelessButton>
+          </div>
+
+          <Content className="flex justify-center m-2 w-fit">
+            <label className='mr-2'>Enter Team Size:</label>
+            <input 
+            ref={teamSizeInput}
+            type='number'
+            className='bg-[#060606] p-1 rounded mr-2 min-w-[50px]'
+            />
+          </Content>
+
+          <Content className="flex items-center justify-center m-4">
+            <label className='mr-2'>Repeat Sit-Outs</label>
+            <ButtonGroup 
+            
+            defaultSelect={['no']}
+            unselectLastChoice={true}
+            selectionLimit={1}
+            className={{
+              self: 'flex flex-row'
+              }}
+            >
+              <StatelessButton id='yes'>Yes</StatelessButton>
+              <StatelessButton id='no'>No</StatelessButton>
+            </ButtonGroup>
+          </Content>
+
+          <StatelessButton
+          onClick={generateTeam}
+          className={{
+            self: 'bg-green-700 hover:bg-green-600'
+          }}>
+            Generate Team
+          </StatelessButton>
+        </Content>
       </Content>
-      {/* <_Fetching FoobarAPI={FoobarAPI} customFetch={customFetch}/> */}
+      <Content span='lg' className='flex mx-auto'>
+        <Content className='w-[50%]'>
+          <h2 className='p-2 text-center text-green-500'>Members in Lobby:</h2>
+          <Content className='flex justify-center'>
+            <ul>
+              {
+                getMembers().map(member => {
+                  return <li className='flex justify-center'>
+                    <StatelessButton
+                    onClick={
+                      () => {
+                        setMembers(prev => {
+                          prev.filter((v, i, arr) => {
+                            if (v === member) {
+                              arr.splice(i, 1);
+                            }
+                          });
+                          return [...prev];
+                        });
+                      }
+                    } 
+                    className={{
+                      self: 'm-1 bg-black hover:bg-green-700 '
+                    }}>
+                      {member}
+                    </StatelessButton>
+                  </li>
+                })
+              }
+            </ul>
+          </Content>
+        </Content>
+
+        <Content className='w-[50%]'>
+          <h2 className='p-2 text-center text-gray-600'>Sitting:</h2>
+          <Content className='flex justify-center'>
+            <ul>
+              {
+                getSittingTeam().map(member => {
+                  return <li>{member}</li>
+                })
+              }
+            </ul>
+          </Content>
+        </Content>
+
+        <Content className='w-[50%]'>
+          <h2 className='p-2 text-center text-blue-500'>Team Generated:</h2>
+          <Content className='flex justify-center'>
+            <ul>
+              {
+                getRandomTeam().map(member => {
+                  return <li>{member}</li>
+                })
+              }
+            </ul>
+          </Content>
+        </Content>
+      </Content>
     </Page>
   )
 }
