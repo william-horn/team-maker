@@ -12,11 +12,9 @@ import Content from '@/components/Content';
 import Heading from '@/components/Typography/Heading';
 import Text from '@/components/Typography/Text';
 
-import connectMongoDB from '@/lib/db/mongodb-connect';
 // import FoobarAPI, { Foobar } from '@/models/foobar/api';
 import { StatelessButton } from '@/components/Buttons/Buttons';
 import ButtonGroup from '@/components/Buttons/ButtonGroup';
-import InputField from './InputField';
 import { useLocalStorageRequest, useLocalStorageState } from '@/hooks/useLocalStorageRequest';
 
 import { useRef, useState } from 'react';
